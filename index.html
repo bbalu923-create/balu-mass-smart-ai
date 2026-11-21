@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,78 +7,334 @@
 <title>Balu Mass Smart AI</title>
 
 <style>
-body {
+* {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
     font-family: Arial, sans-serif;
-    background: #101827;
+    background: #080e19;
     color: white;
-}
-header {
-    background: #182438;
-    padding: 20px;
-    text-align: center;
-}
-.container {
-    padding: 15px;
-}
-.card {
-    background: #1e293b;
+    min-height: 100vh;
     padding: 18px;
-    margin: 12px 0;
-    border-radius: 15px;
 }
-button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 6px;
-  border: none;
-  border-radius: 8px;
-  background: #2563eb;
-  color: white;
-  font-size: 15px;
+
+.container {
+    max-width: 600px;
+    margin: auto;
 }
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.logo {
+    width: 55px;
+    height: 55px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #1685ff, #674cff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 27px;
+    box-shadow: 0 0 25px #167cff33;
+}
+
+.header h1 {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.header p {
+    color: #8c9db5;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.date {
+    color: #8c9db5;
+    font-size: 12px;
+    margin-bottom: 18px;
+}
+
+.welcome {
+    background: linear-gradient(135deg, #142944, #17203c, #25214c);
+    border: 1px solid #283f60;
+    border-radius: 22px;
+    padding: 23px;
+    margin-bottom: 22px;
+}
+
+.welcome small {
+    color: #86baff;
+    font-size: 12px;
+}
+
+.welcome h2 {
+    font-size: 24px;
+    margin: 12px 0 8px;
+}
+
+.welcome p {
+    color: #bac9df;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.ai-button {
+    display: block;
+    text-decoration: none;
+    margin-top: 18px;
+    padding: 13px;
+    text-align: center;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #267dff, #6355ff);
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.section-title {
+    font-size: 15px;
+    margin: 23px 0 13px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.card {
+    background: #111b2b;
+    border: 1px solid #202e42;
+    border-radius: 18px;
+    padding: 17px 14px;
+    min-height: 125px;
+    text-decoration: none;
+    color: white;
+    transition: 0.2s;
+}
+
+.card:active {
+    transform: scale(0.97);
+}
+
+.card-icon {
+    font-size: 26px;
+    margin-bottom: 12px;
+}
+
+.card h3 {
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.card p {
+    font-size: 11px;
+    color: #92a3ba;
+    line-height: 1.5;
+}
+
+.active-card {
+    border-color: #244c77;
+    background: linear-gradient(145deg, #12253b, #111b2b);
+}
+
+.badge {
+    display: inline-block;
+    margin-top: 9px;
+    font-size: 9px;
+    color: #6db6ff;
+    background: #193452;
+    padding: 4px 8px;
+    border-radius: 20px;
+}
+
+.coming {
+    opacity: 0.75;
+}
+
+.quick-box {
+    margin-top: 20px;
+    background: #111b2b;
+    border: 1px solid #26374e;
+    border-radius: 18px;
+    padding: 17px;
+}
+
+.quick-box h3 {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.quick-box p {
+    color: #95a7bd;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.footer {
+    text-align: center;
+    color: #607086;
+    font-size: 11px;
+    padding: 25px 0 10px;
+}
+
+@media (max-width: 360px) {
+    body {
+        padding: 12px;
+    }
+
+    .welcome h2 {
+        font-size: 21px;
+    }
+
+    .card {
+        padding: 14px 11px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<header>
-<h1>🤖 Balu Mass Smart AI</h1>
-<p>Your Personal Automation Assistant</p>
-</header>
-
 <div class="container">
 
-<div class="card">
-<h2>📅 Daily Assistant</h2>
-<p>Manage daily tasks and reminders.</p>
-<button onclick="window.location.href='daily.html'">Open</button>
+    <header class="header">
+        <div class="logo">🤖</div>
+        <div>
+            <h1>BALU MASS SMART AI</h1>
+            <p>Personal AI Control Center</p>
+        </div>
+    </header>
 
-<div class="card">
-<h2>🚇 CMRL Roster</h2>
-<p>Manage C1 & C2 shifts and attendance.</p>
-<button onclick="window.location.href='roster.html'">
+    <div class="date" id="todayDate"></div>
 
-<div class="card">
-<h2>📊 Attendance & Billing</h2>
-<p>Monthly supervisor and technician attendance.</p>
-<button onclick="alert('Billing Module Coming Soon')">Open</button>
+    <section class="welcome">
+        <small>✦ YOUR PERSONAL SMART ASSISTANT</small>
+        <h2 id="greeting">Welcome, Balu 👋</h2>
+        <p>
+            Organize your work, manage your day,
+            track tasks and stay productive.
+        </p>
+
+        <a class="ai-button" href="daily.html">
+            ✨ Open Daily Assistant
+        </a>
+    </section>
+
+    <h2 class="section-title">⚡ Smart Modules</h2>
+
+    <div class="grid">
+
+        <a href="daily.html" class="card active-card">
+            <div class="card-icon">🤖</div>
+            <h3>Daily Assistant</h3>
+            <p>Daily tasks, reminders & planning</p>
+            <span class="badge">ACTIVE</span>
+        </a>
+
+        <a href="roster.html" class="card active-card">
+            <div class="card-icon">👥</div>
+            <h3>CMRL Roster</h3>
+            <p>C1 & C2 shift management</p>
+            <span class="badge">ACTIVE</span>
+        </a>
+
+        <div class="card coming">
+            <div class="card-icon">📊</div>
+            <h3>Attendance & Billing</h3>
+            <p>Staff attendance & monthly billing</p>
+            <span class="badge">COMING SOON</span>
+        </div>
+
+        <div class="card coming">
+            <div class="card-icon">🔧</div>
+            <h3>Maintenance</h3>
+            <p>CMMS & pending maintenance work</p>
+            <span class="badge">COMING SOON</span>
+        </div>
+
+        <div class="card coming">
+            <div class="card-icon">📚</div>
+            <h3>English Learning</h3>
+            <p>Daily English practice & improvement</p>
+            <span class="badge">COMING SOON</span>
+        </div>
+
+        <div class="card coming">
+            <div class="card-icon">💬</div>
+            <h3>WhatsApp Assistant</h3>
+            <p>Smart messages & office communication</p>
+            <span class="badge">COMING SOON</span>
+        </div>
+
+        <div class="card coming">
+            <div class="card-icon">🔔</div>
+            <h3>Smart Reminders</h3>
+            <p>Important tasks & notifications</p>
+            <span class="badge">COMING SOON</span>
+        </div>
+
+        <div class="card coming">
+            <div class="card-icon">📈</div>
+            <h3>Daily Reports</h3>
+            <p>Work summary & daily progress</p>
+            <span class="badge">COMING SOON</span>
+        </div>
+
+    </div>
+
+    <div class="quick-box">
+        <h3>🧠 Balu Smart AI</h3>
+        <p>
+            Your personal digital assistant to manage daily work,
+            CMRL activities, reminders, reports and learning —
+            all in one place.
+        </p>
+    </div>
+
+    <footer class="footer">
+        Balu Mass Smart AI · Personal Assistant
+        <br><br>
+        Version 2.0
+    </footer>
+
 </div>
 
-<div class="card">
-<h2>🔧 Maintenance Tracker</h2>
-<p>Track maintenance and pending tasks.</p>
-<button onclick="alert('Maintenance Module Coming Soon')">Open</button>
-</div>
+<script>
+const today = new Date();
 
-<div class="card">
-<h2>📚 English Learning</h2>
-<p>Improve your English every day.</p>
-<button onclick="alert('English Learning Coming Soon')">Open</button>
-</div>
+document.getElementById("todayDate").textContent =
+    today.toLocaleDateString("en-IN", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+    });
 
-</div>
+const hour = today.getHours();
+
+let greeting = "Welcome, Balu 👋";
+
+if (hour >= 5 && hour < 12) {
+    greeting = "Good Morning, Balu ☀️";
+} else if (hour >= 12 && hour < 17) {
+    greeting = "Good Afternoon, Balu 🌤️";
+} else if (hour >= 17 && hour < 21) {
+    greeting = "Good Evening, Balu 🌆";
+} else {
+    greeting = "Good Night, Balu 🌙";
+}
+
+document.getElementById("greeting").textContent = greeting;
+</script>
 
 </body>
 </html>

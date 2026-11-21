@@ -3,370 +3,761 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Balu Mass Smart AI</title>
-
+<title>Balu Mass Smart AI - Attendance</title>
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  background: #080e19;
-  color: #f8fafc;
-  padding: 16px;
-}
-
-.container {
-  max-width: 1000px;
-  margin: auto;
-}
-
-.header {
-  background: linear-gradient(135deg, #16243b, #203b61);
-  border: 1px solid #2c4566;
-  border-radius: 22px;
-  padding: 25px 18px;
-  text-align: center;
-  margin-bottom: 18px;
-}
-
-.header h1 {
-  font-size: 26px;
-  margin-bottom: 10px;
-}
-
-.header p {
-  color: #a9bfd9;
-  font-size: 15px;
-}
-
-.date {
-  text-align: center;
-  color: #80baff;
-  margin: 18px 0;
-  font-size: 15px;
-}
-
-.welcome {
-  background: #142238;
-  border: 1px solid #283c58;
-  border-radius: 20px;
-  padding: 22px;
-  margin-bottom: 25px;
-}
-
-.welcome h2 {
-  font-size: 24px;
-  margin-bottom: 12px;
-}
-
-.welcome p {
-  color: #a6b8ce;
-  line-height: 1.6;
-  font-size: 15px;
-}
-
-.section-title {
-  font-size: 21px;
-  margin-bottom: 15px;
-}
-
-.modules {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 13px;
-}
-
-.card {
-  background: #121e30;
-  border: 1px solid #293b55;
-  border-radius: 18px;
-  padding: 17px;
-  min-height: 175px;
-  display: flex;
-  flex-direction: column;
-}
-
-.icon {
-  font-size: 32px;
-  margin-bottom: 12px;
-}
-
-.card h3 {
-  font-size: 17px;
-  margin-bottom: 9px;
-}
-
-.card p {
-  color: #9eb1c9;
-  font-size: 13px;
-  line-height: 1.5;
-  margin-bottom: 15px;
-}
-
-.btn {
-  display: inline-block;
-  text-decoration: none;
-  text-align: center;
-  background: #203a5a;
-  color: #81bbff;
-  padding: 9px 14px;
-  border-radius: 30px;
-  font-size: 13px;
-  font-weight: bold;
-  margin-top: auto;
-  align-self: flex-start;
-}
-
-.btn.open {
-  background: #2563eb;
-  color: white;
-}
-
-.footer {
-  text-align: center;
-  color: #64748b;
-  font-size: 12px;
-  padding: 25px 10px;
-}
-
-@media (min-width: 700px) {
-  .modules {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .header h1 {
-    font-size: 32px;
-  }
+*{box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#f2f5fb;margin:0;padding:15px;color:#172033}
+.container{max-width:1000px;margin:auto}
+.card{background:white;padding:16px;border-radius:14px;margin-bottom:15px;box-shadow:0 2px 10px #0001}
+h2,h3{margin-top:5px}
+textarea,input,select{width:100%;padding:11px;margin:7px 0;border:1px solid #ccd3df;border-radius:8px;font-size:15px}
+textarea{min-height:200px;resize:vertical}
+button{padding:11px 14px;border:0;border-radius:8px;margin:5px 3px;cursor:pointer;font-weight:bold;background:#1459d9;color:white}
+button.secondary{background:#475569}
+button.danger{background:#dc2626}
+button.success{background:#15803d}
+.table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:8px}
+table{width:100%;min-width:800px;border-collapse:collapse;background:white}
+th,td{border:1px solid #ddd;padding:7px;text-align:left;vertical-align:middle}
+th{background:#e8efff;white-space:nowrap}
+td input,td select{min-width:100px;margin:2px 0}
+td:nth-child(2) input{min-width:160px}
+td:nth-child(3) input{min-width:170px}
+td:nth-child(4) input{min-width:110px;font-weight:bold}
+.small{color:#667085;font-size:13px}
+#preview{display:none}
+.code-check{background:#fff1c2;color:#7a4b00;font-weight:bold}
+.code-combo{background:#e0f2fe;color:#075985;font-weight:bold}
+.summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+.summary-tile{border-radius:12px;padding:12px;background:#eef4ff}
+.summary-tile .label{font-size:13px;color:#475569}
+.summary-tile .value{font-size:24px;font-weight:bold;margin-top:4px}
+.summary-tile.total{grid-column:1/-1;background:#172554;color:white}
+.summary-tile.total .label{color:#dbeafe}
+.summary-tile.corridor{background:#e8f0ff;color:#1d4ed8}
+.summary-tile.staff{background:#f0fdf4;color:#15803d}
+.summary-tile.off{background:#fff7ed;color:#c2410c}
+.summary-tile.arrival{background:#f5f3ff;color:#7c3aed}
+.summary-tile.master{background:#ecfeff;color:#0e7490}
+@media(max-width:600px){
+body{padding:8px}
+.card{padding:12px}
+button{padding:10px;font-size:13px}
+table{min-width:800px}
 }
 </style>
 </head>
 
 <body>
-
 <div class="container">
 
-  <div class="header">
-    <h1>🤖 BALU MASS SMART AI</h1>
-    <p>Personal AI Control Center</p>
-  </div>
+<div class="card">
+<h2>📋 Balu Mass Smart AI – Attendance</h2>
+<p class="small">WhatsApp Shift Plan → Preview → Edit → Save</p>
 
-  <div class="date" id="date"></div>
+<label>Date</label>
+<input type="date" id="attendanceDate">
 
-  <div class="welcome">
-    <h2 id="greeting">Welcome, Balu 👋</h2>
-    <p>
-      Your personal assistant to manage daily work, CMRL activities,
-      tasks, reminders and productivity.
-    </p>
-  </div>
+<label>Paste WhatsApp Shift Plan</label>
+<textarea id="whatsappText" placeholder="Paste complete C1 and C2 shift plan here..."></textarea>
 
-  <h2 class="section-title">⚡ Smart Modules</h2>
+<button onclick="parsePlan()">Parse Attendance</button>
+<button class="secondary" onclick="clearInput()">Clear</button>
+</div>
 
-  <div class="modules">
+<div class="card">
+<h3>Employee Master & Corridor Mapping</h3>
+<p class="small">Supervisor: 28 | Technician: 19 | Total Master: 47</p>
 
-    <div class="card">
-      <div class="icon">🤖</div>
-      <h3>Daily Assistant</h3>
-      <p>Manage daily tasks and reminders.</p>
-      <a href="daily.html" class="btn open">OPEN</a>
-    </div>
+<label>C1 Employee Names (one name per line)</label>
+<textarea id="c1Master" placeholder="Enter C1 employee names, one per line"></textarea>
 
-    <div class="card">
-      <div class="icon">👷</div>
-      <h3>CMRL Roster</h3>
-      <p>C1 & C2 shift management.</p>
-      <a href="roster.html" class="btn open">OPEN</a>
-    </div>
+<label>C2 Employee Names (one name per line)</label>
+<textarea id="c2Master" placeholder="Enter C2 employee names, one per line"></textarea>
 
-    <div class="card">
-      <div class="icon">📊</div>
-      <h3>Attendance & Billing</h3>
-      <p>Monthly attendance and billing management.</p>
-      <span class="btn">COMING SOON</span>
-    </div>
+<button class="success" onclick="saveCorridorMaster()">Save C1 / C2 Mapping</button>
+<button class="secondary" onclick="loadDailyEmployeeMaster()">Load Daily Employee Master</button>
 
-    <div class="card">
-      <div class="icon">🔧</div>
-      <h3>Maintenance Tracker</h3>
-      <p>CMMS and maintenance task tracking.</p>
-      <span class="btn">COMING SOON</span>
-    </div>
+<div id="masterInfo" class="small"></div>
+</div>
 
-    <div class="card">
-      <div class="icon">📚</div>
-      <h3>English Learning</h3>
-      <p>Daily English practice and improvement.</p>
-      <<span class="btn">COMING SOON</span>
-    </div>
+<div class="card" id="preview">
+<h3>Attendance Preview</h3>
+<div id="count"></div>
 
-    <div class="card">
-      <div class="icon">💬</div>
-      <h3>WhatsApp Assistant</h3>
-      <p>Smart messages and office communication.</p>
-      <<span class="btn">COMING SOON</span>
-    </div>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Corridor</th>
+<th>Employee Name</th>
+<th>Shift</th>
+<th>Code</th>
+<th>Role</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="attendanceRows"></tbody>
+</table>
+</div>
 
-    <div class="card">
-      <div class="icon">🔔</div>
-      <h3>Smart Reminders</h3>
-      <p>Important tasks and notifications.</p>
-      <<span class="btn">COMING SOON</span>
-    </div>
+<button class="success" onclick="saveAttendance()">Save Attendance</button>
+<button onclick="exportCSV()">Export Excel CSV</button>
+<button class="secondary" onclick="addEmployee()">+ Add Employee</button>
+</div>
 
-    <div class="card">
-      <div class="icon">📈</div>
-      <h3>Daily Reports</h3>
-      <<p>Work summary and daily progress.</p>
-      <<span class="btn">COMING SOON</span>
-    </div>
-
-  </div>
-
-  <div class="footer">
-    <p>🧠 Balu Mass Smart AI · Personal Assistant</p>
-    <p style="margin-top:8px;">Version 3.0</p>
-  </div>
+<div class="card">
+<h3>Saved Attendance</h3>
+<input type="date" id="loadDate">
+<button onclick="loadAttendance()">Load Saved Data</button>
+<button class="danger" onclick="deleteSaved()">Delete Saved Date</button>
+<div id="savedInfo"></div>
+</div>
 
 </div>
 
 <script>
-function updateDate() {
-  const now = new Date();
 
-  document.getElementById("date").innerText =
-    now.toLocaleDateString("en-IN", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric"
-    });
+const STORAGE_KEY="balu_attendance_parser_v3";
 
-  const hour = now.getHours();
+const SHIFT_CODES={
+"First Shift":"A",
+"Second Shift":"B",
+"General Shift":"G",
+"Night Shift":"C",
+"Mainline Night":"C",
+"Arrival":"ARR",
+"Week Off":"R",
+"Comp Off":"C/O",
+"Leave":"L"
+};
 
-  let greeting = "Good Evening, Balu 🌆";
+// EMPLOYEE MASTER
+const EMPLOYEE_MASTER={
+"GURUMOHAN":"Supervisor",
+"ANBU":"Supervisor",
+"DEVA":"Supervisor",
+"ARUL":"Supervisor",
+"RADHAKRISHNA":"Supervisor",
+"IYYAPPAN":"Supervisor",
+"VASANTHA RAJ":"Supervisor",
+"BHARATH":"Supervisor",
+"KARTHIC SAM":"Supervisor",
+"ROHITH":"Supervisor",
+"THIRU":"Supervisor",
+"NITHISH":"Supervisor",
+"KARTHIC STORE":"Supervisor",
+"PRAKASH":"Supervisor",
+"SURESH":"Supervisor",
+"JOHN":"Supervisor",
+"RAMESH":"Supervisor",
+"BALU":"Supervisor",
+"SANTHOSH":"Supervisor",
+"SELVAKUMAR":"Supervisor",
+"RANJIKUMAR":"Supervisor",
+"MADHANKUMAR":"Supervisor",
+"JEGAN":"Supervisor",
+"ASVATH":"Supervisor",
+"SUDHAKAR":"Supervisor",
+"DARIUS":"Supervisor",
+"DHENI":"Supervisor",
+"GODWIN":"Supervisor",
 
-  if (hour < 12) {
-    greeting = "Good Morning, Balu ☀️";
-  } else if (hour < 17) {
-    greeting = "Good Afternoon, Balu 🌤️";
-  }
+"KISHORE":"Technician",
+"A AJITH":"Technician",
+"VIVEK":"Technician",
+"PERARASU":"Technician",
+"MICHAEL":"Technician",
+"IRFAN":"Technician",
+"THAMARAI":"Technician",
+"SUBHASH":"Technician",
+"M AJITH":"Technician",
+"PRABHAHARAN":"Technician",
+"MARIYA":"Technician",
+"SAKTHIVEL":"Technician",
+"DHEENA":"Technician",
+"VENKAT":"Technician",
+"RAJARAM":"Technician",
+"KARTHICK S":"Technician",
+"VETRI":"Technician",
+"MAHENDRAN":"Technician",
+"ARUN":"Technician"
+};
 
-  document.getElementById("greeting").innerText = greeting;
+const NAME_ALIASES={
+"THIRUVENGIDASAMY":"THIRU",
+"KISHORE KUMAR JHA":"KISHORE",
+"KISHORE JHA":"KISHORE",
+"A AJITH":"A AJITH",
+"AJITH A":"A AJITH",
+"M AJITH":"M AJITH",
+"KARTHICK S":"KARTHICK S",
+"KARTHICK.S":"KARTHICK S",
+"KARTHICK SAM":"KARTHIC SAM",
+"VASANTHARAJ":"VASANTHA RAJ",
+"VETRIVEL":"VETRI",
+"DEENA":"DHEENA",
+"DHEENAA":"DHEENA",
+"SUBASH":"SUBHASH",
+"IYAPPAN":"IYYAPPAN",
+"RANJIHKUMAR":"RANJIKUMAR",
+"RANJIKUMAR":"RANJIKUMAR",
+"MADHAN KUMAR":"MADHANKUMAR",
+"ARUNKUMAR":"ARUN",
+"GODWIN":"GODWIN"
+};
+
+let attendanceData=[];
+
+const CORRIDOR_STORAGE_KEY="balu_corridor_master_v1";
+
+function readCorridorMaster(){
+try{
+return JSON.parse(localStorage.getItem(CORRIDOR_STORAGE_KEY)||'{"C1":[],"C2":[]}');
+}
+catch(e){
+return {C1:[],C2:[]};
+}
 }
 
-updateDate();
-</script>
+function saveCorridorMaster(){
+const c1=document.getElementById("c1Master").value
+.split(/\r?\n/).map(x=>normalizeName(x)).filter(Boolean);
 
-<!-- SMART DAILY DASHBOARD -->
-<section id="smartDashboard" style="
-margin:20px;
-padding:20px;
-border-radius:18px;
-background:#101c35;
-color:white;
-font-family:Arial;
-">
+const c2=document.getElementById("c2Master").value
+.split(/\r?\n/).map(x=>normalizeName(x)).filter(Boolean);
 
-<h2>📊 Smart Daily Dashboard</h2>
+const data={
+C1:[...new Set(c1)],
+C2:[...new Set(c2)]
+};
 
-<div style="
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:12px;
-">
+localStorage.setItem(CORRIDOR_STORAGE_KEY,JSON.stringify(data));
 
-<div style="background:#1d2d50;padding:16px;border-radius:14px;">
-<h3>Total Tasks</h3>
-<p id="dashTotal">0</p>
-</div>
-
-<div style="background:#1d2d50;padding:16px;border-radius:14px;">
-<h3>Pending</h3>
-<p id="dashPending">0</p>
-</div>
-
-<div style="background:#1d2d50;padding:16px;border-radius:14px;">
-<h3>Completed</h3>
-<p id="dashCompleted">0</p>
-</div>
-
-<div style="background:#1d2d50;padding:16px;border-radius:14px;">
-<h3>Today</h3>
-<p id="dashToday">0</p>
-</div>
-
-</div>
-
-<p id="dashStatus" style="margin-top:15px;">
-Dashboard loading...
-</p>
-
-<button onclick="refreshSmartDashboard()" style="
-padding:12px 18px;
-border:0;
-border-radius:10px;
-background:#3b82f6;
-color:white;
-font-weight:bold;
-">
-🔄 Refresh Dashboard
-</button>
-
-</section>
-
-<script>
-function refreshSmartDashboard(){
-
-    const KEY = "balu_daily_assistant_tasks_v2";
-
-    let tasks = [];
-
-    try {
-        tasks = JSON.parse(localStorage.getItem(KEY) || "[]");
-    } catch(e) {
-        tasks = [];
-    }
-
-    if (!Array.isArray(tasks)) tasks = [];
-
-    const total = tasks.length;
-
-    const completed = tasks.filter(task =>
-        task.completed === true
-    ).length;
-
-    const pending = total - completed;
-
-    const today = new Date().toISOString().split("T")[0];
-
-    const todayTasks = tasks.filter(task => {
-        const taskDate =
-            task.date ||
-            task.taskDate ||
-            task.dueDate ||
-            task.deadline ||
-            "";
-
-        return String(taskDate).startsWith(today);
-    }).length;
-
-    document.getElementById("dashTotal").textContent = total;
-    document.getElementById("dashPending").textContent = pending;
-    document.getElementById("dashCompleted").textContent = completed;
-    document.getElementById("dashToday").textContent = todayTasks;
-
-    document.getElementById("dashStatus").textContent =
-        "Dashboard updated successfully ✅";
+document.getElementById("masterInfo").textContent=
+`Mapping saved: C1 ${data.C1.length} | C2 ${data.C2.length}`;
 }
 
-refreshSmartDashboard();
+function getEmployeeCorridor(employeeName){
+const name=normalizeName(employeeName);
+const data=readCorridorMaster();
 
-window.addEventListener("storage", refreshSmartDashboard);
+if((data.C1||[]).some(x=>normalizeName(x)===name))return "C1";
+if((data.C2||[]).some(x=>normalizeName(x)===name))return "C2";
 
-setInterval(refreshSmartDashboard, 3000);
+return "Unknown";
+}
+
+function loadDailyEmployeeMaster(){
+attendanceData=Object.entries(EMPLOYEE_MASTER).map(([employee,role])=>({
+corridor:getEmployeeCorridor(employee),
+employee,
+shift:"",
+code:"",
+role
+}));
+
+renderPreview();
+
+const c1=attendanceData.filter(x=>x.corridor==="C1").length;
+const c2=attendanceData.filter(x=>x.corridor==="C2").length;
+const unknown=attendanceData.filter(x=>x.corridor==="Unknown").length;
+
+document.getElementById("masterInfo").textContent=
+`Loaded ${attendanceData.length} employees | C1 ${c1} | C2 ${c2} | Unmapped ${unknown}`;
+}
+
+function loadCorridorFields(){
+const data=readCorridorMaster();
+
+document.getElementById("c1Master").value=(data.C1||[]).join("\n");
+document.getElementById("c2Master").value=(data.C2||[]).join("\n");
+}
+
+function getLocalDate(){
+const d=new Date();
+return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+
+document.getElementById("attendanceDate").value=getLocalDate();
+document.getElementById("loadDate").value=getLocalDate();
+
+loadCorridorFields();
+
+function cleanLine(s){
+return s.replace(/\*/g,"").replace(/_/g,"").trim();
+}
+
+function normalizeName(s){
+return String(s||"").toUpperCase().replace(/[.,]/g," ").replace(/\s+/g," ").trim();
+}
+
+function identifyRole(name){
+let n=normalizeName(name);
+n=NAME_ALIASES[n]||n;
+return EMPLOYEE_MASTER[n]||"Unknown";
+}
+
+function identifyCorridor(line){
+const t=line.toUpperCase().trim();
+
+if(/^(C\s*[-]?\s*1|CORRIDOR\s*[-]?\s*1)\b/.test(t)||/\bCORRIDOR\s*[-]?\s*1\b/.test(t))
+return "C1";
+
+if(/^(C\s*[-]?\s*2|CORRIDOR\s*[-]?\s*2)\b/.test(t)||/\bCORRIDOR\s*[-]?\s*2\b/.test(t))
+return "C2";
+
+return "";
+}
+
+function identifyHeading(line){
+const t=line.toLowerCase().replace(/[*:_-]/g," ").replace(/\s+/g," ").trim();
+
+if(/night shift.*mainline|mainline.*night shift|night shift reporting/.test(t))
+return "Mainline Night";
+
+if(/first shift/.test(t))return "First Shift";
+if(/second shift/.test(t))return "Second Shift";
+if(/general shift/.test(t))return "General Shift";
+if(/night shift/.test(t))return "Night Shift";
+if(/week off/.test(t))return "Week Off";
+if(/comp\s*off|combo\s*off|compensatory off/.test(t))return "Comp Off";
+
+if(/^\s*(arrival|arr)\b/.test(t)||/\b(arrival list|arrival staff)\b/.test(t))
+return "Arrival";
+
+if(/^\s*leave\b/.test(t))
+return "Leave";
+
+return "";
+}
+
+function isSkipLine(line){
+if(!line)return true;
+
+if(/^(work activity|planned|date|dear|sir|madam|corridor|shift plan)\b/i.test(line))
+return true;
+
+if(/^(first shift|second shift|general shift|night shift|week off|comp off|combo off|leave|arrival|arr)\b/i.test(line))
+return true;
+
+if(/from\s+\d{1,2}[:.]\d{2}/i.test(line)||/to\s+\d{1,2}[:.]\d{2}/i.test(line))
+return true;
+
+if(/\bhrs?\b/i.test(line)&&/\d/.test(line))
+return true;
+
+return false;
+}
+
+function extractEmployee(line){
+line=line.replace(/^\d+[\.)]\s*/,"").replace(/^[-•]\s*/,"").trim();
+
+if(isSkipLine(line)||line.length>100)return null;
+
+line=line.replace(/\([^)]*\)/g,"").replace(/\[[^\]]*\]/g,"");
+
+line=line.replace(/\bEPIC\b/ig,"")
+.replace(/\bSMR\b/ig,"")
+.replace(/\bReliever\b/ig,"")
+.replace(/\bIn Place Of\b/ig,"");
+
+line=line.replace(/^[\s\-:]+|[\s\-:]+$/g,"")
+.replace(/\s+/g," ")
+.trim();
+
+return line.length>=2?line:null;
+}
+
+function splitEmployeeNames(line){
+return line.split(",").map(x=>x.trim()).filter(Boolean);
+}
+
+function parsePlan(){
+const text=document.getElementById("whatsappText").value;
+
+if(!text.trim()){
+alert("WhatsApp shift plan paste pannunga.");
+return;
+}
+
+let corridor="",shift="";
+const parsed=[];
+
+for(const raw of text.split(/\r?\n/)){
+const line=cleanLine(raw);
+if(!line)continue;
+
+const dc=identifyCorridor(line);
+if(dc){
+corridor=dc;
+shift="";
+continue;
+}
+
+const ds=identifyHeading(line);
+if(ds){
+shift=ds;
+continue;
+}
+
+if(!corridor||!shift||isSkipLine(line))continue;
+
+for(const rawName of splitEmployeeNames(line)){
+const employee=extractEmployee(rawName);
+
+if(employee){
+parsed.push({
+corridor,
+employee,
+shift,
+code:SHIFT_CODES[shift]||"",
+role:identifyRole(employee)
+});
+}
+}
+}
+
+attendanceData=mergeRows(parsed);
+
+if(!attendanceData.length){
+alert("Employee names detect aagala. WhatsApp plan headings check pannunga.");
+return;
+}
+
+renderPreview();
+}
+
+function mergeRows(rows){
+const map=new Map();
+
+for(const row of rows){
+const employee=row.employee.trim();
+if(!employee)continue;
+
+const key=row.corridor+"|"+employee.toLowerCase();
+
+if(!map.has(key)){
+map.set(key,{
+corridor:row.corridor,
+employee,
+shifts:[],
+codes:[],
+role:row.role||identifyRole(employee)
+});
+}
+
+const item=map.get(key);
+
+if(!item.shifts.includes(row.shift))
+item.shifts.push(row.shift);
+
+if(row.code&&!item.codes.includes(row.code))
+item.codes.push(row.code);
+
+if(item.role==="Unknown"&&row.role!=="Unknown")
+item.role=row.role;
+}
+
+return Array.from(map.values()).map(item=>({
+corridor:item.corridor,
+employee:item.employee,
+shift:item.shifts.join(" + "),
+code:mergeCodes(item.codes),
+role:item.role
+}));
+}
+
+// Approved Attendance Combination Logic
+function mergeCodes(codes){
+const unique=[...new Set(codes.filter(Boolean))];
+
+if(!unique.length)return "";
+if(unique.length===1)return unique[0];
+
+const key=unique.slice().sort().join("|");
+
+const approved={
+"A|C/O":"A & C/O",
+"C|C/O":"C/O & C",
+"C|L":"L/C",
+"A|C":"A/C"
+};
+
+return approved[key]||"CHECK";
+}
+
+function renderPreview(){
+const tbody=document.getElementById("attendanceRows");
+tbody.innerHTML="";
+
+attendanceData.forEach((row,index)=>{
+const tr=document.createElement("tr");
+
+const cc=row.code==="CHECK"?"code-check":
+row.code.includes("&")?"code-combo":"";
+
+tr.innerHTML=`
+<td>
+<select onchange="updateRow(${index},'corridor',this.value)">
+<option value="C1" ${row.corridor==="C1"?"selected":""}>C1</option>
+<option value="C2" ${row.corridor==="C2"?"selected":""}>C2</option>
+</select>
+</td>
+
+<td>
+<input value="${escapeHTML(row.employee)}" onchange="updateRow(${index},'employee',this.value)">
+</td>
+
+<td>
+<input value="${escapeHTML(row.shift)}" onchange="updateRow(${index},'shift',this.value)">
+</td>
+
+<td>
+<input class="${cc}" value="${escapeHTML(row.code)}" onchange="updateRow(${index},'code',this.value)">
+</td>
+
+<td>
+<select onchange="updateRow(${index},'role',this.value)">
+<option value="Unknown" ${row.role==="Unknown"?"selected":""}>Unknown</option>
+<option value="Technician" ${row.role==="Technician"?"selected":""}>Technician</option>
+<option value="Supervisor" ${row.role==="Supervisor"?"selected":""}>Supervisor</option>
+</select>
+</td>
+
+<td>
+<button class="danger" onclick="removeRow(${index})">Delete</button>
+</td>
+`;
+
+tbody.appendChild(tr);
+});
+
+updateSummary();
+document.getElementById("preview").style.display="block";
+}
+
+function hasCode(code,token){
+const s=String(code||"").toUpperCase();
+
+if(token==="C/O")
+return /C\s*\/\s*O/.test(s);
+
+return new RegExp("(^|[^A-Z])"+token+"([^A-Z]|$)").test(s);
+}
+
+function updateSummary(){
+const total=attendanceData.length;
+const c1=attendanceData.filter(x=>x.corridor==="C1").length;
+const c2=attendanceData.filter(x=>x.corridor==="C2").length;
+const sup=attendanceData.filter(x=>x.role==="Supervisor").length;
+const tech=attendanceData.filter(x=>x.role==="Technician").length;
+const unknown=attendanceData.filter(x=>x.role==="Unknown").length;
+const leave=attendanceData.filter(x=>hasCode(x.code,"L")).length;
+const combo=attendanceData.filter(x=>hasCode(x.code,"C/O")).length;
+const week=attendanceData.filter(x=>x.code==="R").length;
+const arrival=attendanceData.filter(x=>x.code==="ARR").length;
+
+document.getElementById("count").innerHTML=`
+<div class="summary-grid">
+
+<div class="summary-tile total">
+<div class="label">Total Employees in Preview</div>
+<div class="value">${total}</div>
+</div>
+
+<div class="summary-tile corridor">
+<div class="label">C1 Count</div>
+<div class="value">${c1}</div>
+</div>
+
+<div class="summary-tile corridor">
+<div class="label">C2 Count</div>
+<div class="value">${c2}</div>
+</div>
+
+<div class="summary-tile staff">
+<div class="label">Supervisor (Preview)</div>
+<div class="value">${sup}</div>
+</div>
+
+<div class="summary-tile staff">
+<div class="label">Technician (Preview)</div>
+<div class="value">${tech}</div>
+</div>
+
+<div class="summary-tile master">
+<div class="label">Employee Master</div>
+<div class="value">47 total · 28 Supervisor · 19 Technician</div>
+</div>
+
+<div class="summary-tile off">
+<div class="label">Unknown Role</div>
+<div class="value">${unknown}</div>
+</div>
+
+<div class="summary-tile off">
+<div class="label">Leave (L)</div>
+<div class="value">${leave}</div>
+</div>
+
+<div class="summary-tile off">
+<div class="label">Combo Off (C/O)</div>
+<div class="value">${combo}</div>
+</div>
+
+<div class="summary-tile off">
+<div class="label">Week Off (R)</div>
+<div class="value">${week}</div>
+</div>
+
+<div class="summary-tile arrival">
+<div class="label">Arrival (ARR)</div>
+<div class="value">${arrival}</div>
+</div>
+
+</div>
+`;
+}
+
+function escapeHTML(v){
+return String(v||"")
+.replace(/&/g,"&amp;")
+.replace(/"/g,"&quot;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;");
+}
+
+function updateRow(index,field,value){
+attendanceData[index][field]=value.trim();
+
+if(field==="employee"&&attendanceData[index].role==="Unknown")
+attendanceData[index].role=identifyRole(value);
+
+updateSummary();
+}
+
+function removeRow(index){
+attendanceData.splice(index,1);
+renderPreview();
+}
+
+function addEmployee(){
+attendanceData.push({
+corridor:"C1",
+employee:"",
+shift:"",
+code:"",
+role:"Unknown"
+});
+renderPreview();
+}
+
+function saveAttendance(){
+const date=document.getElementById("attendanceDate").value;
+
+if(!date){
+alert("Date select pannunga.");
+return;
+}
+
+const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
+
+saved[date]=attendanceData.map(row=>({
+corridor:row.corridor,
+employee:row.employee,
+shift:row.shift,
+code:row.code,
+role:row.role||identifyRole(row.employee)
+}));
+
+localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));
+
+document.getElementById("loadDate").value=date;
+document.getElementById("savedInfo").textContent=
+"Saved: "+date+" | "+attendanceData.length+" employees";
+
+alert("Attendance saved successfully!");
+}
+
+function loadAttendance(){
+const date=document.getElementById("loadDate").value;
+const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
+
+if(!saved[date]){
+alert("இந்த date-க்கு saved attendance இல்லை.");
+return;
+}
+
+attendanceData=saved[date].map(row=>({
+corridor:row.corridor||"C1",
+employee:row.employee||"",
+shift:row.shift||"",
+code:row.code||"",
+role:row.role||identifyRole(row.employee)
+}));
+
+document.getElementById("attendanceDate").value=date;
+renderPreview();
+
+document.getElementById("savedInfo").textContent=
+"Loaded: "+date+" | "+attendanceData.length+" employees";
+}
+
+function deleteSaved(){
+const date=document.getElementById("loadDate").value;
+const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
+
+if(!saved[date]){
+alert("Saved attendance கிடைக்கவில்லை.");
+return;
+}
+
+if(!confirm(date+" attendance delete pannava?"))
+return;
+
+delete saved[date];
+localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));
+document.getElementById("savedInfo").textContent="Deleted: "+date;
+}
+
+function clearInput(){
+document.getElementById("whatsappText").value="";
+}
+
+function exportCSV(){
+if(!attendanceData.length){
+alert("Attendance data empty.");
+return;
+}
+
+const date=document.getElementById("attendanceDate").value;
+
+const rows=[
+["Date","Corridor","Employee Name","Shift","Code","Role"],
+...attendanceData.map(r=>[
+date,
+r.corridor,
+r.employee,
+r.shift,
+r.code,
+r.role||identifyRole(r.employee)
+])
+];
+
+const csv=rows.map(row=>
+row.map(value=>'"'+String(value||"").replace(/"/g,'""')+'"').join(",")
+).join("\n");
+
+const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+const link=document.createElement("a");
+link.href=URL.createObjectURL(blob);
+link.download="Attendance_"+date+".csv";
+link.click();
+
+setTimeout(()=>URL.revokeObjectURL(link.href),1000);
+}
+
 </script>
-      </html>
+</body>
+</html>

@@ -860,4 +860,114 @@ function processBaluCallCommand(command){
 </script>
 <!-- END BALU VOICE CALL ASSISTANT -->
   
-</html>
+
+<!-- BALU MASS AI BRAIN -->
+<div id="baluBrain" style="
+position:fixed;
+bottom:90px;
+right:15px;
+z-index:9998;
+width:320px;
+max-width:calc(100vw - 30px);
+background:#101827;
+color:white;
+border-radius:16px;
+padding:14px;
+box-shadow:0 5px 25px #0004;
+display:none;">
+
+<h3 style="margin-top:0">🤖 Balu Mass AI</h3>
+
+<div id="baluBrainMessages" style="
+height:260px;
+overflow-y:auto;
+background:#1e293b;
+padding:10px;
+border-radius:10px;
+margin-bottom:10px;
+font-size:14px;">
+<div>🤖 வணக்கம் Balu! நான் உங்கள் AI Assistant. என்ன உதவி வேண்டும்?</div>
+</div>
+
+<input id="baluBrainInput"
+placeholder="Message Balu AI..."
+style="width:100%;padding:10px;border-radius:8px;border:none;">
+
+<button onclick="baluBrainSend()" style="width:100%">
+Send Message
+</button>
+
+<button onclick="baluBrainClose()" style="
+width:100%;
+background:#475569;">
+Close
+</button>
+</div>
+
+<button onclick="baluBrainOpen()" style="
+position:fixed;
+bottom:90px;
+left:15px;
+z-index:9999;
+background:#7c3aed;
+color:white;
+border:none;
+padding:15px;
+border-radius:50px;
+font-weight:bold;
+box-shadow:0 4px 12px #0003;">
+🤖 AI Brain
+</button>
+
+<script>
+function baluBrainOpen(){
+document.getElementById("baluBrain").style.display="block";
+}
+
+function baluBrainClose(){
+document.getElementById("baluBrain").style.display="none";
+}
+
+function baluBrainSend(){
+const input=document.getElementById("baluBrainInput");
+const messages=document.getElementById("baluBrainMessages");
+const text=input.value.trim();
+
+if(!text)return;
+
+messages.innerHTML+=
+"<div style='margin:10px 0;color:#93c5fd'><b>You:</b> "+
+escapeHTML(text)+"</div>";
+
+input.value="";
+
+let reply="சரி Balu, உங்கள் கேள்வியைப் புரிந்துகொண்டேன்.";
+
+if(text.toLowerCase().includes("attendance")){
+reply="Attendance தொடர்பான உதவி வேண்டுமா? உங்கள் Attendance data-வை இந்த app-ல் பயன்படுத்தி வேலை செய்யலாம்.";
+}
+else if(text.toLowerCase().includes("roster")){
+reply="Roster தொடர்பான வேலைகளைத் திட்டமிடலாம். C1 மற்றும் C2 shift details கொடுங்கள்.";
+}
+else if(text.toLowerCase().includes("hello")||text.toLowerCase().includes("hi")){
+reply="வணக்கம் Balu! நான் இருக்கிறேன். என்ன வேலை செய்ய வேண்டும்?";
+}
+else if(text.toLowerCase().includes("cmms")){
+reply="CMMS pending tasks-ஐ review செய்து, maintenance task update மற்றும் report தயாரிக்க உதவுகிறேன்.";
+}
+
+setTimeout(()=>{
+messages.innerHTML+=
+"<div style='margin:10px 0;color:#86efac'><b>AI:</b> "+
+escapeHTML(reply)+"</div>";
+
+messages.scrollTop=messages.scrollHeight;
+
+baluSpeak(reply);
+},500);
+
+messages.scrollTop=messages.scrollHeight;
+}
+</script>
+<!-- END BALU MASS AI BRAIN -->
+  

@@ -3,79 +3,68 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Balu Smart AI Voice Assistant</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Balu Smart AI</title>
 
 <style>
 *{box-sizing:border-box}
-
 body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#08111f;
-  color:#fff;
-  min-height:100vh;
-  padding:20px;
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#07111f;
+ color:#fff;
+ padding:15px;
 }
-
-.container{
-  max-width:500px;
-  margin:auto;
-}
-
+.container{max-width:650px;margin:auto}
 .card{
-  background:#111e30;
-  border:1px solid #263c5a;
-  padding:20px;
-  border-radius:20px;
-  text-align:center;
+ background:#111e30;
+ border:1px solid #263c5a;
+ border-radius:20px;
+ padding:20px;
+ margin-bottom:15px;
 }
-
-h1{color:#60a5fa}
-
+h1{color:#60a5fa;text-align:center}
 .status{
-  color:#9ca3af;
-  margin:20px 0;
+ text-align:center;
+ color:#86efac;
+ margin:15px;
 }
-
 .mic{
-  width:100px;
-  height:100px;
-  border-radius:50%;
-  font-size:35px;
-  border:none;
-  background:#2563eb;
-  color:white;
-  margin:20px auto;
-  cursor:pointer;
+ display:block;
+ margin:25px auto;
+ width:100px;
+ height:100px;
+ border-radius:50%;
+ border:0;
+ background:#2563eb;
+ color:white;
+ font-size:35px;
 }
-
 button{
-  padding:13px;
-  border-radius:12px;
-  border:none;
-  cursor:pointer;
-  font-weight:bold;
+ border:0;
+ padding:13px;
+ border-radius:12px;
+ font-weight:bold;
+ cursor:pointer;
 }
-
-.stop{
-  background:#dc2626;
-  color:white;
-}
-
+.start{background:#16a34a;color:white;width:100%}
+.stop{background:#dc2626;color:white;width:100%;margin-top:8px}
 .box{
-  background:#081321;
-  padding:15px;
-  border-radius:12px;
-  margin-top:15px;
-  text-align:left;
-  min-height:60px;
-  overflow-wrap:anywhere;
+ background:#07101c;
+ padding:15px;
+ border-radius:12px;
+ margin-top:12px;
+ min-height:60px;
+ overflow-wrap:anywhere;
 }
-
-.small{
-  color:#94a3b8;
-  font-size:13px;
+.label{color:#60a5fa;font-weight:bold}
+.small{font-size:13px;color:#94a3b8}
+input{
+ width:100%;
+ padding:12px;
+ border-radius:10px;
+ border:1px solid #475569;
+ margin-top:10px;
 }
 </style>
 </head>
@@ -83,42 +72,53 @@ button{
 <body>
 
 <div class="container">
+
 <div class="card">
 
 <h1>🤖 BALU SMART AI</h1>
-<p>Personal Voice Assistant</p>
+
+<p style="text-align:center">
+Tamil Personal Voice Assistant
+</p>
 
 <div id="status" class="status">
-Ready to start
+Ready
 </div>
 
-<button class="mic" onclick="startListening()">🎙️</button>
+<button class="mic" onclick="startBalu()">🎙️</button>
 
-<br>
+<button class="start" onclick="startBalu()">
+START VOICE ASSISTANT
+</button>
 
-<button class="stop" onclick="stopListening()">STOP</button>
+<button class="stop" onclick="stopBalu()">
+STOP
+</button>
 
 <div class="box">
-<strong>You said:</strong>
+<div class="label">You said:</div>
 <div id="heard">Waiting for voice...</div>
 </div>
 
 <div class="box">
-<strong>Balu:</strong>
-<div id="reply">Vanakkam! I am Balu Smart AI.</div>
+<div class="label">Balu:</div>
+<div id="reply">வணக்கம்! நான் பாலு ஸ்மார்ட் AI. என்ன உதவி வேண்டும்?</div>
 </div>
 
+<div class="box">
+<div class="label">Assistant Functions</div>
 <p class="small">
-Tamil Voice Assistant • Voice Recognition
+Tamil Voice • Time • Date • Office Help • Reminders • Voice Commands
 </p>
-
 </div>
+
 </div>
 
 <script>
 
 let recognition;
 let listening=false;
+let wakeMode=false;
 
 const statusBox=document.getElementById("status");
 const heardBox=document.getElementById("heard");
@@ -126,137 +126,217 @@ const replyBox=document.getElementById("reply");
 
 function speak(text){
 
-replyBox.innerText=text;
+ replyBox.innerText=text;
 
-const speech=new SpeechSynthesisUtterance(text);
+ if(!window.speechSynthesis){
+  statusBox.innerText="Voice output unavailable";
+  return;
+ }
 
-speech.lang="ta-IN";
-speech.rate=0.9;
-speech.pitch=1;
+ speechSynthesis.cancel();
 
-speechSynthesis.cancel();
-speechSynthesis.speak(speech);
+ const speech=new SpeechSynthesisUtterance(text);
+ speech.lang="ta-IN";
+ speech.rate=0.9;
+ speech.pitch=1;
 
+ speechSynthesis.speak(speech);
 }
 
-function startListening(){
+function startBalu(){
 
-const SpeechRecognition=
-window.SpeechRecognition ||
-window.webkitSpeechRecognition;
+ const SpeechRecognition=
+ window.SpeechRecognition||
+ window.webkitSpeechRecognition;
 
-if(!SpeechRecognition){
+ if(!SpeechRecognition){
+  alert("Chrome browser use pannunga. Voice recognition support illa.");
+  return;
+ }
 
-statusBox.innerText="Voice recognition not supported in this browser";
-speak("Voice recognition indha browser la support aagala");
-return;
+ if(listening)return;
 
+ recognition=new SpeechRecognition();
+
+ recognition.lang="ta-IN";
+ recognition.continuous=true;
+ recognition.interimResults=false;
+
+ listening=true;
+ wakeMode=false;
+
+ recognition.onstart=function(){
+  statusBox.innerText="🎙️ Listening... Say Hey Balu";
+ };
+
+ recognition.onresult=function(event){
+
+  const result=
+  event.results[event.results.length-1][0].transcript;
+
+  heardBox.innerText=result;
+
+  processBalu(result);
+ };
+
+ recognition.onerror=function(event){
+
+  statusBox.innerText="Voice error: "+event.error;
+
+  if(event.error==="not-allowed"){
+   listening=false;
+   alert("Microphone permission Allow pannunga.");
+  }
+ };
+
+ recognition.onend=function(){
+
+  if(listening){
+   try{
+    recognition.start();
+   }catch(e){}
+  }else{
+   statusBox.innerText="Stopped";
+  }
+ };
+
+ try{
+  recognition.start();
+ }catch(e){
+  listening=false;
+  statusBox.innerText="Unable to start";
+ }
 }
 
-recognition=new SpeechRecognition();
+function stopBalu(){
 
-recognition.lang="ta-IN";
-recognition.continuous=false;
-recognition.interimResults=false;
+ listening=false;
+ wakeMode=false;
 
-recognition.onstart=function(){
+ if(recognition){
+  try{recognition.stop()}catch(e){}
+ }
 
-listening=true;
-statusBox.innerText="Listening... Speak now";
+ speechSynthesis.cancel();
 
-};
-
-recognition.onresult=function(event){
-
-const text=event.results[0][0].transcript;
-
-heardBox.innerText=text;
-
-processCommand(text);
-
-};
-
-recognition.onerror=function(event){
-
-statusBox.innerText="Voice error: "+event.error;
-
-};
-
-recognition.onend=function(){
-
-listening=false;
-
-if(statusBox.innerText==="Listening... Speak now"){
-statusBox.innerText="Ready";
+ statusBox.innerText="Stopped";
 }
 
-};
+function processBalu(command){
 
-recognition.start();
+ const text=command.toLowerCase().trim();
 
-}
+ // Wake word
+ if(
+  text.includes("hey balu")||
+  text.includes("hey bālu")||
+  text.includes("ஹே பாலு")||
+  text.includes("ஹேய் பாலு")
+ ){
 
-function stopListening(){
+  wakeMode=true;
+  statusBox.innerText="🟢 Hey Balu Activated";
+  speak("சொல்லுங்கள். நான் கேட்கிறேன்.");
+  return;
+ }
 
-if(recognition){
+ // Allow commands even without wake word
+ wakeMode=true;
 
-recognition.stop();
+ // TIME
+ if(text.includes("time")||text.includes("நேரம்")){
 
-}
+  const d=new Date();
+  const time=d.toLocaleTimeString("en-IN",{
+   hour:"2-digit",
+   minute:"2-digit"
+  });
 
-speechSynthesis.cancel();
+  speak("இப்போது நேரம் "+time);
+  return;
+ }
 
-listening=false;
+ // DATE
+ if(text.includes("date")||text.includes("தேதி")){
 
-statusBox.innerText="Stopped";
+  const d=new Date();
+  const date=d.toLocaleDateString("ta-IN",{
+   day:"numeric",
+   month:"long",
+   year:"numeric"
+  });
 
-}
+  speak("இன்றைய தேதி "+date);
+  return;
+ }
 
-function processCommand(command){
+ // GREETING
+ if(
+  text.includes("hello")||
+  text.includes("வணக்கம்")||
+  text.includes("வணக்க")
+ ){
 
-const text=command.toLowerCase().trim();
+  speak("வணக்கம்! நான் பாலு ஸ்மார்ட் AI. உங்களுக்கு என்ன உதவி வேண்டும்?");
+  return;
+ }
 
-statusBox.innerText="Processing...";
+ // IDENTITY
+ if(
+  text.includes("your name")||
+  text.includes("உன் பெயர்")
+ ){
 
-if(text.includes("வணக்கம்") || text.includes("hello")){
+  speak("என் பெயர் பாலு ஸ்மார்ட் AI.");
+  return;
+ }
 
-speak("வணக்கம்! நான் பாலு ஸ்மார்ட் ஏ ஐ. உங்களுக்கு என்ன உதவி வேண்டும்?");
+ // OFFICE
+ if(
+  text.includes("office")||
+  text.includes("cmrl")||
+  text.includes("வேலை")
+ ){
 
-}
+  speak("உங்கள் office வேலைகள், shift roster, maintenance pending tasks மற்றும் reminders தொடர்பாக உதவ தயாராக இருக்கிறேன்.");
+  return;
+ }
 
-else if(text.includes("உன் பெயர்") || text.includes("your name")){
+ // REMINDER
+ if(
+  text.includes("reminder")||
+  text.includes("நினைவூட்ட")
+ ){
 
-speak("என் பெயர் பாலு ஸ்மார்ட் ஏ ஐ.");
+  speak("என்ன reminder வேண்டும் என்று சொல்லுங்கள். Reminder வசதியை அடுத்த updateல் முழுமையாக இணைக்கலாம்.");
+  return;
+ }
 
-}
+ // THANK YOU
+ if(
+  text.includes("thank")||
+  text.includes("நன்றி")
+ ){
 
-else if(text.includes("நேரம்") || text.includes("time")){
+  speak("உங்களுக்கு உதவுவதில் மகிழ்ச்சி.");
+  return;
+ }
 
-const now=new Date();
+ // STOP
+ if(
+  text.includes("stop")||
+  text.includes("நிறுத்து")
+ ){
 
-speak("இப்போது மணி "+now.getHours()+" மற்றும் "+now.getMinutes()+" நிமிடம்.");
+  stopBalu();
+  return;
+ }
 
-}
-
-else if(text.includes("நன்றி") || text.includes("thank you")){
-
-speak("உங்களுக்கு உதவுவதில் மகிழ்ச்சி.");
-
-}
-
-else if(text.includes("stop")){
-
-stopListening();
-
-}
-
-else{
-
-speak("நீங்கள் சொன்னது "+command+". இதற்கு உதவ நான் தயாராக இருக்கிறேன்.");
-
-}
-
-statusBox.innerText="Ready";
+ // Default response
+ speak(
+  "நீங்கள் சொன்னது "+command+
+  ". இதற்கு இன்னும் முழுமையான AI Brain இணைக்கப்பட வேண்டும்."
+ );
 
 }
 

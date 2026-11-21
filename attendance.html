@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Balu Smart AI - Attendance</title>
+
 <style>
 body {
   font-family: Arial, sans-serif;
@@ -48,6 +48,7 @@ button {
 button.secondary { background: #475569; }
 button.danger { background: #dc2626; }
 button.success { background: #15803d; }
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -63,8 +64,14 @@ td input, td select { min-width: 100px; }
 .table-wrap { overflow-x: auto; }
 .small { color: #667085; font-size: 13px; }
 #preview { display: none; }
+.code-check {
+  background: #fff1c2;
+  color: #7a4b00;
+  font-weight: bold;
+}
 </style>
 </head>
+
 <body>
 <div class="container">
 
@@ -76,7 +83,8 @@ td input, td select { min-width: 100px; }
 <input type="date" id="attendanceDate">
 
 <label>Paste WhatsApp Shift Plan</label>
-<textarea id="whatsappText" placeholder="Paste complete C1 and C2 shift plan here..."></textarea>
+<textarea id="whatsappText"
+placeholder="Paste complete C1 and C2 shift plan here..."></textarea>
 
 <button onclick="parsePlan()">Parse Attendance</button>
 <button class="secondary" onclick="clearInput()">Clear</button>
@@ -85,16 +93,15 @@ td input, td select { min-width: 100px; }
 <div class="card" id="preview">
 <h3>Attendance Preview</h3>
 <div id="count"></div>
+
 <div class="table-wrap">
 <table>
 <thead>
 <tr>
 <th>Corridor</th>
-<th>Employee</th>
-<th>Shift / Status</th>
+<th>Employee Name</th>
+<th>Shift</th>
 <th>Code</th>
-<th>Designation</th>
-<th>Replacement</th>
 <th>Action</th>
 </tr>
 </thead>
@@ -134,18 +141,46 @@ const SHIFT_CODES = {
 
 let attendanceData = [];
 
-// Date default
-document.getElementById("attendanceDate").value =
-  new Date().toISOString().slice(0,10);
-document.getElementById("loadDate").value =
-  document.getElementById("attendanceDate").value;
-
-function cleanLine(s) {
-  return s.replace(/\*/g, "").trim();
+/* Local date (avoids UTC date issue) */
+function getLocalDate() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
+document.getElementById("attendanceDate").value = getLocalDate();
+document.getElementById("loadDate").value = getLocalDate();
+
+/* Remove WhatsApp formatting */
+function cleanLine(s) {
+  return s
+    .replace(/\*/g, "")
+    .replace(/_/g, "")
+    .trim();
+}
+
+/* Detect corridor */
+function identifyCorridor(line) {
+  const t = line.toUpperCase().trim();
+
+  if (/^(C\s*[-]?\s*1|CORRIDOR\s*[-]?\s*1)\b/.test(t) ||
+      /\bCORRIDOR\s*[-]?\s*1\b/.test(t)) {
+    return "C1";
+  }
+
+  if (/^(C\s*[-]?\s*2|CORRIDOR\s*[-]?\s*2)\b/.test(t) ||
+      /\bCORRIDOR\s*[-]?\s*2\b/.test(t)) {
+    return "C2";
+  }
+
+  return "";
+}
+
+/* Detect shift headings */
 function identifyHeading(line) {
-  const t = line.toLowerCase();
+  const t = line.toLowerCase().replace(/[*:_-]/g, " ").trim();
 
   if (/night shift.*mainline|mainline.*night shift|night shift reporting.*mainline/.test(t))
     return "Mainline Night";
@@ -156,87 +191,86 @@ function identifyHeading(line) {
   if (/second shift/.test(t))
     return "Second Shift";
 
-  if (/general shift.*stores|stores.*general shift/.test(t))
-    return "General Shift";
-
   if (/general shift/.test(t))
     return "General Shift";
 
   if (/night shift/.test(t))
     return "Night Shift";
 
-  if (/arrival|\barr\b/.test(t))
-    return "Arrival";
-
   if (/week off/.test(t))
     return "Week Off";
 
-  if (/comp.?off/.test(t))
+  if (/comp\s*off|compensatory off/.test(t))
     return "Comp Off";
 
-  if (/\bleave\b/.test(t))
+  if (/^\s*(arrival|arr)\b/.test(t) || /\b(arrival list|arrival staff)\b/.test(t))
+    return "Arrival";
+
+  if (/^\s*leave\b/.test(t))
     return "Leave";
 
   return "";
 }
 
-function identifyCorridor(line) {
-  const t = line.toUpperCase();
+/* Ignore non-employee lines */
+function isSkipLine(line) {
+  if (!line) return true;
 
-  if (/\bC\s*[-]?\s*1\b/.test(t) ||
-      /\bCORRIDOR\s*[-]?\s*1\b/.test(t))
-    return "C1";
+  if (/^(work activity|planned|date|dear|sir|madam|corridor|shift plan)\b/i.test(line))
+    return true;
 
-  if (/\bC\s*[-]?\s*2\b/.test(t) ||
-      /\bCORRIDOR\s*[-]?\s*2\b/.test(t))
-    return "C2";
+  if (/^(first shift|second shift|general shift|night shift|week off|comp off|leave|arrival|arr)\b/i.test(line))
+    return true;
 
-  return "";
+  if (/from\s+\d{1,2}[:.]\d{2}/i.test(line))
+    return true;
+
+  if (/to\s+\d{1,2}[:.]\d{2}/i.test(line))
+    return true;
+
+  if (/\bhrs?\b/i.test(line) && /\d/.test(line))
+    return true;
+
+  return false;
 }
 
+/* Remove extra information; keep employee name only */
 function extractEmployee(line) {
-  line = line.replace(/^\d+[\.\)]\s*/, "").trim();
-  line = line.replace(/^[-•]\s*/, "").trim();
-
-  if (!line || line.length > 100) return null;
-
-  // Skip headings and explanatory text
-  if (/^(work activity|first shift|second shift|general shift|night shift|week off|comp off|leave|arrival|corridor|date|dear|sir)/i.test(line))
-    return null;
-
-  let replacement = "";
-  const replacementMatch = line.match(/\(In Place Of\s+([^)]+)\)/i);
-
-  if (replacementMatch) {
-    replacement = replacementMatch[1].trim();
-    line = line.replace(replacementMatch[0], "").trim();
-  }
-
-  // Remove designation tags from employee name
-  let designation = "";
-  if (/\(EPIC\)/i.test(line)) designation = "EPIC";
-
-  line = line.replace(/\(EPIC\)/ig, "");
-  line = line.replace(/\([^)]*Reliever[^)]*\)/ig, "");
-  line = line.replace(/\([^)]*SMR[^)]*\)/ig, "");
-  line = line.replace(/\([^)]*In Place Of[^)]*\)/ig, "");
-  line = line.replace(/[()]/g, "");
+  line = line.replace(/^\d+[\.\)]\s*/, "");
+  line = line.replace(/^[-•]\s*/, "");
   line = line.trim();
 
-  // Remove leading/trailing separators
-  line = line.replace(/^[-:]+|[-:]+$/g, "").trim();
+  if (isSkipLine(line)) return null;
+  if (line.length > 100) return null;
+
+  /* Remove bracketed information:
+     EPIC, SMR, In Place Of, Reliever, designation etc. */
+  line = line.replace(/\([^)]*\)/g, "");
+  line = line.replace(/\[[^\]]*\]/g, "");
+
+  /* Remove remaining unwanted labels */
+  line = line.replace(/\bEPIC\b/ig, "");
+  line = line.replace(/\bSMR\b/ig, "");
+  line = line.replace(/\bReliever\b/ig, "");
+  line = line.replace(/\bIn Place Of\b/ig, "");
+
+  line = line.replace(/^[\s\-:]+|[\s\-:]+$/g, "");
+  line = line.replace(/\s+/g, " ").trim();
 
   if (!line || line.length < 2) return null;
 
-  return {
-    employee: line,
-    designation,
-    replacement
-  };
+  return line;
 }
 
+/* Split comma-separated names while respecting brackets */
+function splitEmployeeNames(line) {
+  return line.split(",").map(x => x.trim()).filter(Boolean);
+}
+
+/* Parse WhatsApp plan */
 function parsePlan() {
   const text = document.getElementById("whatsappText").value;
+
   if (!text.trim()) {
     alert("WhatsApp shift plan paste pannunga.");
     return;
@@ -244,7 +278,7 @@ function parsePlan() {
 
   let corridor = "";
   let shift = "";
-  let parsed = [];
+  const parsed = [];
 
   const lines = text.split(/\r?\n/);
 
@@ -252,58 +286,65 @@ function parsePlan() {
     const line = cleanLine(raw);
     if (!line) continue;
 
-    // Corridor heading
     const detectedCorridor = identifyCorridor(line);
+
     if (detectedCorridor) {
       corridor = detectedCorridor;
       shift = "";
       continue;
     }
 
-    // Shift heading
     const detectedShift = identifyHeading(line);
+
     if (detectedShift) {
       shift = detectedShift;
       continue;
     }
 
     if (!corridor || !shift) continue;
+    if (isSkipLine(line)) continue;
 
-    // Skip heading/time/report lines
-    if (/from\s+\d{1,2}[:.]\d{2}|to\s+\d{1,2}[:.]\d{2}|hrs|sap|dwn|depot|mainline|stores|planned|work activity/i.test(line)) {
-      // But SAP/DWN lines can contain actual names; only skip obvious time/header lines
-      if (/shift|reporting|work activity|from\s+\d{1,2}[:.]\d{2}|to\s+\d{1,2}[:.]\d{2}/i.test(line)) continue;
+    const names = splitEmployeeNames(line);
+
+    for (const rawName of names) {
+      const employee = extractEmployee(rawName);
+      if (!employee) continue;
+
+      parsed.push({
+        corridor,
+        employee,
+        shift,
+        code: SHIFT_CODES[shift] || ""
+      });
     }
-
-    const person = extractEmployee(line);
-    if (!person) continue;
-
-    parsed.push({
-      corridor,
-      employee: person.employee,
-      shift,
-      code: SHIFT_CODES[shift] || "",
-      designation: person.designation,
-      replacement: person.replacement
-    });
   }
 
   attendanceData = mergeRows(parsed);
+
+  if (!attendanceData.length) {
+    alert("Employee names detect aagala. WhatsApp plan headings check pannunga.");
+    return;
+  }
+
   renderPreview();
 }
 
+/* Merge duplicate names within the same corridor */
 function mergeRows(rows) {
   const map = new Map();
 
   for (const row of rows) {
-    const key = row.corridor + "|" + row.employee.toLowerCase();
+    const employee = row.employee.trim();
+    if (!employee) continue;
+
+    const key = row.corridor + "|" + employee.toLowerCase();
+
     if (!map.has(key)) {
       map.set(key, {
         corridor: row.corridor,
-        employee: row.employee,
+        employee,
         shifts: [],
-        designation: row.designation || "",
-        replacement: row.replacement || ""
+        codes: []
       });
     }
 
@@ -313,48 +354,48 @@ function mergeRows(rows) {
       item.shifts.push(row.shift);
     }
 
-    if (row.designation) item.designation = row.designation;
-    if (row.replacement) item.replacement = row.replacement;
+    if (row.code && !item.codes.includes(row.code)) {
+      item.codes.push(row.code);
+    }
   }
 
   return Array.from(map.values()).map(item => {
-    const code = mergeCodes(item.shifts.map(s => SHIFT_CODES[s]));
     return {
       corridor: item.corridor,
       employee: item.employee,
       shift: item.shifts.join(" + "),
-      code,
-      designation: item.designation,
-      replacement: item.replacement
+      code: mergeCodes(item.codes),
     };
   });
 }
 
+/* Only approved combinations */
 function mergeCodes(codes) {
   const unique = [...new Set(codes.filter(Boolean))];
 
-  if (unique.includes("R")) return "R";
+  if (unique.length === 0) return "";
   if (unique.length === 1) return unique[0];
 
-  if (unique.includes("C/O") && unique.length === 1) return "C/O";
-  if (unique.includes("L") && unique.length === 1) return "L";
+  const sorted = unique.slice().sort();
 
-  const order = ["A", "B", "G", "C"];
-  const shifts = order.filter(c => unique.includes(c));
+  const key = sorted.join("|");
 
-  if (unique.includes("C/O")) {
-    if (shifts.length === 0) return "C/O";
-    return "C/O&" + shifts.join("&");
-  }
+  const approved = {
+    "A|C": "A&C",
+    "C/O|C": "C/O&C",
+    "A|C/O": "A&C/O",
+    "A|L": "A/L",
+    "C|L": "L/C",
+    "C/O|L": "L&C/O"
+  };
 
-  if (unique.includes("L")) {
-    if (shifts.length === 0) return "L";
-    return shifts.join("&") + "/L";
-  }
+  if (approved[key]) return approved[key];
 
-  return shifts.join("&") || unique.join("&");
+  /* Unapproved combinations will not be silently guessed */
+  return "CHECK";
 }
 
+/* Preview */
 function renderPreview() {
   const tbody = document.getElementById("attendanceRows");
   tbody.innerHTML = "";
@@ -362,35 +403,52 @@ function renderPreview() {
   attendanceData.forEach((row, index) => {
     const tr = document.createElement("tr");
 
+    const codeClass = row.code === "CHECK" ? "code-check" : "";
+
     tr.innerHTML = `
       <td>
         <select onchange="updateRow(${index},'corridor',this.value)">
-          <option ${row.corridor==="C1"?"selected":""}>C1</option>
-          <option ${row.corridor==="C2"?"selected":""}>C2</option>
+          <option value="C1" ${row.corridor === "C1" ? "selected" : ""}>C1</option>
+          <option value="C2" ${row.corridor === "C2" ? "selected" : ""}>C2</option>
         </select>
       </td>
-      <td><input value="${escapeHTML(row.employee)}"
-        onchange="updateRow(${index},'employee',this.value)"></td>
-      <td><input value="${escapeHTML(row.shift)}"
-        onchange="updateRow(${index},'shift',this.value)"></td>
-      <td><input value="${escapeHTML(row.code)}"
-        onchange="updateRow(${index},'code',this.value)"></td>
-      <td><input value="${escapeHTML(row.designation||"")}"
-        onchange="updateRow(${index},'designation',this.value)"></td>
-      <td><input value="${escapeHTML(row.replacement||"")}"
-        onchange="updateRow(${index},'replacement',this.value)"></td>
-      <td><button class="danger" onclick="removeRow(${index})">Delete</button></td>
+
+      <td>
+        <input value="${escapeHTML(row.employee)}"
+          onchange="updateRow(${index},'employee',this.value)">
+      </td>
+
+      <td>
+        <input value="${escapeHTML(row.shift)}"
+          onchange="updateRow(${index},'shift',this.value)">
+      </td>
+
+      <td>
+        <input class="${codeClass}" value="${escapeHTML(row.code)}"
+          onchange="updateRow(${index},'code',this.value)">
+      </td>
+
+      <td>
+        <button class="danger" onclick="removeRow(${index})">Delete</button>
+      </td>
     `;
 
     tbody.appendChild(tr);
   });
 
+  const c1Count = attendanceData.filter(x => x.corridor === "C1").length;
+  const c2Count = attendanceData.filter(x => x.corridor === "C2").length;
+  const checkCount = attendanceData.filter(x => x.code === "CHECK").length;
+
   document.getElementById("count").innerHTML =
-    "<b>Total Employees: " + attendanceData.length + "</b>";
+    `<b>Total Employees: ${attendanceData.length}</b>
+     <br>C1: ${c1Count} | C2: ${c2Count}
+     ${checkCount ? `<br><span style="color:#b45309"><b>CHECK required: ${checkCount}</b></span>` : ""}`;
 
   document.getElementById("preview").style.display = "block";
 }
 
+/* HTML safety */
 function escapeHTML(value) {
   return String(value || "")
     .replace(/&/g, "&amp;")
@@ -399,45 +457,59 @@ function escapeHTML(value) {
     .replace(/>/g, "&gt;");
 }
 
+/* Edit */
 function updateRow(index, field, value) {
-  attendanceData[index][field] = value;
+  attendanceData[index][field] = value.trim();
 }
 
+/* Delete employee */
 function removeRow(index) {
   attendanceData.splice(index, 1);
   renderPreview();
 }
 
+/* Add employee manually */
 function addEmployee() {
   attendanceData.push({
     corridor: "C1",
     employee: "",
     shift: "",
-    code: "",
-    designation: "",
-    replacement: ""
+    code: ""
   });
+
   renderPreview();
 }
 
+/* Save attendance */
 function saveAttendance() {
   const date = document.getElementById("attendanceDate").value;
+
   if (!date) {
     alert("Date select pannunga.");
     return;
   }
 
   const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-  saved[date] = attendanceData;
+
+  /* Save only required fields */
+  saved[date] = attendanceData.map(row => ({
+    corridor: row.corridor,
+    employee: row.employee,
+    shift: row.shift,
+    code: row.code
+  }));
+
   localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
 
   document.getElementById("loadDate").value = date;
-  document.getElementById("savedInfo").innerHTML =
+
+  document.getElementById("savedInfo").textContent =
     "Saved: " + date + " | " + attendanceData.length + " employees";
 
   alert("Attendance saved successfully!");
 }
 
+/* Load saved attendance */
 function loadAttendance() {
   const date = document.getElementById("loadDate").value;
   const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
@@ -447,14 +519,23 @@ function loadAttendance() {
     return;
   }
 
-  attendanceData = saved[date];
+  /* Old saved data cleanup */
+  attendanceData = saved[date].map(row => ({
+    corridor: row.corridor || "C1",
+    employee: row.employee || "",
+    shift: row.shift || "",
+    code: row.code || ""
+  }));
+
   document.getElementById("attendanceDate").value = date;
+
   renderPreview();
 
-  document.getElementById("savedInfo").innerHTML =
+  document.getElementById("savedInfo").textContent =
     "Loaded: " + date + " | " + attendanceData.length + " employees";
 }
 
+/* Delete saved attendance date */
 function deleteSaved() {
   const date = document.getElementById("loadDate").value;
   const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
@@ -467,14 +548,18 @@ function deleteSaved() {
   if (!confirm(date + " attendance delete pannava?")) return;
 
   delete saved[date];
+
   localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
-  document.getElementById("savedInfo").innerHTML = "Deleted: " + date;
+
+  document.getElementById("savedInfo").textContent = "Deleted: " + date;
 }
 
+/* Clear pasted plan */
 function clearInput() {
   document.getElementById("whatsappText").value = "";
 }
 
+/* Export CSV */
 function exportCSV() {
   if (!attendanceData.length) {
     alert("Attendance data empty.");
@@ -484,15 +569,20 @@ function exportCSV() {
   const date = document.getElementById("attendanceDate").value;
 
   const rows = [
-    ["Date", "Corridor", "Employee", "Shift", "Code", "Designation", "Replacement"],
+    ["Date", "Corridor", "Employee Name", "Shift", "Code"],
     ...attendanceData.map(r => [
-      date, r.corridor, r.employee, r.shift, r.code,
-      r.designation, r.replacement
+      date,
+      r.corridor,
+      r.employee,
+      r.shift,
+      r.code
     ])
   ];
 
   const csv = rows.map(row =>
-    row.map(value => '"' + String(value || "").replace(/"/g,'""') + '"').join(",")
+    row.map(value =>
+      '"' + String(value || "").replace(/"/g, '""') + '"'
+    ).join(",")
   ).join("\n");
 
   const blob = new Blob(["\uFEFF" + csv], {
@@ -503,9 +593,9 @@ function exportCSV() {
   link.href = URL.createObjectURL(blob);
   link.download = "Attendance_" + date + ".csv";
   link.click();
-  URL.revokeObjectURL(link.href);
+
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
 }
 </script>
-
 </body>
 </html>

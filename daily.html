@@ -13,93 +13,83 @@
 
 body {
   margin: 0;
+  padding: 16px;
   font-family: Arial, sans-serif;
   background: #101827;
   color: white;
-  padding: 16px;
 }
 
-header {
+.container {
+  max-width: 800px;
+  margin: auto;
+}
+
+.card {
   background: #1e293b;
   padding: 22px;
-  border-radius: 18px;
-  text-align: center;
+  border-radius: 20px;
   margin-bottom: 20px;
 }
 
-header h1 {
-  font-size: 26px;
-  margin: 0 0 10px;
+.header {
+  text-align: center;
+  padding: 28px 18px;
 }
 
-header p {
+.header h1 {
+  font-size: 27px;
+  margin-bottom: 10px;
+}
+
+.header p {
   color: #cbd5e1;
-  margin: 0;
 }
 
 .date-box {
-  background: #1e293b;
-  padding: 16px;
-  border-radius: 14px;
-  margin-bottom: 15px;
   text-align: center;
-  color: #93c5fd;
-  font-size: 18px;
+  font-size: 21px;
   font-weight: bold;
+  color: #93c5fd;
 }
 
 .stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 12px;
 }
 
 .stat {
-  background: #1e293b;
-  padding: 16px 8px;
-  border-radius: 14px;
   text-align: center;
+  padding: 22px 8px;
 }
 
 .stat h2 {
-  margin: 0;
-  font-size: 24px;
+  font-size: 32px;
+  margin: 0 0 8px;
 }
 
 .stat p {
-  margin: 8px 0 0;
   color: #cbd5e1;
-  font-size: 13px;
-}
-
-.card {
-  background: #1e293b;
-  padding: 18px;
-  border-radius: 18px;
-  margin-bottom: 16px;
-}
-
-.card h2 {
-  margin-top: 0;
+  margin: 0;
 }
 
 input, select {
   width: 100%;
-  padding: 14px;
-  border-radius: 10px;
+  padding: 16px;
+  margin: 8px 0;
+  border-radius: 13px;
   border: 1px solid #475569;
   background: #101827;
   color: white;
   font-size: 16px;
-  margin-bottom: 10px;
 }
 
 button {
   border: none;
-  padding: 14px;
-  border-radius: 10px;
+  border-radius: 12px;
+  padding: 15px;
   font-size: 16px;
+  font-weight: bold;
   cursor: pointer;
 }
 
@@ -107,30 +97,42 @@ button {
   width: 100%;
   background: #2563eb;
   color: white;
-  font-weight: bold;
+  margin-top: 10px;
 }
 
 .task {
   background: #101827;
-  padding: 14px;
-  border-radius: 12px;
-  margin-bottom: 12px;
   border: 1px solid #334155;
+  padding: 16px;
+  border-radius: 15px;
+  margin-bottom: 12px;
 }
 
 .task-top {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 12px;
 }
 
-.task-text {
+.task-check {
+  width: 22px;
+  height: 22px;
+  margin-top: 3px;
+  accent-color: #22c55e;
+}
+
+.task-content {
   flex: 1;
-  overflow-wrap: anywhere;
-  font-size: 16px;
+  min-width: 0;
 }
 
-.task.completed .task-text {
+.task-title {
+  font-size: 17px;
+  font-weight: bold;
+  overflow-wrap: anywhere;
+}
+
+.completed .task-title {
   text-decoration: line-through;
   color: #94a3b8;
 }
@@ -138,202 +140,262 @@ button {
 .task-meta {
   color: #94a3b8;
   font-size: 13px;
+  margin-top: 9px;
+  line-height: 1.7;
+}
+
+.category {
+  display: inline-block;
+  background: #263b60;
+  color: #bfdbfe;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
   margin-top: 8px;
-}
-
-.task-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.complete-btn {
-  flex: 1;
-  background: #15803d;
-  color: white;
 }
 
 .delete-btn {
   background: #dc2626;
   color: white;
+  padding: 9px 12px;
+  font-size: 13px;
 }
 
 .empty {
   text-align: center;
   color: #94a3b8;
-  padding: 25px;
+  padding: 35px 10px;
 }
 
 .home-btn {
-  display: block;
-  text-align: center;
-  text-decoration: none;
+  width: 100%;
   background: #334155;
   color: white;
-  padding: 15px;
-  border-radius: 12px;
-  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
-.footer {
-  text-align: center;
-  color: #64748b;
-  font-size: 12px;
-  margin: 25px 0;
+.section-title {
+  margin-top: 0;
+}
+
+.reminder-note {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 12px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .header h1 {
+    font-size: 24px;
+  }
+
+  .stats {
+    gap: 8px;
+  }
+
+  .stat h2 {
+    font-size: 26px;
+  }
 }
 </style>
 </head>
 
 <body>
+<div class="container">
 
-<header>
-  <h1>🤖 Balu Daily Assistant</h1>
-  <p>Your Personal Daily Task Manager</p>
-</header>
-
-<div class="date-box" id="todayDate"></div>
-
-<div class="stats">
-  <div class="stat">
-    <h2 id="totalTasks">0</h2>
-    <p>Total</p>
+  <div class="card header">
+    <h1>🤖 Balu Daily Assistant</h1>
+    <p>Your Personal Daily Task Manager</p>
   </div>
 
-  <div class="stat">
-    <h2 id="pendingTasks">0</h2>
-    <p>Pending</p>
+  <div class="card date-box" id="todayDate"></div>
+
+  <div class="stats">
+    <div class="card stat">
+      <h2 id="totalCount">0</h2>
+      <p>Total</p>
+    </div>
+
+    <div class="card stat">
+      <h2 id="pendingCount">0</h2>
+      <p>Pending</p>
+    </div>
+
+    <div class="card stat">
+      <h2 id="completedCount">0</h2>
+      <p>Completed</p>
+    </div>
   </div>
 
-  <div class="stat">
-    <h2 id="completedTasks">0</h2>
-    <p>Completed</p>
+  <div class="card">
+    <h2>➕ Add New Task</h2>
+
+    <input
+      type="text"
+      id="taskInput"
+      placeholder="Enter your task..."
+    >
+
+    <select id="categoryInput">
+      <option value="Personal">Personal</option>
+      <option value="Office">Office</option>
+      <option value="CMRL">CMRL</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <input type="date" id="taskDate">
+
+    <label>Reminder (Optional)</label>
+    <input type="datetime-local" id="reminderInput">
+
+    <button class="add-btn" onclick="addTask()">
+      ➕ Add Task
+    </button>
+
+    <p class="reminder-note">
+      🔔 Reminder notification works while this page is open.
+      Browser notification permission may be required.
+    </p>
   </div>
-</div>
 
-<div class="card">
-  <h2>➕ Add New Task</h2>
+  <div class="card">
+    <h2 class="section-title">📋 Today's Tasks</h2>
+    <div id="tasksList"></div>
+  </div>
 
-  <input
-    type="text"
-    id="taskInput"
-    placeholder="Enter your task..."
-  >
-
-  <select id="taskCategory">
-    <option value="Personal">Personal</option>
-    <option value="Office Work">Office Work</option>
-    <option value="CMRL">CMRL</option>
-    <option value="Maintenance">Maintenance</option>
-    <option value="Other">Other</option>
-  </select>
-
-  <button class="add-btn" onclick="addTask()">
-    ➕ Add Task
+  <button class="home-btn" onclick="goHome()">
+    🏠 Back to Home
   </button>
-</div>
 
-<div class="card">
-  <h2>📋 Today's Tasks</h2>
-  <div id="taskList"></div>
-</div>
-
-<a href="index.html" class="home-btn">
-  🏠 Back to Home
-</a>
-
-<div class="footer">
-  Balu Mass Smart AI © 2026
 </div>
 
 <script>
-const STORAGE_KEY = "balu_daily_tasks_2026";
+const STORAGE_KEY = "balu_daily_assistant_tasks_v2";
 
 let tasks = [];
 
-try {
-  tasks = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-} catch (e) {
-  tasks = [];
+function loadTasks() {
+  try {
+    tasks = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  } catch (error) {
+    tasks = [];
+  }
+
+  renderTasks();
 }
 
 function saveTasks() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  renderTasks();
 }
 
-function showDate() {
+function updateDate() {
   const now = new Date();
 
   document.getElementById("todayDate").textContent =
     now.toLocaleDateString("en-IN", {
       weekday: "long",
-      year: "numeric",
+      day: "numeric",
       month: "long",
-      day: "numeric"
+      year: "numeric"
     });
+
+  document.getElementById("taskDate").value =
+    now.toISOString().slice(0, 10);
 }
 
 function addTask() {
   const input = document.getElementById("taskInput");
-  const category = document.getElementById("taskCategory");
+  const category = document.getElementById("categoryInput").value;
+  const date = document.getElementById("taskDate").value;
+  const reminder = document.getElementById("reminderInput").value;
 
-  const text = input.value.trim();
+  const title = input.value.trim();
 
-  if (!text) {
+  if (!title) {
+    alert("Please enter a task.");
     input.focus();
     return;
   }
 
-  tasks.unshift({
+  const task = {
     id: Date.now(),
-    text: text,
-    category: category.value,
+    title: title,
+    category: category,
+    date: date,
+    reminder: reminder,
     completed: false,
-    createdAt: new Date().toLocaleTimeString("en-IN", {
-      hour: "2-digit",
-      minute: "2-digit"
-    })
-  });
+    notified: false
+  };
+
+  tasks.unshift(task);
 
   saveTasks();
+
   input.value = "";
-  renderTasks();
-  input.focus();
+  document.getElementById("reminderInput").value = "";
+
+  if (reminder && "Notification" in window) {
+    if (Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  }
 }
 
 function toggleTask(id) {
-  tasks = tasks.map(task => {
-    if (task.id === id) {
-      task.completed = !task.completed;
-    }
-    return task;
-  });
+  const task = tasks.find(t => t.id === id);
 
-  saveTasks();
-  renderTasks();
+  if (task) {
+    task.completed = !task.completed;
+    saveTasks();
+  }
 }
 
 function deleteTask(id) {
-  tasks = tasks.filter(task => task.id !== id);
+  if (!confirm("Delete this task?")) {
+    return;
+  }
+
+  tasks = tasks.filter(t => t.id !== id);
   saveTasks();
-  renderTasks();
+}
+
+function escapeHTML(text) {
+  return String(text).replace(/[&<>"']/g, function(character) {
+    return {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[character];
+  });
 }
 
 function renderTasks() {
-  const list = document.getElementById("taskList");
+  const list = document.getElementById("tasksList");
 
   const total = tasks.length;
-  const completed = tasks.filter(task => task.completed).length;
+  const completed = tasks.filter(t => t.completed).length;
   const pending = total - completed;
 
-  document.getElementById("totalTasks").textContent = total;
-  document.getElementById("pendingTasks").textContent = pending;
-  document.getElementById("completedTasks").textContent = completed;
+  document.getElementById("totalCount").textContent = total;
+  document.getElementById("pendingCount").textContent = pending;
+  document.getElementById("completedCount").textContent = completed;
 
-  if (total === 0) {
+  if (tasks.length === 0) {
     list.innerHTML = `
       <div class="empty">
-        No tasks yet.<br><br>
-        Add your first task above! 👆
+        <h3>No tasks yet.</h3>
+        <p>Add your first task above 👆</p>
       </div>
     `;
     return;
@@ -342,56 +404,71 @@ function renderTasks() {
   list.innerHTML = tasks.map(task => `
     <div class="task ${task.completed ? "completed" : ""}">
       <div class="task-top">
-        <div class="task-text">
-          ${escapeHTML(task.text)}
+
+        <input
+          class="task-check"
+          type="checkbox"
+          ${task.completed ? "checked" : ""}
+          onchange="toggleTask(${task.id})"
+        >
+
+        <div class="task-content">
+          <div class="task-title">
+            ${escapeHTML(task.title)}
+          </div>
+
+          <span class="category">
+            ${escapeHTML(task.category)}
+          </span>
+
+          <div class="task-meta">
+            📅 ${task.date || "No date"}
+            ${task.reminder ? "<br>🔔 " + escapeHTML(new Date(task.reminder).toLocaleString()) : ""}
+            <br>
+            Status: ${task.completed ? "Completed ✅" : "Pending ⏳"}
+          </div>
         </div>
-      </div>
 
-      <div class="task-meta">
-        📁 ${escapeHTML(task.category)}
-        &nbsp; • &nbsp;
-        🕒 ${escapeHTML(task.createdAt)}
-      </div>
-
-      <div class="task-actions">
-        <button
-          class="complete-btn"
-          onclick="toggleTask(${task.id})"
-        >
-          ${task.completed ? "↩ Undo" : "✓ Complete"}
+        <button class="delete-btn" onclick="deleteTask(${task.id})">
+          🗑️
         </button>
 
-        <button
-          class="delete-btn"
-          onclick="deleteTask(${task.id})"
-        >
-          🗑 Delete
-        </button>
       </div>
     </div>
   `).join("");
 }
 
-function escapeHTML(text) {
-  return String(text).replace(/[&<>"']/g, function(char) {
-    return {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    }[char];
+function checkReminders() {
+  if (!("Notification" in window)) return;
+  if (Notification.permission !== "granted") return;
+
+  const now = new Date();
+
+  tasks.forEach(task => {
+    if (!task.reminder || task.completed || task.notified) return;
+
+    const reminderTime = new Date(task.reminder);
+
+    if (reminderTime <= now) {
+      new Notification("🤖 Balu Daily Assistant", {
+        body: "Reminder: " + task.title
+      });
+
+      task.notified = true;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    }
   });
 }
 
-document.getElementById("taskInput").addEventListener("keydown", function(e) {
-  if (e.key === "Enter") {
-    addTask();
-  }
-});
+function goHome() {
+  window.location.href = "index.html";
+}
 
-showDate();
-renderTasks();
+updateDate();
+loadTasks();
+
+// Check reminders every 30 seconds while page is open
+setInterval(checkReminders, 30000);
 </script>
 
 </body>

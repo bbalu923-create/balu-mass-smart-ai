@@ -759,5 +759,105 @@ setTimeout(()=>URL.revokeObjectURL(link.href),1000);
 }
 
 </script>
-</body>
+
+<!-- BALU VOICE CALL ASSISTANT -->
+<div id="baluVoiceCall" style="
+position:fixed;bottom:20px;right:20px;z-index:9999;">
+<button onclick="startBaluCallVoice()" style="
+background:#1565e0;
+color:white;
+border:none;
+border-radius:50px;
+padding:17px 22px;
+font-size:17px;
+font-weight:bold;
+box-shadow:0 4px 15px #0003;">
+🎙️ Hey Balu
+</button>
+</div>
+
+<script>
+function baluSpeak(text){
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.lang = "ta-IN";
+  speech.rate = 0.9;
+  speechSynthesis.speak(speech);
+}
+
+function startBaluCallVoice(){
+  const recognition = new (window.SpeechRecognition ||
+    window.webkitSpeechRecognition)();
+
+  if(!recognition){
+    alert("Voice recognition இந்த browser-ல் support இல்லை.");
+    return;
+  }
+
+  recognition.lang = "en-IN";
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  baluSpeak("சொல்லுங்கள், யாருக்கு call செய்ய வேண்டும்?");
+  
+  recognition.onresult = function(event){
+    const command = event.results[0][0].transcript;
+    processBaluCallCommand(command);
+  };
+
+  recognition.onerror = function(){
+    baluSpeak("மீண்டும் சொல்லுங்கள்.");
+  };
+
+  setTimeout(()=>{
+    recognition.start();
+  },1000);
+}
+
+function processBaluCallCommand(command){
+  const text = command.toUpperCase().trim();
+
+  // CONTACT NAME AND NUMBER ADD HERE
+  const contacts = {
+    "BALU":"YOUR_NUMBER_HERE",
+    "KISHORE":"YOUR_NUMBER_HERE",
+    "ANBU":"YOUR_NUMBER_HERE",
+    "AMMA":"YOUR_NUMBER_HERE"
+  };
+
+  let foundName = null;
+  let foundNumber = null;
+
+  for(const name in contacts){
+    if(text.includes(name)){
+      foundName = name;
+      foundNumber = contacts[name];
+      break;
+    }
+  }
+
+  if(!foundName){
+    baluSpeak("Contact name கண்டுபிடிக்க முடியவில்லை.");
+    return;
+  }
+
+  if(foundNumber === "YOUR_NUMBER_HERE"){
+    baluSpeak(foundName + " number இன்னும் update செய்யவில்லை.");
+    alert(foundName + " contact number code-ல் update செய்யவும்.");
+    return;
+  }
+
+  const confirmCall = confirm(
+    foundName + " -க்கு call செய்யலாமா?"
+  );
+
+  if(confirmCall){
+    baluSpeak(foundName + "க்கு call செய்கிறேன்.");
+    window.location.href = "tel:" + foundNumber;
+  }else{
+    baluSpeak("சரி, call cancel செய்துவிட்டேன்.");
+  }
+}
+</script>
+<!-- END BALU VOICE CALL ASSISTANT -->
+  
 </html>

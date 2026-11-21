@@ -5,546 +5,507 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Balu Smart AI - Attendance</title>
-
 <style>
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#0f172a;
-  color:#f1f5f9;
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f5fb;
+  margin: 0;
+  padding: 15px;
+  color: #172033;
 }
-.container{max-width:950px;margin:auto;padding:16px}
-.card{
-  background:#1e293b;
-  border:1px solid #334155;
-  border-radius:16px;
-  padding:16px;
-  margin-bottom:15px;
+.container {
+  max-width: 1000px;
+  margin: auto;
 }
-h1{font-size:24px;margin:0 0 8px}
-h2{font-size:18px;margin-top:0}
-.small{color:#94a3b8;font-size:13px}
-input,textarea,select{
-  width:100%;
-  padding:12px;
-  margin:6px 0;
-  border-radius:9px;
-  border:1px solid #475569;
-  background:#0f172a;
-  color:white;
-  font-size:15px;
+.card {
+  background: white;
+  padding: 16px;
+  border-radius: 14px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 10px #0001;
 }
-textarea{min-height:190px;resize:vertical}
-button{
-  border:0;
-  padding:12px 15px;
-  margin:5px 3px 5px 0;
-  border-radius:9px;
-  background:#2563eb;
-  color:white;
-  font-size:14px;
-  font-weight:bold;
+h2, h3 { margin-top: 5px; }
+textarea, input, select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px;
+  margin: 7px 0;
+  border: 1px solid #ccd3df;
+  border-radius: 8px;
+  font-size: 15px;
 }
-button.green{background:#16a34a}
-button.red{background:#dc2626}
-button.gray{background:#475569}
-button.orange{background:#d97706}
-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:700px;
+textarea { min-height: 200px; }
+button {
+  padding: 11px 14px;
+  border: 0;
+  border-radius: 8px;
+  margin: 5px 3px;
+  cursor: pointer;
+  font-weight: bold;
+  background: #1459d9;
+  color: white;
 }
-th,td{
-  border:1px solid #334155;
-  padding:8px;
-  text-align:left;
+button.secondary { background: #475569; }
+button.danger { background: #dc2626; }
+button.success { background: #15803d; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
 }
-th{background:#334155}
-td input,td select{min-width:95px;margin:0;padding:8px}
-.table-wrap{overflow-x:auto}
-#preview{display:none}
-.stats{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
+th, td {
+  border: 1px solid #ddd;
+  padding: 7px;
+  text-align: left;
 }
-.stat{
-  background:#0f172a;
-  padding:10px 14px;
-  border-radius:10px;
-}
-.stat b{display:block;font-size:20px}
-.status{margin-top:8px;color:#86efac}
-.footer{text-align:center;color:#64748b;font-size:12px;padding:20px}
+th { background: #e8efff; }
+td input, td select { min-width: 100px; }
+.table-wrap { overflow-x: auto; }
+.small { color: #667085; font-size: 13px; }
+#preview { display: none; }
 </style>
 </head>
-
 <body>
 <div class="container">
 
 <div class="card">
-  <h1>🧠 Balu Smart AI</h1>
-  <h2>WhatsApp Attendance Automation</h2>
-  <div class="small">Paste WhatsApp plan → Preview → Correct → Save</div>
-</div>
+<h2>📋 Balu Smart AI – Attendance</h2>
+<p class="small">WhatsApp Shift Plan → Preview → Edit → Save</p>
 
-<div class="card">
-  <h2>📅 Attendance Date</h2>
-  <input type="date" id="attendanceDate">
-  <label>Corridor</label>
-  <select id="corridor">
-    <option value="C1">C1</option>
-    <option value="C2">C2</option>
-    <option value="Both">C1 & C2</option>
-  </select>
-</div>
+<label>Date</label>
+<input type="date" id="attendanceDate">
 
-<div class="card">
-  <h2>📋 WhatsApp Message</h2>
-  <textarea id="whatsappText" placeholder="Paste your WhatsApp shift plan here..."></textarea>
-  <button onclick="parseMessage()">🔍 Parse Attendance</button>
-  <button class="gray" onclick="clearMessage()">Clear</button>
+<label>Paste WhatsApp Shift Plan</label>
+<textarea id="whatsappText" placeholder="Paste complete C1 and C2 shift plan here..."></textarea>
+
+<button onclick="parsePlan()">Parse Attendance</button>
+<button class="secondary" onclick="clearInput()">Clear</button>
 </div>
 
 <div class="card" id="preview">
-  <h2>📊 Attendance Preview</h2>
-  <div class="stats" id="stats"></div>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>No.</th>
-          <th>Employee Name</th>
-          <th>Corridor</th>
-          <th>Shift</th>
-          <th>Timing</th>
-          <th>Status</th>
-          <th>Remarks</th>
-          <th>Delete</th>
-        </tr>
-      </thead>
-      <tbody id="attendanceBody"></tbody>
-    </table>
-  </div>
-  <button class="green" onclick="saveAttendance()">💾 Confirm & Save</button>
-  <button class="orange" onclick="exportCSV()">📥 Export Excel CSV</button>
-  <button class="gray" onclick="addEmployee()">➕ Add Employee</button>
+<h3>Attendance Preview</h3>
+<div id="count"></div>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Corridor</th>
+<th>Employee</th>
+<th>Shift / Status</th>
+<th>Code</th>
+<th>Designation</th>
+<th>Replacement</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="attendanceRows"></tbody>
+</table>
+</div>
+
+<button class="success" onclick="saveAttendance()">Save Attendance</button>
+<button onclick="exportCSV()">Export Excel CSV</button>
+<button class="secondary" onclick="addEmployee()">+ Add Employee</button>
 </div>
 
 <div class="card">
-  <h2>📂 Saved Attendance</h2>
-  <select id="savedList">
-    <option value="">Select saved attendance</option>
-  </select>
-  <button onclick="loadSaved()">Open</button>
-  <button class="red" onclick="deleteSaved()">Delete</button>
+<h3>Saved Attendance</h3>
+<input type="date" id="loadDate">
+<button onclick="loadAttendance()">Load Saved Data</button>
+<button class="danger" onclick="deleteSaved()">Delete Saved Date</button>
+<div id="savedInfo"></div>
 </div>
 
-<div class="card">
-  <h2>📝 Correction History</h2>
-  <div id="history" class="small">No corrections yet.</div>
-</div>
-
-<div id="message" class="status"></div>
-<div class="footer">Balu Smart AI • Attendance Module</div>
 </div>
 
 <script>
-const STORAGE_KEY = "balu_attendance_records_v1";
-const HISTORY_KEY = "balu_attendance_history_v1";
+const STORAGE_KEY = "balu_attendance_parser_v3";
 
-let rows = [];
-let currentId = null;
-let history = [];
+const SHIFT_CODES = {
+  "First Shift": "A",
+  "Second Shift": "B",
+  "General Shift": "G",
+  "Night Shift": "C",
+  "Mainline Night": "C",
+  "Arrival": "ARR",
+  "Week Off": "R",
+  "Comp Off": "C/O",
+  "Leave": "L"
+};
 
-const today = new Date();
+let attendanceData = [];
+
+// Date default
 document.getElementById("attendanceDate").value =
-  today.toISOString().slice(0,10);
+  new Date().toISOString().slice(0,10);
+document.getElementById("loadDate").value =
+  document.getElementById("attendanceDate").value;
 
-function showMessage(text){
-  document.getElementById("message").textContent = text;
+function cleanLine(s) {
+  return s.replace(/\*/g, "").trim();
 }
 
-function getRecords(){
-  try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]")}
-  catch(e){return []}
-}
+function identifyHeading(line) {
+  const t = line.toLowerCase();
 
-function putRecords(records){
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(records));
-}
+  if (/night shift.*mainline|mainline.*night shift|night shift reporting.*mainline/.test(t))
+    return "Mainline Night";
 
-function getHistory(){
-  try{return JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]")}
-  catch(e){return []}
-}
+  if (/first shift/.test(t))
+    return "First Shift";
 
-function putHistory(h){
-  localStorage.setItem(HISTORY_KEY,JSON.stringify(h));
-}
+  if (/second shift/.test(t))
+    return "Second Shift";
 
-function clearMessage(){
-  document.getElementById("whatsappText").value="";
-  rows=[];
-  currentId=null;
-  render();
-  showMessage("");
-}
+  if (/general shift.*stores|stores.*general shift/.test(t))
+    return "General Shift";
 
-function normalizeName(name){
-  return name.replace(/^\s*\d+[\.\)]\s*/,"")
-             .replace(/[•\-–]/g," ")
-             .replace(/\s+/g," ")
-             .trim();
-}
+  if (/general shift/.test(t))
+    return "General Shift";
 
-function detectShift(text){
-  if(/night\s*shift|night/i.test(text)) return "Night Shift";
-  if(/first\s*shift|1st\s*shift/i.test(text)) return "First Shift";
-  if(/second\s*shift|2nd\s*shift/i.test(text)) return "Second Shift";
-  if(/third\s*shift|3rd\s*shift/i.test(text)) return "Third Shift";
-  if(/morning\s*shift/i.test(text)) return "First Shift";
+  if (/night shift/.test(t))
+    return "Night Shift";
+
+  if (/arrival|\barr\b/.test(t))
+    return "Arrival";
+
+  if (/week off/.test(t))
+    return "Week Off";
+
+  if (/comp.?off/.test(t))
+    return "Comp Off";
+
+  if (/\bleave\b/.test(t))
+    return "Leave";
+
   return "";
 }
 
-function detectTime(text){
-  const m=text.match(/(\d{1,2}[:.]\d{2}\s*(?:am|pm)?)\s*(?:to|-|–)\s*(\d{1,2}[:.]\d{2}\s*(?:am|pm)?)/i);
-  if(m) return m[1]+" - "+m[2];
-  const m2=text.match(/(\d{1,2}\s*(?:am|pm))\s*(?:to|-|–)\s*(\d{1,2}\s*(?:am|pm))/i);
-  if(m2) return m2[1]+" - "+m2[2];
+function identifyCorridor(line) {
+  const t = line.toUpperCase();
+
+  if (/\bC\s*[-]?\s*1\b/.test(t) ||
+      /\bCORRIDOR\s*[-]?\s*1\b/.test(t))
+    return "C1";
+
+  if (/\bC\s*[-]?\s*2\b/.test(t) ||
+      /\bCORRIDOR\s*[-]?\s*2\b/.test(t))
+    return "C2";
+
   return "";
 }
 
-function detectCorridor(text, defaultCorridor){
-  const m=text.match(/\bC\s*[- ]?\s*([12])\b/i);
-  if(m) return "C"+m[1];
-  return defaultCorridor==="Both"?"":defaultCorridor;
+function extractEmployee(line) {
+  line = line.replace(/^\d+[\.\)]\s*/, "").trim();
+  line = line.replace(/^[-•]\s*/, "").trim();
+
+  if (!line || line.length > 100) return null;
+
+  // Skip headings and explanatory text
+  if (/^(work activity|first shift|second shift|general shift|night shift|week off|comp off|leave|arrival|corridor|date|dear|sir)/i.test(line))
+    return null;
+
+  let replacement = "";
+  const replacementMatch = line.match(/\(In Place Of\s+([^)]+)\)/i);
+
+  if (replacementMatch) {
+    replacement = replacementMatch[1].trim();
+    line = line.replace(replacementMatch[0], "").trim();
+  }
+
+  // Remove designation tags from employee name
+  let designation = "";
+  if (/\(EPIC\)/i.test(line)) designation = "EPIC";
+
+  line = line.replace(/\(EPIC\)/ig, "");
+  line = line.replace(/\([^)]*Reliever[^)]*\)/ig, "");
+  line = line.replace(/\([^)]*SMR[^)]*\)/ig, "");
+  line = line.replace(/\([^)]*In Place Of[^)]*\)/ig, "");
+  line = line.replace(/[()]/g, "");
+  line = line.trim();
+
+  // Remove leading/trailing separators
+  line = line.replace(/^[-:]+|[-:]+$/g, "").trim();
+
+  if (!line || line.length < 2) return null;
+
+  return {
+    employee: line,
+    designation,
+    replacement
+  };
 }
 
-function isHeading(line){
-  return /first\s*shift|second\s*shift|third\s*shift|night\s*shift|morning\s*shift|C\s*[- ]?\s*[12]|corridor\s*[- ]?\s*[12]/i.test(line);
-}
-
-function parseMessage(){
-  const text=document.getElementById("whatsappText").value.trim();
-  if(!text){
-    showMessage("Please paste a WhatsApp message first.");
+function parsePlan() {
+  const text = document.getElementById("whatsappText").value;
+  if (!text.trim()) {
+    alert("WhatsApp shift plan paste pannunga.");
     return;
   }
 
-  const defaultCorridor=document.getElementById("corridor").value;
-  const lines=text.split(/\n/);
-  let shift="";
-  let timing="";
-  let corridor=defaultCorridor;
-  let result=[];
+  let corridor = "";
+  let shift = "";
+  let parsed = [];
 
-  lines.forEach(line=>{
-    line=line.trim();
-    if(!line) return;
+  const lines = text.split(/\r?\n/);
 
-    if(isHeading(line)){
-      shift=detectShift(line)||shift;
-      timing=detectTime(line)||timing;
-      corridor=detectCorridor(line,defaultCorridor)||corridor;
+  for (const raw of lines) {
+    const line = cleanLine(raw);
+    if (!line) continue;
+
+    // Corridor heading
+    const detectedCorridor = identifyCorridor(line);
+    if (detectedCorridor) {
+      corridor = detectedCorridor;
+      shift = "";
+      continue;
     }
 
-    // Extract employee name from numbered or bullet lines
-    let cleaned=line
-      .replace(/^\s*(?:\d+[\.\)]|[-•*])\s*/,"")
-      .trim();
-
-    // Skip headings and instructions
-    if(/shift|from\s+\d|in\s+SAP|work\s*activity|planned|corridor|attendance/i.test(cleaned)
-       && !/^\d+[\.\)]\s*[A-Za-z]/.test(line)){
-      if(!/^\d+[\.\)]\s*[A-Za-z]/.test(line)) return;
+    // Shift heading
+    const detectedShift = identifyHeading(line);
+    if (detectedShift) {
+      shift = detectedShift;
+      continue;
     }
 
-    // Typical numbered employee line
-    let nameMatch=line.match(/^\s*\d+[\.\)]\s*([A-Za-z][A-Za-z .'-]+?)(?:\s*\(([^)]*)\))?\s*$/);
-    if(nameMatch){
-      const name=normalizeName(nameMatch[1]);
-      const remark=nameMatch[2]||"";
-      if(name.length>1){
-        result.push({
-          name:name,
-          corridor:corridor||defaultCorridor,
-          shift:shift||"Unassigned",
-          timing:timing||"",
-          status:"Present",
-          remarks:remark
-        });
-      }
-      return;
+    if (!corridor || !shift) continue;
+
+    // Skip heading/time/report lines
+    if (/from\s+\d{1,2}[:.]\d{2}|to\s+\d{1,2}[:.]\d{2}|hrs|sap|dwn|depot|mainline|stores|planned|work activity/i.test(line)) {
+      // But SAP/DWN lines can contain actual names; only skip obvious time/header lines
+      if (/shift|reporting|work activity|from\s+\d{1,2}[:.]\d{2}|to\s+\d{1,2}[:.]\d{2}/i.test(line)) continue;
     }
 
-    // Simple bullet name
-    let bulletMatch=line.match(/^\s*[-•*]\s*([A-Za-z][A-Za-z .'-]+)\s*$/);
-    if(bulletMatch && !isHeading(line)){
-      const name=normalizeName(bulletMatch[1]);
-      result.push({
-        name:name,
-        corridor:corridor||defaultCorridor,
-        shift:shift||"Unassigned",
-        timing:timing||"",
-        status:"Present",
-        remarks:""
+    const person = extractEmployee(line);
+    if (!person) continue;
+
+    parsed.push({
+      corridor,
+      employee: person.employee,
+      shift,
+      code: SHIFT_CODES[shift] || "",
+      designation: person.designation,
+      replacement: person.replacement
+    });
+  }
+
+  attendanceData = mergeRows(parsed);
+  renderPreview();
+}
+
+function mergeRows(rows) {
+  const map = new Map();
+
+  for (const row of rows) {
+    const key = row.corridor + "|" + row.employee.toLowerCase();
+    if (!map.has(key)) {
+      map.set(key, {
+        corridor: row.corridor,
+        employee: row.employee,
+        shifts: [],
+        designation: row.designation || "",
+        replacement: row.replacement || ""
       });
     }
-  });
 
-  // Remove duplicates
-  const seen=new Set();
-  rows=result.filter(r=>{
-    const key=r.name.toLowerCase()+"|"+r.corridor+"|"+r.shift;
-    if(seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
+    const item = map.get(key);
 
-  currentId=null;
-  render();
-  document.getElementById("preview").style.display="block";
-
-  showMessage(rows.length+" employee(s) detected. Please verify names and shifts before saving.");
-}
-
-function addEmployee(){
-  rows.push({
-    name:"",
-    corridor:document.getElementById("corridor").value==="Both"?"C1":document.getElementById("corridor").value,
-    shift:"Unassigned",
-    timing:"",
-    status:"Present",
-    remarks:""
-  });
-  render();
-}
-
-function deleteRow(index){
-  rows.splice(index,1);
-  render();
-}
-
-function updateRow(index,key,value){
-  rows[index][key]=value;
-  renderStats();
-}
-
-function render(){
-  const body=document.getElementById("attendanceBody");
-  body.innerHTML="";
-
-  rows.forEach((r,i)=>{
-    const tr=document.createElement("tr");
-
-    tr.innerHTML=`
-      <td>${i+1}</td>
-      <td><input value="${escapeHTML(r.name)}" onchange="updateRow(${i},'name',this.value)"></td>
-      <td>
-        <select onchange="updateRow(${i},'corridor',this.value)">
-          <option ${r.corridor==="C1"?"selected":""}>C1</option>
-          <option ${r.corridor==="C2"?"selected":""}>C2</option>
-        </select>
-      </td>
-      <td>
-        <select onchange="updateRow(${i},'shift',this.value)">
-          <option ${r.shift==="First Shift"?"selected":""}>First Shift</option>
-          <option ${r.shift==="Second Shift"?"selected":""}>Second Shift</option>
-          <option ${r.shift==="Night Shift"?"selected":""}>Night Shift</option>
-          <option ${r.shift==="Third Shift"?"selected":""}>Third Shift</option>
-          <option ${r.shift==="Unassigned"?"selected":""}>Unassigned</option>
-        </select>
-      </td>
-      <td><input value="${escapeHTML(r.timing)}" onchange="updateRow(${i},'timing',this.value)"></td>
-      <td>
-        <select onchange="updateRow(${i},'status',this.value)">
-          <option ${r.status==="Present"?"selected":""}>Present</option>
-          <option ${r.status==="Absent"?"selected":""}>Absent</option>
-          <option ${r.status==="Leave"?"selected":""}>Leave</option>
-          <option ${r.status==="Off"?"selected":""}>Off</option>
-        </select>
-      </td>
-      <td><input value="${escapeHTML(r.remarks)}" onchange="updateRow(${i},'remarks',this.value)"></td>
-      <td><button class="red" onclick="deleteRow(${i})">X</button></td>
-    `;
-    body.appendChild(tr);
-  });
-
-  document.getElementById("preview").style.display="block";
-  renderStats();
-}
-
-function renderStats(){
-  const present=rows.filter(r=>r.status==="Present").length;
-  const absent=rows.filter(r=>r.status==="Absent").length;
-  const c1=rows.filter(r=>r.corridor==="C1").length;
-  const c2=rows.filter(r=>r.corridor==="C2").length;
-
-  document.getElementById("stats").innerHTML=`
-    <div class="stat">Total<b>${rows.length}</b></div>
-    <div class="stat">Present<b>${present}</b></div>
-    <div class="stat">Absent<b>${absent}</b></div>
-    <div class="stat">C1<b>${c1}</b></div>
-    <div class="stat">C2<b>${c2}</b></div>
-  `;
-}
-
-function escapeHTML(str){
-  return String(str||"").replace(/[&<>"']/g,m=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",
-    '"':"&quot;","'":"&#039;"
-  }[m]));
-}
-
-function saveAttendance(){
-  if(rows.length===0){
-    showMessage("No attendance data to save.");
-    return;
-  }
-
-  if(rows.some(r=>!r.name.trim())){
-    showMessage("Please fill all employee names.");
-    return;
-  }
-
-  const date=document.getElementById("attendanceDate").value;
-  if(!date){
-    showMessage("Please select attendance date.");
-    return;
-  }
-
-  const records=getRecords();
-  const existing=records.find(r=>r.date===date);
-
-  if(existing){
-    const before=JSON.stringify(existing.rows);
-    const after=JSON.stringify(rows);
-
-    if(before!==after){
-      history=getHistory();
-      history.unshift({
-        date:date,
-        time:new Date().toLocaleString(),
-        action:"Attendance corrected",
-        previous:existing.rows,
-        updated:rows
-      });
-      putHistory(history);
+    if (!item.shifts.includes(row.shift)) {
+      item.shifts.push(row.shift);
     }
 
-    existing.rows=JSON.parse(JSON.stringify(rows));
-    existing.updatedAt=new Date().toLocaleString();
-    currentId=existing.id;
-  }else{
-    const newRecord={
-      id:Date.now().toString(),
-      date:date,
-      corridor:document.getElementById("corridor").value,
-      rows:JSON.parse(JSON.stringify(rows)),
-      createdAt:new Date().toLocaleString(),
-      updatedAt:new Date().toLocaleString()
+    if (row.designation) item.designation = row.designation;
+    if (row.replacement) item.replacement = row.replacement;
+  }
+
+  return Array.from(map.values()).map(item => {
+    const code = mergeCodes(item.shifts.map(s => SHIFT_CODES[s]));
+    return {
+      corridor: item.corridor,
+      employee: item.employee,
+      shift: item.shifts.join(" + "),
+      code,
+      designation: item.designation,
+      replacement: item.replacement
     };
-    records.unshift(newRecord);
-    currentId=newRecord.id;
-  }
-
-  putRecords(records);
-  refreshSavedList();
-  renderHistory();
-  showMessage("Attendance saved successfully ✅");
-}
-
-function refreshSavedList(){
-  const select=document.getElementById("savedList");
-  const records=getRecords();
-  select.innerHTML='<option value="">Select saved attendance</option>';
-
-  records.sort((a,b)=>b.date.localeCompare(a.date)).forEach(r=>{
-    const opt=document.createElement("option");
-    opt.value=r.id;
-    opt.textContent=r.date+" ("+r.rows.length+" employees)";
-    select.appendChild(opt);
   });
 }
 
-function loadSaved(){
-  const id=document.getElementById("savedList").value;
-  if(!id){
-    showMessage("Select saved attendance.");
+function mergeCodes(codes) {
+  const unique = [...new Set(codes.filter(Boolean))];
+
+  if (unique.includes("R")) return "R";
+  if (unique.length === 1) return unique[0];
+
+  if (unique.includes("C/O") && unique.length === 1) return "C/O";
+  if (unique.includes("L") && unique.length === 1) return "L";
+
+  const order = ["A", "B", "G", "C"];
+  const shifts = order.filter(c => unique.includes(c));
+
+  if (unique.includes("C/O")) {
+    if (shifts.length === 0) return "C/O";
+    return "C/O&" + shifts.join("&");
+  }
+
+  if (unique.includes("L")) {
+    if (shifts.length === 0) return "L";
+    return shifts.join("&") + "/L";
+  }
+
+  return shifts.join("&") || unique.join("&");
+}
+
+function renderPreview() {
+  const tbody = document.getElementById("attendanceRows");
+  tbody.innerHTML = "";
+
+  attendanceData.forEach((row, index) => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>
+        <select onchange="updateRow(${index},'corridor',this.value)">
+          <option ${row.corridor==="C1"?"selected":""}>C1</option>
+          <option ${row.corridor==="C2"?"selected":""}>C2</option>
+        </select>
+      </td>
+      <td><input value="${escapeHTML(row.employee)}"
+        onchange="updateRow(${index},'employee',this.value)"></td>
+      <td><input value="${escapeHTML(row.shift)}"
+        onchange="updateRow(${index},'shift',this.value)"></td>
+      <td><input value="${escapeHTML(row.code)}"
+        onchange="updateRow(${index},'code',this.value)"></td>
+      <td><input value="${escapeHTML(row.designation||"")}"
+        onchange="updateRow(${index},'designation',this.value)"></td>
+      <td><input value="${escapeHTML(row.replacement||"")}"
+        onchange="updateRow(${index},'replacement',this.value)"></td>
+      <td><button class="danger" onclick="removeRow(${index})">Delete</button></td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById("count").innerHTML =
+    "<b>Total Employees: " + attendanceData.length + "</b>";
+
+  document.getElementById("preview").style.display = "block";
+}
+
+function escapeHTML(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function updateRow(index, field, value) {
+  attendanceData[index][field] = value;
+}
+
+function removeRow(index) {
+  attendanceData.splice(index, 1);
+  renderPreview();
+}
+
+function addEmployee() {
+  attendanceData.push({
+    corridor: "C1",
+    employee: "",
+    shift: "",
+    code: "",
+    designation: "",
+    replacement: ""
+  });
+  renderPreview();
+}
+
+function saveAttendance() {
+  const date = document.getElementById("attendanceDate").value;
+  if (!date) {
+    alert("Date select pannunga.");
     return;
   }
 
-  const record=getRecords().find(r=>r.id===id);
-  if(!record)return;
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+  saved[date] = attendanceData;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
 
-  rows=JSON.parse(JSON.stringify(record.rows));
-  currentId=record.id;
-  document.getElementById("attendanceDate").value=record.date;
-  document.getElementById("corridor").value=record.corridor||"C1";
-  render();
-  showMessage("Saved attendance opened. You can now edit.");
+  document.getElementById("loadDate").value = date;
+  document.getElementById("savedInfo").innerHTML =
+    "Saved: " + date + " | " + attendanceData.length + " employees";
+
+  alert("Attendance saved successfully!");
 }
 
-function deleteSaved(){
-  const id=document.getElementById("savedList").value;
-  if(!id)return;
+function loadAttendance() {
+  const date = document.getElementById("loadDate").value;
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
 
-  if(!confirm("Delete this saved attendance?"))return;
-
-  putRecords(getRecords().filter(r=>r.id!==id));
-  refreshSavedList();
-  showMessage("Saved attendance deleted.");
-}
-
-function exportCSV(){
-  if(rows.length===0){
-    showMessage("No data to export.");
+  if (!saved[date]) {
+    alert("இந்த date-க்கு saved attendance இல்லை.");
     return;
   }
 
-  const date=document.getElementById("attendanceDate").value;
-  const headers=["Date","Employee Name","Corridor","Shift","Timing","Status","Remarks"];
-  const data=rows.map(r=>[
-    date,r.name,r.corridor,r.shift,r.timing,r.status,r.remarks
-  ]);
+  attendanceData = saved[date];
+  document.getElementById("attendanceDate").value = date;
+  renderPreview();
 
-  const csv=[headers,...data].map(row=>
-    row.map(v=>'"'+String(v||"").replace(/"/g,'""')+'"').join(",")
+  document.getElementById("savedInfo").innerHTML =
+    "Loaded: " + date + " | " + attendanceData.length + " employees";
+}
+
+function deleteSaved() {
+  const date = document.getElementById("loadDate").value;
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+
+  if (!saved[date]) {
+    alert("Saved attendance கிடைக்கவில்லை.");
+    return;
+  }
+
+  if (!confirm(date + " attendance delete pannava?")) return;
+
+  delete saved[date];
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+  document.getElementById("savedInfo").innerHTML = "Deleted: " + date;
+}
+
+function clearInput() {
+  document.getElementById("whatsappText").value = "";
+}
+
+function exportCSV() {
+  if (!attendanceData.length) {
+    alert("Attendance data empty.");
+    return;
+  }
+
+  const date = document.getElementById("attendanceDate").value;
+
+  const rows = [
+    ["Date", "Corridor", "Employee", "Shift", "Code", "Designation", "Replacement"],
+    ...attendanceData.map(r => [
+      date, r.corridor, r.employee, r.shift, r.code,
+      r.designation, r.replacement
+    ])
+  ];
+
+  const csv = rows.map(row =>
+    row.map(value => '"' + String(value || "").replace(/"/g,'""') + '"').join(",")
   ).join("\n");
 
-  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
-  const link=document.createElement("a");
-  link.href=URL.createObjectURL(blob);
-  link.download="Attendance_"+date+".csv";
+  const blob = new Blob(["\uFEFF" + csv], {
+    type: "text/csv;charset=utf-8;"
+  });
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "Attendance_" + date + ".csv";
   link.click();
-  URL.revokeObjectURL(link);
-  showMessage("Excel-compatible CSV downloaded.");
+  URL.revokeObjectURL(link.href);
 }
-
-function renderHistory(){
-  const h=getHistory();
-  const box=document.getElementById("history");
-
-  if(!h.length){
-    box.textContent="No corrections yet.";
-    return;
-  }
-
-  box.innerHTML=h.slice(0,20).map(item=>`
-    <div style="padding:10px;border-bottom:1px solid #334155">
-      <b>${escapeHTML(item.date)}</b><br>
-      ${escapeHTML(item.time)}<br>
-      ${escapeHTML(item.action)}
-    </div>
-  `).join("");
-}
-
-refreshSavedList();
-renderHistory();
-renderStats();
 </script>
+
 </body>
-  </html>
-  
+</html>

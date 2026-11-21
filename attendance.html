@@ -2,177 +2,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Balu Smart AI - Attendance</title>
-
 <style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  background: #f2f5fb;
-  margin: 0;
-  padding: 15px;
-  color: #172033;
-}
-
-.container {
-  max-width: 1000px;
-  margin: auto;
-}
-
-.card {
-  background: white;
-  padding: 16px;
-  border-radius: 14px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 10px #0001;
-}
-
-h2, h3 {
-  margin-top: 5px;
-}
-
-textarea, input, select {
-  width: 100%;
-  padding: 11px;
-  margin: 7px 0;
-  border: 1px solid #ccd3df;
-  border-radius: 8px;
-  font-size: 15px;
-}
-
-textarea {
-  min-height: 200px;
-  resize: vertical;
-}
-
-button {
-  padding: 11px 14px;
-  border: 0;
-  border-radius: 8px;
-  margin: 5px 3px;
-  cursor: pointer;
-  font-weight: bold;
-  background: #1459d9;
-  color: white;
-}
-
-button.secondary {
-  background: #475569;
-}
-
-button.danger {
-  background: #dc2626;
-}
-
-button.success {
-  background: #15803d;
-}
-
-.table-wrap {
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  border-radius: 8px;
-}
-
-table {
-  width: 100%;
-  min-width: 650px;
-  border-collapse: collapse;
-  background: white;
-}
-
-th, td {
-  border: 1px solid #ddd;
-  padding: 7px;
-  text-align: left;
-  vertical-align: middle;
-}
-
-th {
-  background: #e8efff;
-  white-space: nowrap;
-}
-
-td input, td select {
-  min-width: 100px;
-  margin: 2px 0;
-}
-
-td:nth-child(2) input {
-  min-width: 160px;
-}
-
-td:nth-child(3) input {
-  min-width: 170px;
-}
-
-td:nth-child(4) input {
-  min-width: 110px;
-  font-weight: bold;
-}
-
-.small {
-  color: #667085;
-  font-size: 13px;
-}
-
-#preview {
-  display: none;
-}
-
-.code-check {
-  background: #fff1c2;
-  color: #7a4b00;
-  font-weight: bold;
-}
-
-.code-combo {
-  background: #e0f2fe;
-  color: #075985;
-  font-weight: bold;
-}
-
-@media (max-width: 600px) {
-  body {
-    padding: 8px;
-  }
-
-  .card {
-    padding: 12px;
-  }
-
-  button {
-    padding: 10px;
-    font-size: 13px;
-  }
-
-  table {
-    min-width: 650px;
-  }
-}
+*{box-sizing:border-box}body{font-family:Arial,sans-serif;background:#f2f5fb;margin:0;padding:15px;color:#172033}.container{max-width:1000px;margin:auto}.card{background:white;padding:16px;border-radius:14px;margin-bottom:15px;box-shadow:0 2px 10px #0001}h2,h3{margin-top:5px}textarea,input,select{width:100%;padding:11px;margin:7px 0;border:1px solid #ccd3df;border-radius:8px;font-size:15px}textarea{min-height:200px;resize:vertical}button{padding:11px 14px;border:0;border-radius:8px;margin:5px 3px;cursor:pointer;font-weight:bold;background:#1459d9;color:white}button.secondary{background:#475569}button.danger{background:#dc2626}button.success{background:#15803d}.table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:8px}table{width:100%;min-width:800px;border-collapse:collapse;background:white}th,td{border:1px solid #ddd;padding:7px;text-align:left;vertical-align:middle}th{background:#e8efff;white-space:nowrap}td input,td select{min-width:100px;margin:2px 0}td:nth-child(2) input{min-width:160px}td:nth-child(3) input{min-width:170px}td:nth-child(4) input{min-width:110px;font-weight:bold}.small{color:#667085;font-size:13px}#preview{display:none}.code-check{background:#fff1c2;color:#7a4b00;font-weight:bold}.code-combo{background:#e0f2fe;color:#075985;font-weight:bold}.summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}.summary-tile{border-radius:12px;padding:12px;background:#eef4ff}.summary-tile .label{font-size:13px;color:#475569}.summary-tile .value{font-size:24px;font-weight:bold;margin-top:4px}.summary-tile.total{grid-column:1/-1;background:#172554;color:white}.summary-tile.total .label{color:#dbeafe}.summary-tile.corridor{background:#e8f0ff;color:#1d4ed8}.summary-tile.staff{background:#f0fdf4;color:#15803d}.summary-tile.off{background:#fff7ed;color:#c2410c}.summary-tile.arrival{background:#f5f3ff;color:#7c3aed}.summary-tile.master{background:#ecfeff;color:#0e7490}@media(max-width:600px){body{padding:8px}.card{padding:12px}button{padding:10px;font-size:13px}table{min-width:800px}}
 </style>
 </head>
-
 <body>
 <div class="container">
-
 <div class="card">
 <h2>📋 Balu Smart AI – Attendance</h2>
 <p class="small">WhatsApp Shift Plan → Preview → Edit → Save</p>
-
 <label>Date</label>
 <input type="date" id="attendanceDate">
-
 <label>Paste WhatsApp Shift Plan</label>
-<textarea id="whatsappText"
-placeholder="Paste complete C1 and C2 shift plan here..."></textarea>
-
+<textarea id="whatsappText" placeholder="Paste complete C1 and C2 shift plan here..."></textarea>
 <button onclick="parsePlan()">Parse Attendance</button>
 <button class="secondary" onclick="clearInput()">Clear</button>
 </div>
@@ -180,22 +24,16 @@ placeholder="Paste complete C1 and C2 shift plan here..."></textarea>
 <div class="card" id="preview">
 <h3>Attendance Preview</h3>
 <div id="count"></div>
-
 <div class="table-wrap">
 <table>
 <thead>
 <tr>
-<th>Corridor</th>
-<th>Employee Name</th>
-<th>Shift</th>
-<th>Code</th>
-<th>Action</th>
+<th>Corridor</th><th>Employee Name</th><th>Shift</th><th>Code</th><th>Role</th><th>Action</th>
 </tr>
 </thead>
 <tbody id="attendanceRows"></tbody>
 </table>
 </div>
-
 <button class="success" onclick="saveAttendance()">Save Attendance</button>
 <button onclick="exportCSV()">Export Excel CSV</button>
 <button class="secondary" onclick="addEmployee()">+ Add Employee</button>
@@ -208,499 +46,560 @@ placeholder="Paste complete C1 and C2 shift plan here..."></textarea>
 <button class="danger" onclick="deleteSaved()">Delete Saved Date</button>
 <div id="savedInfo"></div>
 </div>
-
 </div>
 
 <script>
-const STORAGE_KEY = "balu_attendance_parser_v3";
+const STORAGE_KEY="balu_attendance_parser_v3";
 
-const SHIFT_CODES = {
-  "First Shift": "A",
-  "Second Shift": "B",
-  "General Shift": "G",
-  "Night Shift": "C",
-  "Mainline Night": "C",
-  "Arrival": "ARR",
-  "Week Off": "R",
-  "Comp Off": "C/O",
-  "Leave": "L"
+const SHIFT_CODES={
+"First Shift":"A",
+"Second Shift":"B",
+"General Shift":"G",
+"Night Shift":"C",
+"Mainline Night":"C",
+"Arrival":"ARR",
+"Week Off":"R",
+"Comp Off":"C/O",
+"Leave":"L"
 };
 
-let attendanceData = [];
+// Employee Master: 28 Supervisors + 19 Technicians
+const EMPLOYEE_MASTER={
+"GURUMOHAN":"Supervisor",
+"ANBU":"Supervisor",
+"DEVA":"Supervisor",
+"ARUL":"Supervisor",
+"RADHAKRISHNA":"Supervisor",
+"IYYAPPAN":"Supervisor",
+"VASANTHA RAJ":"Supervisor",
+"BHARATH":"Supervisor",
+"KARTHIC SAM":"Supervisor",
+"ROHITH":"Supervisor",
+"THIRU":"Supervisor",
+"NITHISH":"Supervisor",
+"KARTHIC STORE":"Supervisor",
+"PRAKASH":"Supervisor",
+"SURESH":"Supervisor",
+"JOHN":"Supervisor",
+"RAMESH":"Supervisor",
+"BALU":"Supervisor",
+"SANTHOSH":"Supervisor",
+"SELVAKUMAR":"Supervisor",
+"RANJIKUMAR":"Supervisor",
+"MADHANKUMAR":"Supervisor",
+"JEGAN":"Supervisor",
+"ASVATH":"Supervisor",
+"SUDHAKAR":"Supervisor",
+"DARIUS":"Supervisor",
+"DHENI":"Supervisor",
+"GODWIN":"Supervisor",
 
-/* Local date */
-function getLocalDate() {
-  const d = new Date();
+"KISHORE":"Technician",
+"A AJITH":"Technician",
+"VIVEK":"Technician",
+"PERARASU":"Technician",
+"MICHAEL":"Technician",
+"IRFAN":"Technician",
+"THAMARAI":"Technician",
+"SUBHASH":"Technician",
+"M AJITH":"Technician",
+"PRABHAHARAN":"Technician",
+"MARIYA":"Technician",
+"SAKTHIVEL":"Technician",
+"DHEENA":"Technician",
+"VENKAT":"Technician",
+"RAJARAM":"Technician",
+"KARTHICK S":"Technician",
+"VETRI":"Technician",
+"MAHENDRAN":"Technician",
+"ARUN":"Technician"
+};
 
-  return (
-    d.getFullYear() + "-" +
-    String(d.getMonth() + 1).padStart(2, "0") + "-" +
-    String(d.getDate()).padStart(2, "0")
-  );
+const NAME_ALIASES={
+"THIRUVENGIDASAMY":"THIRU",
+"KISHORE KUMAR JHA":"KISHORE",
+"KISHORE JHA":"KISHORE",
+"A AJITH":"A AJITH",
+"AJITH A":"A AJITH",
+"M AJITH":"M AJITH",
+"KARTHICK S":"KARTHICK S",
+"KARTHICK.S":"KARTHICK S",
+"KARTHICK SAM":"KARTHIC SAM",
+"VASANTHARAJ":"VASANTHA RAJ",
+"VETRIVEL":"VETRI",
+"DEENA":"DHEENA",
+"DHEENAA":"DHEENA",
+"SUBASH":"SUBHASH",
+"IYAPPAN":"IYYAPPAN",
+"RANJIHKUMAR":"RANJIKUMAR",
+"RANJIKUMAR":"RANJIKUMAR",
+"MADHAN KUMAR":"MADHANKUMAR",
+"ARUNKUMAR":"ARUN",
+"GODWIN":"GODWIN"
+};
+
+let attendanceData=[];
+
+function getLocalDate(){
+const d=new Date();
+return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 }
 
-document.getElementById("attendanceDate").value = getLocalDate();
-document.getElementById("loadDate").value = getLocalDate();
+document.getElementById("attendanceDate").value=getLocalDate();
+document.getElementById("loadDate").value=getLocalDate();
 
-/* Clean WhatsApp formatting */
-function cleanLine(s) {
-  return s
-    .replace(/\*/g, "")
-    .replace(/_/g, "")
-    .trim();
+function cleanLine(s){
+return s.replace(/\*/g,"").replace(/_/g,"").trim();
 }
 
-/* Corridor detection */
-function identifyCorridor(line) {
-  const t = line.toUpperCase().trim();
-
-  if (
-    /^(C\s*[-]?\s*1|CORRIDOR\s*[-]?\s*1)\b/.test(t) ||
-    /\bCORRIDOR\s*[-]?\s*1\b/.test(t)
-  ) {
-    return "C1";
-  }
-
-  if (
-    /^(C\s*[-]?\s*2|CORRIDOR\s*[-]?\s*2)\b/.test(t) ||
-    /\bCORRIDOR\s*[-]?\s*2\b/.test(t)
-  ) {
-    return "C2";
-  }
-
-  return "";
+function normalizeName(s){
+return String(s||"").toUpperCase().replace(/[.,]/g," ").replace(/\s+/g," ").trim();
 }
 
-/* Shift / category heading detection */
-function identifyHeading(line) {
-  const t = line.toLowerCase()
-    .replace(/[*:_-]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  /* Mainline Night must be checked before normal Night Shift */
-  if (
-    /night shift.*mainline/.test(t) ||
-    /mainline.*night shift/.test(t) ||
-    /night shift reporting/.test(t)
-  ) {
-    return "Mainline Night";
-  }
-
-  if (/first shift/.test(t))
-    return "First Shift";
-
-  if (/second shift/.test(t))
-    return "Second Shift";
-
-  if (/general shift/.test(t))
-    return "General Shift";
-
-  if (/night shift/.test(t))
-    return "Night Shift";
-
-  if (/week off/.test(t))
-    return "Week Off";
-
-  if (/comp\s*off|combo\s*off|compensatory off/.test(t))
-    return "Comp Off";
-
-  if (
-    /^\s*(arrival|arr)\b/.test(t) ||
-    /\b(arrival list|arrival staff)\b/.test(t)
-  )
-    return "Arrival";
-
-  if (/^\s*leave\b/.test(t))
-    return "Leave";
-
-  return "";
+function identifyRole(name){
+let n=normalizeName(name);
+n=NAME_ALIASES[n]||n;
+return EMPLOYEE_MASTER[n]||"Unknown";
 }
 
-/* Ignore headings, timings and non-employee lines */
-function isSkipLine(line) {
-  if (!line) return true;
+function identifyCorridor(line){
+const t=line.toUpperCase().trim();
 
-  if (/^(work activity|planned|date|dear|sir|madam|corridor|shift plan)\b/i.test(line))
-    return true;
+if(/^(C\s*[-]?\s*1|CORRIDOR\s*[-]?\s*1)\b/.test(t)||/\bCORRIDOR\s*[-]?\s*1\b/.test(t))
+return "C1";
 
-  if (/^(first shift|second shift|general shift|night shift|week off|comp off|combo off|leave|arrival|arr)\b/i.test(line))
-    return true;
+if(/^(C\s*[-]?\s*2|CORRIDOR\s*[-]?\s*2)\b/.test(t)||/\bCORRIDOR\s*[-]?\s*2\b/.test(t))
+return "C2";
 
-  if (/from\s+\d{1,2}[:.]\d{2}/i.test(line))
-    return true;
-
-  if (/to\s+\d{1,2}[:.]\d{2}/i.test(line))
-    return true;
-
-  if (/\bhrs?\b/i.test(line) && /\d/.test(line))
-    return true;
-
-  return false;
+return "";
 }
 
-/* Extract employee name */
-function extractEmployee(line) {
-  line = line.replace(/^\d+[\.\)]\s*/, "");
-  line = line.replace(/^[-•]\s*/, "");
-  line = line.trim();
+function identifyHeading(line){
+const t=line.toLowerCase().replace(/[*:_-]/g," ").replace(/\s+/g," ").trim();
 
-  if (isSkipLine(line)) return null;
-  if (line.length > 100) return null;
+if(/night shift.*mainline|mainline.*night shift|night shift reporting/.test(t))
+return "Mainline Night";
 
-  /* Remove bracket information */
-  line = line.replace(/\([^)]*\)/g, "");
-  line = line.replace(/\[[^\]]*\]/g, "");
+if(/first shift/.test(t))return "First Shift";
+if(/second shift/.test(t))return "Second Shift";
+if(/general shift/.test(t))return "General Shift";
+if(/night shift/.test(t))return "Night Shift";
+if(/week off/.test(t))return "Week Off";
+if(/comp\s*off|combo\s*off|compensatory off/.test(t))return "Comp Off";
 
-  /* Remove extra labels */
-  line = line.replace(/\bEPIC\b/ig, "");
-  line = line.replace(/\bSMR\b/ig, "");
-  line = line.replace(/\bReliever\b/ig, "");
-  line = line.replace(/\bIn Place Of\b/ig, "");
+if(/^\s*(arrival|arr)\b/.test(t)||/\b(arrival list|arrival staff)\b/.test(t))
+return "Arrival";
 
-  line = line.replace(/^[\s\-:]+|[\s\-:]+$/g, "");
-  line = line.replace(/\s+/g, " ").trim();
+if(/^\s*leave\b/.test(t))
+return "Leave";
 
-  if (!line || line.length < 2) return null;
-
-  return line;
+return "";
 }
 
-/* Split multiple names */
-function splitEmployeeNames(line) {
-  return line.split(",").map(x => x.trim()).filter(Boolean);
+function isSkipLine(line){
+if(!line)return true;
+
+if(/^(work activity|planned|date|dear|sir|madam|corridor|shift plan)\b/i.test(line))
+return true;
+
+if(/^(first shift|second shift|general shift|night shift|week off|comp off|combo off|leave|arrival|arr)\b/i.test(line))
+return true;
+
+if(/from\s+\d{1,2}[:.]\d{2}/i.test(line)||/to\s+\d{1,2}[:.]\d{2}/i.test(line))
+return true;
+
+if(/\bhrs?\b/i.test(line)&&/\d/.test(line))
+return true;
+
+return false;
 }
 
-/* Parse WhatsApp shift plan */
-function parsePlan() {
-  const text = document.getElementById("whatsappText").value;
+function extractEmployee(line){
+line=line.replace(/^\d+[\.)]\s*/,"").replace(/^[-•]\s*/,"").trim();
 
-  if (!text.trim()) {
-    alert("WhatsApp shift plan paste pannunga.");
-    return;
-  }
+if(isSkipLine(line)||line.length>100)return null;
 
-  let corridor = "";
-  let shift = "";
+line=line.replace(/\([^)]*\)/g,"").replace(/\[[^\]]*\]/g,"");
+line=line.replace(/\bEPIC\b/ig,"").replace(/\bSMR\b/ig,"").replace(/\bReliever\b/ig,"").replace(/\bIn Place Of\b/ig,"");
 
-  const parsed = [];
-  const lines = text.split(/\r?\n/);
+line=line.replace(/^[\s\-:]+|[\s\-:]+$/g,"").replace(/\s+/g," ").trim();
 
-  for (const raw of lines) {
-    const line = cleanLine(raw);
-    if (!line) continue;
-
-    /* Corridor */
-    const detectedCorridor = identifyCorridor(line);
-
-    if (detectedCorridor) {
-      corridor = detectedCorridor;
-      shift = "";
-      continue;
-    }
-
-    /* Heading */
-    const detectedShift = identifyHeading(line);
-
-    if (detectedShift) {
-      shift = detectedShift;
-      continue;
-    }
-
-    if (!corridor || !shift) continue;
-    if (isSkipLine(line)) continue;
-
-    const names = splitEmployeeNames(line);
-
-    for (const rawName of names) {
-      const employee = extractEmployee(rawName);
-      if (!employee) continue;
-
-      parsed.push({
-        corridor,
-        employee,
-        shift,
-        code: SHIFT_CODES[shift] || ""
-      });
-    }
-  }
-
-  attendanceData = mergeRows(parsed);
-
-  if (!attendanceData.length) {
-    alert("Employee names detect aagala. WhatsApp plan headings check pannunga.");
-    return;
-  }
-
-  renderPreview();
+return line.length>=2?line:null;
 }
 
-/* Merge duplicate employees */
-function mergeRows(rows) {
-  const map = new Map();
-
-  for (const row of rows) {
-    const employee = row.employee.trim();
-    if (!employee) continue;
-
-    const key = row.corridor + "|" + employee.toLowerCase();
-
-    if (!map.has(key)) {
-      map.set(key, {
-        corridor: row.corridor,
-        employee,
-        shifts: [],
-        codes: []
-      });
-    }
-
-    const item = map.get(key);
-
-    if (!item.shifts.includes(row.shift)) {
-      item.shifts.push(row.shift);
-    }
-
-    if (row.code && !item.codes.includes(row.code)) {
-      item.codes.push(row.code);
-    }
-  }
-
-  return Array.from(map.values()).map(item => ({
-    corridor: item.corridor,
-    employee: item.employee,
-    shift: item.shifts.join(" + "),
-    code: mergeCodes(item.codes)
-  }));
+function splitEmployeeNames(line){
+return line.split(",").map(x=>x.trim()).filter(Boolean);
 }
 
-/* Correct combined attendance codes */
-function mergeCodes(codes) {
-  const unique = [...new Set(codes.filter(Boolean))];
+function parsePlan(){
+const text=document.getElementById("whatsappText").value;
 
-  if (unique.length === 0) return "";
-  if (unique.length === 1) return unique[0];
-
-  const sorted = unique.slice().sort();
-  const key = sorted.join("|");
-
-  const approved = {
-    "A|C/O": "A & C/O",
-    "C|C/O": "C/O & C",
-    "C|L": "L/C",
-    "A|C": "A/C"
-  };
-
-  return approved[key] || "CHECK";
+if(!text.trim()){
+alert("WhatsApp shift plan paste pannunga.");
+return;
 }
 
-/* Render preview */
-function renderPreview() {
-  const tbody = document.getElementById("attendanceRows");
-  tbody.innerHTML = "";
+let corridor="",shift="";
+const parsed=[];
 
-  attendanceData.forEach((row, index) => {
-    const tr = document.createElement("tr");
+for(const raw of text.split(/\r?\n/)){
+const line=cleanLine(raw);
+if(!line)continue;
 
-    let codeClass = "";
+const dc=identifyCorridor(line);
+if(dc){corridor=dc;shift="";continue;}
 
-    if (row.code === "CHECK") {
-      codeClass = "code-check";
-    } else if (row.code.includes("&")) {
-      codeClass = "code-combo";
-    }
+const ds=identifyHeading(line);
+if(ds){shift=ds;continue;}
 
-    tr.innerHTML = `
-      <td>
-        <select onchange="updateRow(${index},'corridor',this.value)">
-          <option value="C1" ${row.corridor === "C1" ? "selected" : ""}>C1</option>
-          <option value="C2" ${row.corridor === "C2" ? "selected" : ""}>C2</option>
-        </select>
-      </td>
+if(!corridor||!shift||isSkipLine(line))continue;
 
-      <td>
-        <input value="${escapeHTML(row.employee)}"
-          onchange="updateRow(${index},'employee',this.value)">
-      </td>
-
-      <td>
-        <input value="${escapeHTML(row.shift)}"
-          onchange="updateRow(${index},'shift',this.value)">
-      </td>
-
-      <td>
-        <input class="${codeClass}" value="${escapeHTML(row.code)}"
-          onchange="updateRow(${index},'code',this.value)">
-      </td>
-
-      <td>
-        <button class="danger" onclick="removeRow(${index})">Delete</button>
-      </td>
-    `;
-
-    tbody.appendChild(tr);
-  });
-
-  const c1Count = attendanceData.filter(x => x.corridor === "C1").length;
-  const c2Count = attendanceData.filter(x => x.corridor === "C2").length;
-  const checkCount = attendanceData.filter(x => x.code === "CHECK").length;
-
-  document.getElementById("count").innerHTML =
-    `<b>Total Employees: ${attendanceData.length}</b>
-     <br>C1: ${c1Count} | C2: ${c2Count}
-     ${checkCount
-       ? `<br><span style="color:#b45309"><b>CHECK required: ${checkCount}</b></span>`
-       : ""}`;
-
-  document.getElementById("preview").style.display = "block";
+for(const rawName of splitEmployeeNames(line)){
+const employee=extractEmployee(rawName);
+if(employee){
+parsed.push({
+corridor,
+employee,
+shift,
+code:SHIFT_CODES[shift]||"",
+role:identifyRole(employee)
+});
+}
+}
 }
 
-/* HTML safety */
-function escapeHTML(value) {
-  return String(value || "")
-    .replace(/&/g, "&amp;")
-    .replace(/"/g, "&quot;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+attendanceData=mergeRows(parsed);
+
+if(!attendanceData.length){
+alert("Employee names detect aagala. WhatsApp plan headings check pannunga.");
+return;
 }
 
-/* Edit row */
-function updateRow(index, field, value) {
-  attendanceData[index][field] = value.trim();
+renderPreview();
 }
 
-/* Delete employee */
-function removeRow(index) {
-  attendanceData.splice(index, 1);
-  renderPreview();
+function mergeRows(rows){
+const map=new Map();
+
+for(const row of rows){
+const employee=row.employee.trim();
+if(!employee)continue;
+
+const key=row.corridor+"|"+employee.toLowerCase();
+
+if(!map.has(key)){
+map.set(key,{
+corridor:row.corridor,
+employee,
+shifts:[],
+codes:[],
+role:row.role||identifyRole(employee)
+});
 }
 
-/* Add employee */
-function addEmployee() {
-  attendanceData.push({
-    corridor: "C1",
-    employee: "",
-    shift: "",
-    code: ""
-  });
+const item=map.get(key);
 
-  renderPreview();
+if(!item.shifts.includes(row.shift))
+item.shifts.push(row.shift);
+
+if(row.code&&!item.codes.includes(row.code))
+item.codes.push(row.code);
+
+if(item.role==="Unknown"&&row.role!=="Unknown")
+item.role=row.role;
 }
 
-/* Save attendance */
-function saveAttendance() {
-  const date = document.getElementById("attendanceDate").value;
-
-  if (!date) {
-    alert("Date select pannunga.");
-    return;
-  }
-
-  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-
-  saved[date] = attendanceData.map(row => ({
-    corridor: row.corridor,
-    employee: row.employee,
-    shift: row.shift,
-    code: row.code
-  }));
-
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
-
-  document.getElementById("loadDate").value = date;
-
-  document.getElementById("savedInfo").textContent =
-    "Saved: " + date + " | " + attendanceData.length + " employees";
-
-  alert("Attendance saved successfully!");
+return Array.from(map.values()).map(item=>({
+corridor:item.corridor,
+employee:item.employee,
+shift:item.shifts.join(" + "),
+code:mergeCodes(item.codes),
+role:item.role
+}));
 }
 
-/* Load saved attendance */
-function loadAttendance() {
-  const date = document.getElementById("loadDate").value;
-  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+// Existing approved attendance-combination logic retained.
+function mergeCodes(codes){
+const unique=[...new Set(codes.filter(Boolean))];
 
-  if (!saved[date]) {
-    alert("இந்த date-க்கு saved attendance இல்லை.");
-    return;
-  }
+if(!unique.length)return "";
+if(unique.length===1)return unique[0];
 
-  attendanceData = saved[date].map(row => ({
-    corridor: row.corridor || "C1",
-    employee: row.employee || "",
-    shift: row.shift || "",
-    code: row.code || ""
-  }));
+const key=unique.slice().sort().join("|");
 
-  document.getElementById("attendanceDate").value = date;
+const approved={
+"A|C/O":"A & C/O",
+"C|C/O":"C/O & C",
+"C|L":"L/C",
+"A|C":"A/C"
+};
 
-  renderPreview();
-
-  document.getElementById("savedInfo").textContent =
-    "Loaded: " + date + " | " + attendanceData.length + " employees";
+return approved[key]||"CHECK";
 }
 
-/* Delete saved attendance */
-function deleteSaved() {
-  const date = document.getElementById("loadDate").value;
-  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+function renderPreview(){
+const tbody=document.getElementById("attendanceRows");
+tbody.innerHTML="";
 
-  if (!saved[date]) {
-    alert("Saved attendance கிடைக்கவில்லை.");
-    return;
-  }
+attendanceData.forEach((row,index)=>{
+const tr=document.createElement("tr");
 
-  if (!confirm(date + " attendance delete pannava?")) return;
+const cc=row.code==="CHECK"?"code-check":row.code.includes("&")?"code-combo":"";
 
-  delete saved[date];
+tr.innerHTML=`
+<td>
+<select onchange="updateRow(${index},'corridor',this.value)">
+<option value="C1" ${row.corridor==="C1"?"selected":""}>C1</option>
+<option value="C2" ${row.corridor==="C2"?"selected":""}>C2</option>
+</select>
+</td>
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+<td>
+<input value="${escapeHTML(row.employee)}" onchange="updateRow(${index},'employee',this.value)">
+</td>
 
-  document.getElementById("savedInfo").textContent = "Deleted: " + date;
+<td>
+<input value="${escapeHTML(row.shift)}" onchange="updateRow(${index},'shift',this.value)">
+</td>
+
+<td>
+<input class="${cc}" value="${escapeHTML(row.code)}" onchange="updateRow(${index},'code',this.value)">
+</td>
+
+<td>
+<select onchange="updateRow(${index},'role',this.value)">
+<option value="Unknown" ${row.role==="Unknown"?"selected":""}>Unknown</option>
+<option value="Technician" ${row.role==="Technician"?"selected":""}>Technician</option>
+<option value="Supervisor" ${row.role==="Supervisor"?"selected":""}>Supervisor</option>
+</select>
+</td>
+
+<td>
+<button class="danger" onclick="removeRow(${index})">Delete</button>
+</td>
+`;
+
+tbody.appendChild(tr);
+});
+
+updateSummary();
+document.getElementById("preview").style.display="block";
 }
 
-/* Clear input */
-function clearInput() {
-  document.getElementById("whatsappText").value = "";
+function hasCode(code,token){
+const s=String(code||"").toUpperCase();
+
+if(token==="C/O")
+return /C\s*\/\s*O/.test(s);
+
+return new RegExp("(^|[^A-Z])"+token+"([^A-Z]|$)").test(s);
 }
 
-/* Export CSV */
-function exportCSV() {
-  if (!attendanceData.length) {
-    alert("Attendance data empty.");
-    return;
-  }
+function updateSummary(){
+const total=attendanceData.length;
+const c1=attendanceData.filter(x=>x.corridor==="C1").length;
+const c2=attendanceData.filter(x=>x.corridor==="C2").length;
+const sup=attendanceData.filter(x=>x.role==="Supervisor").length;
+const tech=attendanceData.filter(x=>x.role==="Technician").length;
+const unknown=attendanceData.filter(x=>x.role==="Unknown").length;
+const leave=attendanceData.filter(x=>hasCode(x.code,"L")).length;
+const combo=attendanceData.filter(x=>hasCode(x.code,"C/O")).length;
+const week=attendanceData.filter(x=>x.code==="R").length;
+const arrival=attendanceData.filter(x=>x.code==="ARR").length;
 
-  const date = document.getElementById("attendanceDate").value;
+document.getElementById("count").innerHTML=`
+<div class="summary-grid">
 
-  const rows = [
-    ["Date", "Corridor", "Employee Name", "Shift", "Code"],
-    ...attendanceData.map(r => [
-      date,
-      r.corridor,
-      r.employee,
-      r.shift,
-      r.code
-    ])
-  ];
+<div class="summary-tile total">
+<div class="label">Total Employees in Preview</div>
+<div class="value">${total}</div>
+</div>
 
-  const csv = rows.map(row =>
-    row.map(value =>
-      '"' + String(value || "").replace(/"/g, '""') + '"'
-    ).join(",")
-  ).join("\n");
+<div class="summary-tile corridor">
+<div class="label">C1 Count</div>
+<div class="value">${c1}</div>
+</div>
 
-  const blob = new Blob(["\uFEFF" + csv], {
-    type: "text/csv;charset=utf-8;"
-  });
+<div class="summary-tile corridor">
+<div class="label">C2 Count</div>
+<div class="value">${c2}</div>
+</div>
 
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "Attendance_" + date + ".csv";
-  link.click();
+<div class="summary-tile staff">
+<div class="label">Supervisor (Preview)</div>
+<div class="value">${sup}</div>
+</div>
 
-  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+<div class="summary-tile staff">
+<div class="label">Technician (Preview)</div>
+<div class="value">${tech}</div>
+</div>
+
+<div class="summary-tile master">
+<div class="label">Employee Master</div>
+<div class="value">47 total · 28 Supervisor · 19 Technician</div>
+</div>
+
+<div class="summary-tile off">
+<div class="label">Unknown Role</div>
+<div class="value">${unknown}</div>
+</div>
+
+<div class="summary-tile off">
+<div class="label">Leave (L)</div>
+<div class="value">${leave}</div>
+</div>
+
+<div class="summary-tile off">
+<div class="label">Combo Off (C/O)</div>
+<div class="value">${combo}</div>
+</div>
+
+<div class="summary-tile off">
+<div class="label">Week Off (R)</div>
+<div class="value">${week}</div>
+</div>
+
+<div class="summary-tile arrival">
+<div class="label">Arrival (ARR)</div>
+<div class="value">${arrival}</div>
+</div>
+
+</div>
+`;
+}
+
+function escapeHTML(v){
+return String(v||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function updateRow(index,field,value){
+attendanceData[index][field]=value.trim();
+
+if(field==="employee"&&attendanceData[index].role==="Unknown")
+attendanceData[index].role=identifyRole(value);
+
+updateSummary();
+}
+
+function removeRow(index){
+attendanceData.splice(index,1);
+renderPreview();
+}
+
+function addEmployee(){
+attendanceData.push({
+corridor:"C1",
+employee:"",
+shift:"",
+code:"",
+role:"Unknown"
+});
+renderPreview();
+}
+
+function saveAttendance(){
+const date=document.getElementById("attendanceDate").value;
+
+if(!date){
+alert("Date select pannunga.");
+return;
+}
+
+const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
+
+saved[date]=attendanceData.map(row=>({
+corridor:row.corridor,
+employee:row.employee,
+shift:row.shift,
+code:row.code,
+role:row.role||identifyRole(row.employee)
+}));
+
+localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));
+
+document.getElementById("loadDate").value=date;
+document.getElementById("savedInfo").textContent="Saved: "+date+" | "+attendanceData.length+" employees";
+
+alert("Attendance saved successfully!");
+}
+
+function loadAttendance(){
+const date=document.getElementById("loadDate").value;
+const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
+
+if(!saved[date]){
+alert("இந்த date-க்கு saved attendance இல்லை.");
+return;
+}
+
+attendanceData=saved[date].map(row=>({
+corridor:row.corridor||"C1",
+employee:row.employee||"",
+shift:row.shift||"",
+code:row.code||"",
+role:row.role||identifyRole(row.employee)
+}));
+
+document.getElementById("attendanceDate").value=date;
+renderPreview();
+
+document.getElementById("savedInfo").textContent="Loaded: "+date+" | "+attendanceData.length+" employees";
+}
+
+function deleteSaved(){
+const date=document.getElementById("loadDate").value;
+const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
+
+if(!saved[date]){
+alert("Saved attendance கிடைக்கவில்லை.");
+return;
+}
+
+if(!confirm(date+" attendance delete pannava?"))
+return;
+
+delete saved[date];
+localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));
+document.getElementById("savedInfo").textContent="Deleted: "+date;
+}
+
+function clearInput(){
+document.getElementById("whatsappText").value="";
+}
+
+function exportCSV(){
+if(!attendanceData.length){
+alert("Attendance data empty.");
+return;
+}
+
+const date=document.getElementById("attendanceDate").value;
+
+const rows=[
+["Date","Corridor","Employee Name","Shift","Code","Role"],
+...attendanceData.map(r=>[
+date,
+r.corridor,
+r.employee,
+r.shift,
+r.code,
+r.role||identifyRole(r.employee)
+])
+];
+
+const csv=rows.map(row=>
+row.map(value=>'"'+String(value||"").replace(/"/g,'""')+'"').join(",")
+).join("\n");
+
+const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+const link=document.createElement("a");
+link.href=URL.createObjectURL(blob);
+link.download="Attendance_"+date+".csv";
+link.click();
+
+setTimeout(()=>URL.revokeObjectURL(link.href),1000);
 }
 </script>
-
 </body>
 </html>

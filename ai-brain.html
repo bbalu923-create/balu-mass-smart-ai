@@ -1,0 +1,361 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balu Mass Smart AI - Brain</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b1020;
+    color: #ffffff;
+}
+
+.app {
+    max-width: 600px;
+    margin: auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #0b1020;
+}
+
+.header {
+    padding: 20px;
+    background: #131b30;
+    border-bottom: 1px solid #26334e;
+}
+
+.title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #66d9ff;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: #a8b6d3;
+    margin-top: 6px;
+}
+
+.brain-section {
+    text-align: center;
+    padding: 22px 15px;
+}
+
+.brain {
+    width: 100px;
+    height: 100px;
+    margin: auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    background: radial-gradient(circle, #174b83, #10172c);
+    border: 2px solid #35c7ff;
+    box-shadow: 0 0 25px #148cff55;
+}
+
+.status {
+    margin-top: 12px;
+    color: #5bffbd;
+    font-size: 13px;
+}
+
+.chat {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.message {
+    max-width: 85%;
+    padding: 13px;
+    margin-bottom: 12px;
+    border-radius: 15px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.bot {
+    background: #18243b;
+    border: 1px solid #263b5d;
+    align-self: flex-start;
+}
+
+.user {
+    background: #1268ce;
+    margin-left: auto;
+    align-self: flex-end;
+}
+
+.input-area {
+    padding: 12px;
+    background: #131b30;
+    border-top: 1px solid #26334e;
+    display: flex;
+    gap: 8px;
+}
+
+.input-area input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    border-radius: 25px;
+    background: #202c45;
+    padding: 14px;
+    color: white;
+    font-size: 16px;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+    color: white;
+    background: #1677ee;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+.mic {
+    background: #263954;
+}
+
+.footer {
+    text-align: center;
+    padding: 8px;
+    color: #7686a6;
+    font-size: 11px;
+    background: #0b1020;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="header">
+        <div class="title">🧠 BALU MASS SMART AI</div>
+        <div class="subtitle">Your Personal AI Assistant</div>
+    </div>
+
+    <div class="brain-section">
+        <div class="brain">🧠</div>
+        <div class="status" id="status">● BRAIN READY</div>
+    </div>
+
+    <div class="chat" id="chat">
+
+        <div class="message bot">
+            வணக்கம் Balu! 👋
+
+            நான் Balu Mass Smart AI.
+
+            உங்களுக்கு Office work, Attendance, Roster,
+            Reminders மற்றும் தினசரி வேலைகளில்
+            உதவ தயாராக இருக்கிறேன்.
+
+            என்ன உதவி வேண்டும்?
+        </div>
+
+    </div>
+
+    <div class="input-area">
+        <button class="mic" id="micBtn" onclick="voiceInput()">🎙️</button>
+
+        <input
+            type="text"
+            id="userInput"
+            placeholder="Message Balu Mass AI..."
+            autocomplete="off"
+        >
+
+        <button onclick="sendMessage()">➤</button>
+    </div>
+
+    <div class="footer">
+        BALU MASS SMART AI • BRAIN CORE
+    </div>
+
+</div>
+
+<script>
+
+const chat = document.getElementById("chat");
+const input = document.getElementById("userInput");
+const statusText = document.getElementById("status");
+
+function addMessage(text, type) {
+
+    const message = document.createElement("div");
+
+    message.className = "message " + type;
+
+    message.textContent = text;
+
+    chat.appendChild(message);
+
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function sendMessage() {
+
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    addMessage(text, "user");
+
+    input.value = "";
+
+    statusText.textContent = "● THINKING...";
+
+    setTimeout(() => {
+
+        const response = getResponse(text);
+
+        addMessage(response, "bot");
+
+        statusText.textContent = "● BRAIN READY";
+
+    }, 600);
+}
+
+function getResponse(text) {
+
+    const msg = text.toLowerCase();
+
+    if (
+        msg.includes("hello") ||
+        msg.includes("hi") ||
+        msg.includes("வணக்கம்")
+    ) {
+        return "வணக்கம் Balu! 😊\nநான் Balu Mass Smart AI. என்ன உதவி வேண்டும்?";
+    }
+
+    if (
+        msg.includes("roster") ||
+        msg.includes("shift")
+    ) {
+        return "Roster Assistant 🗓️\n\nRoster update செய்ய தேவையான staff details, shift மற்றும் leave details அனுப்புங்கள். அதை ஒழுங்குபடுத்த உதவுகிறேன்.";
+    }
+
+    if (
+        msg.includes("attendance") ||
+        msg.includes("அட்டனன்ஸ்")
+    ) {
+        return "Attendance Assistant 👥\n\nAttendance details அனுப்புங்கள். Present, Absent, Leave மற்றும் shift details ஒழுங்குபடுத்த உதவுகிறேன்.";
+    }
+
+    if (
+        msg.includes("reminder") ||
+        msg.includes("நினைவூட்ட")
+    ) {
+        return "Reminder Assistant 🔔\n\nஎந்த விஷயத்தை நினைவூட்ட வேண்டும், எந்த தேதி மற்றும் நேரம் என்று சொல்லுங்கள்.";
+    }
+
+    if (
+        msg.includes("office") ||
+        msg.includes("cmms")
+    ) {
+        return "Office Assistant 🏢\n\nOffice updates, CMMS pending tasks, maintenance reports மற்றும் messages-ஐ ஒழுங்குபடுத்த உதவுகிறேன்.";
+    }
+
+    if (
+        msg.includes("help") ||
+        msg.includes("உதவி")
+    ) {
+        return "Balu Mass Smart AI Assistant 🤖\n\n" +
+        "• Attendance\n" +
+        "• C1 / C2 Roster\n" +
+        "• Shift Management\n" +
+        "• Leave Management\n" +
+        "• CMMS Pending Tasks\n" +
+        "• Maintenance Reports\n" +
+        "• Reminders\n" +
+        "• Tamil & English Support";
+    }
+
+    return "உங்கள் message எனக்குக் கிடைத்தது 👍\n\n" +
+           "நீங்கள் கேட்டது:\n" + text +
+           "\n\nஇது தற்போது Demo Brain. " +
+           "உண்மையான AI intelligence-ஐ இணைத்த பிறகு " +
+           "உங்கள் கேள்விகளை AI மூலம் புரிந்து பதில் அளிக்க முடியும்.";
+}
+
+input.addEventListener("keypress", function(event) {
+
+    if (event.key === "Enter") {
+        sendMessage();
+    }
+
+});
+
+function voiceInput() {
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+
+        alert("Voice recognition இந்த browser-ல் support ஆகவில்லை. Chrome பயன்படுத்தவும்.");
+
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+
+    recognition.lang = "ta-IN";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    statusText.textContent = "● LISTENING...";
+
+    recognition.onresult = function(event) {
+
+        input.value = event.results[0][0].transcript;
+
+        statusText.textContent = "● BRAIN READY";
+
+        sendMessage();
+    };
+
+    recognition.onerror = function() {
+
+        statusText.textContent = "● BRAIN READY";
+
+        alert("Voice input failed. மீண்டும் முயற்சி செய்யுங்கள்.");
+    };
+
+    recognition.onend = function() {
+
+        if (statusText.textContent.includes("LISTENING")) {
+            statusText.textContent = "● BRAIN READY";
+        }
+    };
+
+    recognition.start();
+}
+
+</script>
+
+</body>
+</html>

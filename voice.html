@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balu Smart AI Voice Assistant</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#08111f;
+  color:#fff;
+  min-height:100vh;
+  padding:20px;
+}
+
+.container{
+  max-width:500px;
+  margin:auto;
+}
+
+.card{
+  background:#111e30;
+  border:1px solid #263c5a;
+  padding:20px;
+  border-radius:20px;
+  text-align:center;
+}
+
+h1{color:#60a5fa}
+
+.status{
+  color:#9ca3af;
+  margin:20px 0;
+}
+
+.mic{
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  font-size:35px;
+  border:none;
+  background:#2563eb;
+  color:white;
+  margin:20px auto;
+  cursor:pointer;
+}
+
+button{
+  padding:13px;
+  border-radius:12px;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.stop{
+  background:#dc2626;
+  color:white;
+}
+
+.box{
+  background:#081321;
+  padding:15px;
+  border-radius:12px;
+  margin-top:15px;
+  text-align:left;
+  min-height:60px;
+  overflow-wrap:anywhere;
+}
+
+.small{
+  color:#94a3b8;
+  font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="card">
+
+<h1>🤖 BALU SMART AI</h1>
+<p>Personal Voice Assistant</p>
+
+<div id="status" class="status">
+Ready to start
+</div>
+
+<button class="mic" onclick="startListening()">🎙️</button>
+
+<br>
+
+<button class="stop" onclick="stopListening()">STOP</button>
+
+<div class="box">
+<strong>You said:</strong>
+<div id="heard">Waiting for voice...</div>
+</div>
+
+<div class="box">
+<strong>Balu:</strong>
+<div id="reply">Vanakkam! I am Balu Smart AI.</div>
+</div>
+
+<p class="small">
+Tamil Voice Assistant • Voice Recognition
+</p>
+
+</div>
+</div>
+
+<script>
+
+let recognition;
+let listening=false;
+
+const statusBox=document.getElementById("status");
+const heardBox=document.getElementById("heard");
+const replyBox=document.getElementById("reply");
+
+function speak(text){
+
+replyBox.innerText=text;
+
+const speech=new SpeechSynthesisUtterance(text);
+
+speech.lang="ta-IN";
+speech.rate=0.9;
+speech.pitch=1;
+
+speechSynthesis.cancel();
+speechSynthesis.speak(speech);
+
+}
+
+function startListening(){
+
+const SpeechRecognition=
+window.SpeechRecognition ||
+window.webkitSpeechRecognition;
+
+if(!SpeechRecognition){
+
+statusBox.innerText="Voice recognition not supported in this browser";
+speak("Voice recognition indha browser la support aagala");
+return;
+
+}
+
+recognition=new SpeechRecognition();
+
+recognition.lang="ta-IN";
+recognition.continuous=false;
+recognition.interimResults=false;
+
+recognition.onstart=function(){
+
+listening=true;
+statusBox.innerText="Listening... Speak now";
+
+};
+
+recognition.onresult=function(event){
+
+const text=event.results[0][0].transcript;
+
+heardBox.innerText=text;
+
+processCommand(text);
+
+};
+
+recognition.onerror=function(event){
+
+statusBox.innerText="Voice error: "+event.error;
+
+};
+
+recognition.onend=function(){
+
+listening=false;
+
+if(statusBox.innerText==="Listening... Speak now"){
+statusBox.innerText="Ready";
+}
+
+};
+
+recognition.start();
+
+}
+
+function stopListening(){
+
+if(recognition){
+
+recognition.stop();
+
+}
+
+speechSynthesis.cancel();
+
+listening=false;
+
+statusBox.innerText="Stopped";
+
+}
+
+function processCommand(command){
+
+const text=command.toLowerCase().trim();
+
+statusBox.innerText="Processing...";
+
+if(text.includes("வணக்கம்") || text.includes("hello")){
+
+speak("வணக்கம்! நான் பாலு ஸ்மார்ட் ஏ ஐ. உங்களுக்கு என்ன உதவி வேண்டும்?");
+
+}
+
+else if(text.includes("உன் பெயர்") || text.includes("your name")){
+
+speak("என் பெயர் பாலு ஸ்மார்ட் ஏ ஐ.");
+
+}
+
+else if(text.includes("நேரம்") || text.includes("time")){
+
+const now=new Date();
+
+speak("இப்போது மணி "+now.getHours()+" மற்றும் "+now.getMinutes()+" நிமிடம்.");
+
+}
+
+else if(text.includes("நன்றி") || text.includes("thank you")){
+
+speak("உங்களுக்கு உதவுவதில் மகிழ்ச்சி.");
+
+}
+
+else if(text.includes("stop")){
+
+stopListening();
+
+}
+
+else{
+
+speak("நீங்கள் சொன்னது "+command+". இதற்கு உதவ நான் தயாராக இருக்கிறேன்.");
+
+}
+
+statusBox.innerText="Ready";
+
+}
+
+</script>
+
+</body>
+</html>

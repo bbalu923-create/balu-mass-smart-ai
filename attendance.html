@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +7,10 @@
 <title>Balu Smart AI - Attendance</title>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: Arial, sans-serif;
   background: #f2f5fb;
@@ -13,10 +18,12 @@ body {
   padding: 15px;
   color: #172033;
 }
+
 .container {
   max-width: 1000px;
   margin: auto;
 }
+
 .card {
   background: white;
   padding: 16px;
@@ -24,17 +31,25 @@ body {
   margin-bottom: 15px;
   box-shadow: 0 2px 10px #0001;
 }
-h2, h3 { margin-top: 5px; }
+
+h2, h3 {
+  margin-top: 5px;
+}
+
 textarea, input, select {
   width: 100%;
-  box-sizing: border-box;
   padding: 11px;
   margin: 7px 0;
   border: 1px solid #ccd3df;
   border-radius: 8px;
   font-size: 15px;
 }
-textarea { min-height: 200px; }
+
+textarea {
+  min-height: 200px;
+  resize: vertical;
+}
+
 button {
   padding: 11px 14px;
   border: 0;
@@ -45,29 +60,101 @@ button {
   background: #1459d9;
   color: white;
 }
-button.secondary { background: #475569; }
-button.danger { background: #dc2626; }
-button.success { background: #15803d; }
+
+button.secondary {
+  background: #475569;
+}
+
+button.danger {
+  background: #dc2626;
+}
+
+button.success {
+  background: #15803d;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+}
 
 table {
   width: 100%;
+  min-width: 650px;
   border-collapse: collapse;
   background: white;
 }
+
 th, td {
   border: 1px solid #ddd;
   padding: 7px;
   text-align: left;
+  vertical-align: middle;
 }
-th { background: #e8efff; }
-td input, td select { min-width: 100px; }
-.table-wrap { overflow-x: auto; }
-.small { color: #667085; font-size: 13px; }
-#preview { display: none; }
+
+th {
+  background: #e8efff;
+  white-space: nowrap;
+}
+
+td input, td select {
+  min-width: 100px;
+  margin: 2px 0;
+}
+
+td:nth-child(2) input {
+  min-width: 160px;
+}
+
+td:nth-child(3) input {
+  min-width: 170px;
+}
+
+td:nth-child(4) input {
+  min-width: 110px;
+  font-weight: bold;
+}
+
+.small {
+  color: #667085;
+  font-size: 13px;
+}
+
+#preview {
+  display: none;
+}
+
 .code-check {
   background: #fff1c2;
   color: #7a4b00;
   font-weight: bold;
+}
+
+.code-combo {
+  background: #e0f2fe;
+  color: #075985;
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 8px;
+  }
+
+  .card {
+    padding: 12px;
+  }
+
+  button {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  table {
+    min-width: 650px;
+  }
 }
 </style>
 </head>
@@ -141,19 +228,21 @@ const SHIFT_CODES = {
 
 let attendanceData = [];
 
-/* Local date (avoids UTC date issue) */
+/* Local date */
 function getLocalDate() {
   const d = new Date();
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+
+  return (
+    d.getFullYear() + "-" +
+    String(d.getMonth() + 1).padStart(2, "0") + "-" +
+    String(d.getDate()).padStart(2, "0")
+  );
 }
 
 document.getElementById("attendanceDate").value = getLocalDate();
 document.getElementById("loadDate").value = getLocalDate();
 
-/* Remove WhatsApp formatting */
+/* Clean WhatsApp formatting */
 function cleanLine(s) {
   return s
     .replace(/\*/g, "")
@@ -161,29 +250,42 @@ function cleanLine(s) {
     .trim();
 }
 
-/* Detect corridor */
+/* Corridor detection */
 function identifyCorridor(line) {
   const t = line.toUpperCase().trim();
 
-  if (/^(C\s*[-]?\s*1|CORRIDOR\s*[-]?\s*1)\b/.test(t) ||
-      /\bCORRIDOR\s*[-]?\s*1\b/.test(t)) {
+  if (
+    /^(C\s*[-]?\s*1|CORRIDOR\s*[-]?\s*1)\b/.test(t) ||
+    /\bCORRIDOR\s*[-]?\s*1\b/.test(t)
+  ) {
     return "C1";
   }
 
-  if (/^(C\s*[-]?\s*2|CORRIDOR\s*[-]?\s*2)\b/.test(t) ||
-      /\bCORRIDOR\s*[-]?\s*2\b/.test(t)) {
+  if (
+    /^(C\s*[-]?\s*2|CORRIDOR\s*[-]?\s*2)\b/.test(t) ||
+    /\bCORRIDOR\s*[-]?\s*2\b/.test(t)
+  ) {
     return "C2";
   }
 
   return "";
 }
 
-/* Detect shift headings */
+/* Shift / category heading detection */
 function identifyHeading(line) {
-  const t = line.toLowerCase().replace(/[*:_-]/g, " ").trim();
+  const t = line.toLowerCase()
+    .replace(/[*:_-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 
-  if (/night shift.*mainline|mainline.*night shift|night shift reporting.*mainline/.test(t))
+  /* Mainline Night must be checked before normal Night Shift */
+  if (
+    /night shift.*mainline/.test(t) ||
+    /mainline.*night shift/.test(t) ||
+    /night shift reporting/.test(t)
+  ) {
     return "Mainline Night";
+  }
 
   if (/first shift/.test(t))
     return "First Shift";
@@ -200,10 +302,13 @@ function identifyHeading(line) {
   if (/week off/.test(t))
     return "Week Off";
 
-  if (/comp\s*off|compensatory off/.test(t))
+  if (/comp\s*off|combo\s*off|compensatory off/.test(t))
     return "Comp Off";
 
-  if (/^\s*(arrival|arr)\b/.test(t) || /\b(arrival list|arrival staff)\b/.test(t))
+  if (
+    /^\s*(arrival|arr)\b/.test(t) ||
+    /\b(arrival list|arrival staff)\b/.test(t)
+  )
     return "Arrival";
 
   if (/^\s*leave\b/.test(t))
@@ -212,14 +317,14 @@ function identifyHeading(line) {
   return "";
 }
 
-/* Ignore non-employee lines */
+/* Ignore headings, timings and non-employee lines */
 function isSkipLine(line) {
   if (!line) return true;
 
   if (/^(work activity|planned|date|dear|sir|madam|corridor|shift plan)\b/i.test(line))
     return true;
 
-  if (/^(first shift|second shift|general shift|night shift|week off|comp off|leave|arrival|arr)\b/i.test(line))
+  if (/^(first shift|second shift|general shift|night shift|week off|comp off|combo off|leave|arrival|arr)\b/i.test(line))
     return true;
 
   if (/from\s+\d{1,2}[:.]\d{2}/i.test(line))
@@ -234,7 +339,7 @@ function isSkipLine(line) {
   return false;
 }
 
-/* Remove extra information; keep employee name only */
+/* Extract employee name */
 function extractEmployee(line) {
   line = line.replace(/^\d+[\.\)]\s*/, "");
   line = line.replace(/^[-•]\s*/, "");
@@ -243,12 +348,11 @@ function extractEmployee(line) {
   if (isSkipLine(line)) return null;
   if (line.length > 100) return null;
 
-  /* Remove bracketed information:
-     EPIC, SMR, In Place Of, Reliever, designation etc. */
+  /* Remove bracket information */
   line = line.replace(/\([^)]*\)/g, "");
   line = line.replace(/\[[^\]]*\]/g, "");
 
-  /* Remove remaining unwanted labels */
+  /* Remove extra labels */
   line = line.replace(/\bEPIC\b/ig, "");
   line = line.replace(/\bSMR\b/ig, "");
   line = line.replace(/\bReliever\b/ig, "");
@@ -262,12 +366,12 @@ function extractEmployee(line) {
   return line;
 }
 
-/* Split comma-separated names while respecting brackets */
+/* Split multiple names */
 function splitEmployeeNames(line) {
   return line.split(",").map(x => x.trim()).filter(Boolean);
 }
 
-/* Parse WhatsApp plan */
+/* Parse WhatsApp shift plan */
 function parsePlan() {
   const text = document.getElementById("whatsappText").value;
 
@@ -278,14 +382,15 @@ function parsePlan() {
 
   let corridor = "";
   let shift = "";
-  const parsed = [];
 
+  const parsed = [];
   const lines = text.split(/\r?\n/);
 
   for (const raw of lines) {
     const line = cleanLine(raw);
     if (!line) continue;
 
+    /* Corridor */
     const detectedCorridor = identifyCorridor(line);
 
     if (detectedCorridor) {
@@ -294,6 +399,7 @@ function parsePlan() {
       continue;
     }
 
+    /* Heading */
     const detectedShift = identifyHeading(line);
 
     if (detectedShift) {
@@ -329,7 +435,7 @@ function parsePlan() {
   renderPreview();
 }
 
-/* Merge duplicate names within the same corridor */
+/* Merge duplicate employees */
 function mergeRows(rows) {
   const map = new Map();
 
@@ -359,18 +465,15 @@ function mergeRows(rows) {
     }
   }
 
-  return Array.from(map.values()).map(item => {
-    return {
-      corridor: item.corridor,
-      employee: item.employee,
-      shift: item.shifts.join(" + "),
-      code: mergeCodes(item.codes),
-    };
-  });
+  return Array.from(map.values()).map(item => ({
+    corridor: item.corridor,
+    employee: item.employee,
+    shift: item.shifts.join(" + "),
+    code: mergeCodes(item.codes)
+  }));
 }
 
-/* Only approved combinations */
-/* Only approved combinations */
+/* Correct combined attendance codes */
 function mergeCodes(codes) {
   const unique = [...new Set(codes.filter(Boolean))];
 
@@ -381,8 +484,8 @@ function mergeCodes(codes) {
   const key = sorted.join("|");
 
   const approved = {
-    "A|C/O": "A&C/O",
-    "C|C/O": "C/O&C",
+    "A|C/O": "A & C/O",
+    "C|C/O": "C/O & C",
     "C|L": "L/C",
     "A|C": "A/C"
   };
@@ -390,7 +493,7 @@ function mergeCodes(codes) {
   return approved[key] || "CHECK";
 }
 
-/* Preview */
+/* Render preview */
 function renderPreview() {
   const tbody = document.getElementById("attendanceRows");
   tbody.innerHTML = "";
@@ -398,7 +501,13 @@ function renderPreview() {
   attendanceData.forEach((row, index) => {
     const tr = document.createElement("tr");
 
-    const codeClass = row.code === "CHECK" ? "code-check" : "";
+    let codeClass = "";
+
+    if (row.code === "CHECK") {
+      codeClass = "code-check";
+    } else if (row.code.includes("&")) {
+      codeClass = "code-combo";
+    }
 
     tr.innerHTML = `
       <td>
@@ -438,7 +547,9 @@ function renderPreview() {
   document.getElementById("count").innerHTML =
     `<b>Total Employees: ${attendanceData.length}</b>
      <br>C1: ${c1Count} | C2: ${c2Count}
-     ${checkCount ? `<br><span style="color:#b45309"><b>CHECK required: ${checkCount}</b></span>` : ""}`;
+     ${checkCount
+       ? `<br><span style="color:#b45309"><b>CHECK required: ${checkCount}</b></span>`
+       : ""}`;
 
   document.getElementById("preview").style.display = "block";
 }
@@ -452,7 +563,7 @@ function escapeHTML(value) {
     .replace(/>/g, "&gt;");
 }
 
-/* Edit */
+/* Edit row */
 function updateRow(index, field, value) {
   attendanceData[index][field] = value.trim();
 }
@@ -463,7 +574,7 @@ function removeRow(index) {
   renderPreview();
 }
 
-/* Add employee manually */
+/* Add employee */
 function addEmployee() {
   attendanceData.push({
     corridor: "C1",
@@ -486,7 +597,6 @@ function saveAttendance() {
 
   const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
 
-  /* Save only required fields */
   saved[date] = attendanceData.map(row => ({
     corridor: row.corridor,
     employee: row.employee,
@@ -514,7 +624,6 @@ function loadAttendance() {
     return;
   }
 
-  /* Old saved data cleanup */
   attendanceData = saved[date].map(row => ({
     corridor: row.corridor || "C1",
     employee: row.employee || "",
@@ -530,7 +639,7 @@ function loadAttendance() {
     "Loaded: " + date + " | " + attendanceData.length + " employees";
 }
 
-/* Delete saved attendance date */
+/* Delete saved attendance */
 function deleteSaved() {
   const date = document.getElementById("loadDate").value;
   const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
@@ -549,7 +658,7 @@ function deleteSaved() {
   document.getElementById("savedInfo").textContent = "Deleted: " + date;
 }
 
-/* Clear pasted plan */
+/* Clear input */
 function clearInput() {
   document.getElementById("whatsappText").value = "";
 }
@@ -592,5 +701,6 @@ function exportCSV() {
   setTimeout(() => URL.revokeObjectURL(link.href), 1000);
 }
 </script>
+
 </body>
 </html>

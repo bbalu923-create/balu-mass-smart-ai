@@ -15,173 +15,131 @@
 body {
   font-family: Arial, sans-serif;
   background: #080e19;
-  color: white;
-  padding: 15px;
+  color: #f8fafc;
+  padding: 16px;
 }
 
 .container {
-  max-width: 900px;
+  max-width: 1000px;
   margin: auto;
 }
 
 .header {
+  background: linear-gradient(135deg, #16243b, #203b61);
+  border: 1px solid #2c4566;
+  border-radius: 22px;
+  padding: 25px 18px;
   text-align: center;
-  background: #18263a;
-  padding: 25px 15px;
-  border-radius: 18px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .header h1 {
   font-size: 26px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .header p {
-  color: #a8bbd3;
+  color: #a9bfd9;
+  font-size: 15px;
 }
 
 .date {
   text-align: center;
   color: #80baff;
-  margin-bottom: 20px;
+  margin: 18px 0;
   font-size: 15px;
 }
 
 .welcome {
-  background: #18263a;
-  border-radius: 18px;
-  padding: 20px;
-  margin-bottom: 20px;
+  background: #142238;
+  border: 1px solid #283c58;
+  border-radius: 20px;
+  padding: 22px;
+  margin-bottom: 25px;
 }
 
 .welcome h2 {
-  margin-bottom: 10px;
+  font-size: 24px;
+  margin-bottom: 12px;
 }
 
 .welcome p {
-  color: #a8bbd3;
+  color: #a6b8ce;
   line-height: 1.6;
+  font-size: 15px;
 }
 
 .section-title {
-  margin: 22px 0 14px;
-  font-size: 20px;
+  font-size: 21px;
+  margin-bottom: 15px;
 }
 
 .modules {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: 13px;
 }
 
 .card {
-  background: #121d2e;
-  border: 1px solid #25364d;
-  border-radius: 15px;
-  padding: 16px;
-  min-height: 145px;
+  background: #121e30;
+  border: 1px solid #293b55;
+  border-radius: 18px;
+  padding: 17px;
+  min-height: 175px;
+  display: flex;
+  flex-direction: column;
 }
 
-.card .icon {
-  font-size: 28px;
-  margin-bottom: 10px;
+.icon {
+  font-size: 32px;
+  margin-bottom: 12px;
 }
 
 .card h3 {
-  font-size: 16px;
-  margin-bottom: 8px;
+  font-size: 17px;
+  margin-bottom: 9px;
 }
 
 .card p {
-  color: #94a8c0;
+  color: #9eb1c9;
   font-size: 13px;
   line-height: 1.5;
+  margin-bottom: 15px;
 }
 
-.status {
+.btn {
   display: inline-block;
-  margin-top: 10px;
-  background: #203953;
-  color: #7dbaff;
-  padding: 5px 9px;
-  border-radius: 20px;
-  font-size: 11px;
-}
-
-.card-button {
-  text-decoration: none;
-  color: white;
-  display: block;
-}
-
-.card-button:active {
-  transform: scale(0.98);
-}
-
-.dashboard {
-  background: #18263a;
-  border-radius: 18px;
-  padding: 18px;
-  margin-top: 22px;
-}
-
-.dashboard h2 {
-  font-size: 20px;
-  margin-bottom: 15px;
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-bottom: 15px;
-}
-
-.stat {
-  background: #233449;
-  padding: 14px 5px;
-  text-align: center;
-  border-radius: 12px;
-}
-
-.stat h3 {
-  font-size: 23px;
-  margin-bottom: 5px;
-}
-
-.stat p {
-  font-size: 12px;
-  color: #9fb3c9;
-}
-
-.open-button {
-  display: block;
-  width: 100%;
   text-decoration: none;
   text-align: center;
+  background: #203a5a;
+  color: #81bbff;
+  padding: 9px 14px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: bold;
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+.btn.open {
   background: #2563eb;
   color: white;
-  padding: 14px;
-  border-radius: 12px;
-  font-weight: bold;
-  font-size: 16px;
 }
 
 .footer {
   text-align: center;
-  margin: 25px 0;
-  color: #71849c;
+  color: #64748b;
   font-size: 12px;
+  padding: 25px 10px;
 }
 
-@media (max-width: 400px) {
-  .header h1 {
-    font-size: 22px;
+@media (min-width: 700px) {
+  .modules {
+    grid-template-columns: repeat(3, 1fr);
   }
 
-  .card {
-    padding: 13px;
+  .header h1 {
+    font-size: 32px;
   }
 }
 </style>
@@ -191,146 +149,117 @@ body {
 
 <div class="container">
 
-<header class="header">
-  <h1>🤖 BALU MASS SMART AI</h1>
-  <p>Personal AI Control Center</p>
-</header>
-
-<div class="date" id="todayDate"></div>
-
-<section class="welcome">
-  <h2 id="greeting">Welcome, Balu 👋</h2>
-  <p>
-    Your personal assistant to manage work, daily tasks,
-    CMRL activities, reminders and productivity.
-  </p>
-</section>
-
-<h2 class="section-title">⚡ Smart Modules</h2>
-
-<div class="modules">
-
-<a class="card-button" href="daily.html">
-<div class="card">
-  <div class="icon">🤖</div>
-  <h3>Daily Assistant</h3>
-  <p>Manage daily tasks and reminders</p>
-  <span class="status">OPEN</span>
-</div>
-</a>
-
-<a class="card-button" href="roster.html">
-<div class="card">
-  <div class="icon">👷</div>
-  <h3>CMRL Roster</h3>
-  <p>C1 & C2 shift management</p>
-  <span class="status">OPEN</span>
-</div>
-</a>
-
-<div class="card">
-  <div class="icon">📊</div>
-  <h3>Attendance & Billing</h3>
-  <p>Monthly attendance and billing management</p>
-  <span class="status">COMING SOON</span>
-</div>
-
-<div class="card">
-  <div class="icon">🔧</div>
-  <h3>Maintenance Tracker</h3>
-  <p>CMMS and maintenance task tracking</p>
-  <span class="status">COMING SOON</span>
-</div>
-
-<div class="card">
-  <div class="icon">📚</div>
-  <h3>English Learning</h3>
-  <p>Daily English practice</p>
-  <span class="status">COMING SOON</span>
-</div>
-
-<div class="card">
-  <div class="icon">💬</div>
-  <h3>WhatsApp Assistant</h3>
-  <p>Smart office messages</p>
-  <span class="status">COMING SOON</span>
-</div>
-
-<div class="card">
-  <div class="icon">🔔</div>
-  <h3>Smart Reminders</h3>
-  <p>Important tasks and notifications</p>
-  <span class="status">COMING SOON</span>
-</div>
-
-<div class="card">
-  <div class="icon">📈</div>
-  <h3>Daily Reports</h3>
-  <p>Work summary and progress</p>
-  <span class="status">COMING SOON</span>
-</div>
-
-</div>
-
-<div class="dashboard">
-  <h2>📊 Live Task Dashboard</h2>
-
-  <div class="stats">
-    <div class="stat">
-      <h3>1</h3>
-      <p>Total</p>
-    </div>
-
-    <div class="stat">
-      <h3 style="color:#ffbd59;">1</h3>
-      <p>Pending</p>
-    </div>
-
-    <div class="stat">
-      <h3 style="color:#55d69e;">0</h3>
-      <p>Completed</p>
-    </div>
+  <div class="header">
+    <h1>🤖 BALU MASS SMART AI</h1>
+    <p>Personal AI Control Center</p>
   </div>
 
-  <a class="open-button" href="daily.html">
-    📋 Open My Tasks
-  </a>
-</div>
+  <div class="date" id="date"></div>
 
-<div class="footer">
-  Balu Mass Smart AI · Personal Assistant
-  <br><br>
-  Version 3.0
-</div>
+  <div class="welcome">
+    <h2 id="greeting">Welcome, Balu 👋</h2>
+    <p>
+      Your personal assistant to manage daily work, CMRL activities,
+      tasks, reminders and productivity.
+    </p>
+  </div>
+
+  <h2 class="section-title">⚡ Smart Modules</h2>
+
+  <div class="modules">
+
+    <div class="card">
+      <div class="icon">🤖</div>
+      <h3>Daily Assistant</h3>
+      <p>Manage daily tasks and reminders.</p>
+      <a href="daily.html" class="btn open">OPEN</a>
+    </div>
+
+    <div class="card">
+      <div class="icon">👷</div>
+      <h3>CMRL Roster</h3>
+      <p>C1 & C2 shift management.</p>
+      <a href="roster.html" class="btn open">OPEN</a>
+    </div>
+
+    <div class="card">
+      <div class="icon">📊</div>
+      <h3>Attendance & Billing</h3>
+      <p>Monthly attendance and billing management.</p>
+      <span class="btn">COMING SOON</span>
+    </div>
+
+    <div class="card">
+      <div class="icon">🔧</div>
+      <h3>Maintenance Tracker</h3>
+      <p>CMMS and maintenance task tracking.</p>
+      <span class="btn">COMING SOON</span>
+    </div>
+
+    <div class="card">
+      <div class="icon">📚</div>
+      <h3>English Learning</h3>
+      <p>Daily English practice and improvement.</p>
+      <<span class="btn">COMING SOON</span>
+    </div>
+
+    <div class="card">
+      <div class="icon">💬</div>
+      <h3>WhatsApp Assistant</h3>
+      <p>Smart messages and office communication.</p>
+      <<span class="btn">COMING SOON</span>
+    </div>
+
+    <div class="card">
+      <div class="icon">🔔</div>
+      <h3>Smart Reminders</h3>
+      <p>Important tasks and notifications.</p>
+      <<span class="btn">COMING SOON</span>
+    </div>
+
+    <div class="card">
+      <div class="icon">📈</div>
+      <h3>Daily Reports</h3>
+      <<p>Work summary and daily progress.</p>
+      <<span class="btn">COMING SOON</span>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <p>🧠 Balu Mass Smart AI · Personal Assistant</p>
+    <p style="margin-top:8px;">Version 3.0</p>
+  </div>
 
 </div>
 
 <script>
-const today = new Date();
+function updateDate() {
+  const now = new Date();
 
-document.getElementById("todayDate").textContent =
-  today.toLocaleDateString("en-IN", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric"
-  });
+  document.getElementById("date").innerText =
+    now.toLocaleDateString("en-IN", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
 
-const hour = today.getHours();
-let greeting = "Welcome, Balu 👋";
+  const hour = now.getHours();
 
-if (hour >= 5 && hour < 12) {
-  greeting = "Good Morning, Balu ☀️";
-} else if (hour >= 12 && hour < 17) {
-  greeting = "Good Afternoon, Balu 🌤️";
-} else if (hour >= 17 && hour < 21) {
-  greeting = "Good Evening, Balu 🌆";
-} else {
-  greeting = "Good Night, Balu 🌙";
+  let greeting = "Good Evening, Balu 🌆";
+
+  if (hour < 12) {
+    greeting = "Good Morning, Balu ☀️";
+  } else if (hour < 17) {
+    greeting = "Good Afternoon, Balu 🌤️";
+  }
+
+  document.getElementById("greeting").innerText = greeting;
 }
 
-document.getElementById("greeting").textContent = greeting;
+updateDate();
 </script>
 
 </body>
-</html>
+      </html>

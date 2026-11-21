@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMRL Roster Manager</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #101827;
+  color: white;
+  padding: 16px;
+}
+
+header {
+  background: #1e293b;
+  padding: 24px;
+  text-align: center;
+  border-radius: 18px;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 26px;
+}
+
+header p {
+  color: #a9bad0;
+}
+
+.card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 18px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 12px;
+  border-radius: 12px;
+  border: 1px solid #475569;
+  font-size: 16px;
+}
+
+input, select {
+  background: #101827;
+  color: white;
+}
+
+button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.delete {
+  background: #dc2626;
+}
+
+.employee {
+  background: #101827;
+  border: 1px solid #475569;
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 12px;
+}
+
+.employee h3 {
+  margin-top: 0;
+}
+
+.small {
+  color: #9caec5;
+}
+
+#total {
+  font-size: 22px;
+  font-weight: bold;
+  color: #60a5fa;
+  margin-bottom: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🚇 CMRL Roster Manager</h1>
+<p>C1 & C2 Shift Management</p>
+</header>
+
+<div class="card">
+<h2>➕ Add Employee</h2>
+
+<input id="name" placeholder="Employee Name">
+
+<input id="empid" placeholder="Employee ID">
+
+<select id="corridor">
+<option value="C1">Corridor 1</option>
+<option value="C2">Corridor 2</option>
+</select>
+
+<select id="shift">
+<option value="Morning">Morning Shift</option>
+<option value="Afternoon">Afternoon Shift</option>
+<option value="Night">Night Shift</option>
+<option value="General">General Shift</option>
+<option value="Weekly Off">Weekly Off</option>
+<option value="Leave">Leave</option>
+<option value="Comp Off">Comp Off</option>
+</select>
+
+<input id="date" type="date">
+
+<button onclick="addEmployee()">➕ Add Employee</button>
+</div>
+
+<div class="card">
+<h2>📋 Employee Roster</h2>
+
+<div id="total">Total: 0</div>
+
+<select id="filter" onchange="showEmployees()">
+<option value="All">All Employees</option>
+<option value="C1">Corridor 1</option>
+<option value="C2">Corridor 2</option>
+</select>
+
+<div id="employees"></div>
+</div>
+
+<div class="card">
+<button onclick="copyRoster()">📲 Copy WhatsApp Roster</button>
+</div>
+
+<div class="card">
+<button onclick="location.href='index.html'">🏠 Back to Home</button>
+</div>
+
+<script>
+
+let employees = JSON.parse(localStorage.getItem("cmrlRoster") || "[]");
+
+function saveData() {
+  localStorage.setItem("cmrlRoster", JSON.stringify(employees));
+}
+
+function addEmployee() {
+
+  let name = document.getElementById("name").value.trim();
+  let empid = document.getElementById("empid").value.trim();
+  let corridor = document.getElementById("corridor").value;
+  let shift = document.getElementById("shift").value;
+  let date = document.getElementById("date").value;
+
+  if (!name) {
+    alert("Please enter employee name");
+    return;
+  }
+
+  if (!date) {
+    alert("Please select date");
+    return;
+  }
+
+  employees.push({
+    name: name,
+    empid: empid,
+    corridor: corridor,
+    shift: shift,
+    date: date
+  });
+
+  saveData();
+
+  document.getElementById("name").value = "";
+  document.getElementById("empid").value = "";
+
+  showEmployees();
+
+  alert("Employee added successfully!");
+}
+
+function escapeHTML(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function showEmployees() {
+
+  let filter = document.getElementById("filter").value;
+  let container = document.getElementById("employees");
+
+  container.innerHTML = "";
+
+  let filtered = employees.filter(emp =>
+    filter === "All" || emp.corridor === filter
+  );
+
+  document.getElementById("total").innerText =
+    "Total: " + filtered.length;
+
+  if (filtered.length === 0) {
+    container.innerHTML =
+      "<p class='small'>No employees found.</p>";
+    return;
+  }
+
+  filtered.forEach(emp => {
+
+    let div = document.createElement("div");
+    div.className = "employee";
+
+    div.innerHTML = `
+      <h3>👤 ${escapeHTML(emp.name)}</h3>
+      <p>Employee ID: ${escapeHTML(emp.empid || "-")}</p>
+      <p>🚇 Corridor: ${escapeHTML(emp.corridor)}</p>
+      <p>🕒 Shift: ${escapeHTML(emp.shift)}</p>
+      <p>📅 Date: ${escapeHTML(emp.date)}</p>
+      <button class="delete"
+      onclick="deleteEmployee(${employees.indexOf(emp)})">
+      🗑️ Delete
+      </button>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+function deleteEmployee(index) {
+
+  if (confirm("Delete this employee roster entry?")) {
+
+    employees.splice(index, 1);
+
+    saveData();
+    showEmployees();
+  }
+}
+
+function copyRoster() {
+
+  let filter = document.getElementById("filter").value;
+
+  let filtered = employees.filter(emp =>
+    filter === "All" || emp.corridor === filter
+  );
+
+  let text = "🚇 CMRL DUTY ROSTER\n\n";
+
+  filtered.forEach(emp => {
+
+    text +=
+      "👤 " + emp.name +
+      "\n🆔 " + (emp.empid || "-") +
+      "\n🚇 " + emp.corridor +
+      "\n🕒 " + emp.shift +
+      "\n📅 " + emp.date +
+      "\n----------------------\n";
+  });
+
+  if (navigator.clipboard) {
+
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        alert("Roster copied successfully!");
+      })
+      .catch(() => {
+        fallbackCopy(text);
+      });
+
+  } else {
+
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+
+  let textarea = document.createElement("textarea");
+
+  textarea.value = text;
+  document.body.appendChild(textarea);
+
+  textarea.select();
+
+  document.execCommand("copy");
+
+  document.body.removeChild(textarea);
+
+  alert("Roster copied!");
+}
+
+showEmployees();
+
+</script>
+
+</body>
+</html>

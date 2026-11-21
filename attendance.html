@@ -370,6 +370,7 @@ function mergeRows(rows) {
 }
 
 /* Only approved combinations */
+/* Only approved combinations */
 function mergeCodes(codes) {
   const unique = [...new Set(codes.filter(Boolean))];
 
@@ -377,22 +378,16 @@ function mergeCodes(codes) {
   if (unique.length === 1) return unique[0];
 
   const sorted = unique.slice().sort();
-
   const key = sorted.join("|");
 
   const approved = {
-    "A|C": "A&C",
-    "C/O|C": "C/O&C",
     "A|C/O": "A&C/O",
-    "A|L": "A/L",
+    "C|C/O": "C/O&C",
     "C|L": "L/C",
-    "C/O|L": "L&C/O"
+    "A|C": "A/C"
   };
 
-  if (approved[key]) return approved[key];
-
-  /* Unapproved combinations will not be silently guessed */
-  return "CHECK";
+  return approved[key] || "CHECK";
 }
 
 /* Preview */

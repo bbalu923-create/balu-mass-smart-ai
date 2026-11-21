@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,196 +7,182 @@
 
 <style>
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background: #080e19;
-    color: white;
-    min-height: 100vh;
-    padding: 18px;
+  font-family: Arial, sans-serif;
+  background: #080e19;
+  color: white;
+  padding: 15px;
 }
 
 .container {
-    max-width: 600px;
-    margin: auto;
+  max-width: 900px;
+  margin: auto;
 }
 
 .header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 25px;
-}
-
-.logo {
-    width: 55px;
-    height: 55px;
-    border-radius: 18px;
-    background: linear-gradient(135deg, #1685ff, #674cff);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 27px;
-    box-shadow: 0 0 25px #167cff33;
+  text-align: center;
+  background: #18263a;
+  padding: 25px 15px;
+  border-radius: 18px;
+  margin-bottom: 20px;
 }
 
 .header h1 {
-    font-size: 20px;
-    font-weight: 700;
+  font-size: 26px;
+  margin-bottom: 8px;
 }
 
 .header p {
-    color: #8c9db5;
-    font-size: 12px;
-    margin-top: 5px;
+  color: #a8bbd3;
 }
 
 .date {
-    color: #8c9db5;
-    font-size: 12px;
-    margin-bottom: 18px;
+  text-align: center;
+  color: #80baff;
+  margin-bottom: 20px;
+  font-size: 15px;
 }
 
 .welcome {
-    background: linear-gradient(135deg, #142944, #17203c, #25214c);
-    border: 1px solid #283f60;
-    border-radius: 22px;
-    padding: 23px;
-    margin-bottom: 22px;
-}
-
-.welcome small {
-    color: #86baff;
-    font-size: 12px;
+  background: #18263a;
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 20px;
 }
 
 .welcome h2 {
-    font-size: 24px;
-    margin: 12px 0 8px;
+  margin-bottom: 10px;
 }
 
 .welcome p {
-    color: #bac9df;
-    font-size: 13px;
-    line-height: 1.6;
-}
-
-.ai-button {
-    display: block;
-    text-decoration: none;
-    margin-top: 18px;
-    padding: 13px;
-    text-align: center;
-    border-radius: 12px;
-    background: linear-gradient(90deg, #267dff, #6355ff);
-    color: white;
-    font-weight: bold;
-    font-size: 14px;
+  color: #a8bbd3;
+  line-height: 1.6;
 }
 
 .section-title {
-    font-size: 15px;
-    margin: 23px 0 13px;
+  margin: 22px 0 14px;
+  font-size: 20px;
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+.modules {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
 
 .card {
-    background: #111b2b;
-    border: 1px solid #202e42;
-    border-radius: 18px;
-    padding: 17px 14px;
-    min-height: 125px;
-    text-decoration: none;
-    color: white;
-    transition: 0.2s;
+  background: #121d2e;
+  border: 1px solid #25364d;
+  border-radius: 15px;
+  padding: 16px;
+  min-height: 145px;
 }
 
-.card:active {
-    transform: scale(0.97);
-}
-
-.card-icon {
-    font-size: 26px;
-    margin-bottom: 12px;
+.card .icon {
+  font-size: 28px;
+  margin-bottom: 10px;
 }
 
 .card h3 {
-    font-size: 14px;
-    margin-bottom: 6px;
+  font-size: 16px;
+  margin-bottom: 8px;
 }
 
 .card p {
-    font-size: 11px;
-    color: #92a3ba;
-    line-height: 1.5;
+  color: #94a8c0;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
-.active-card {
-    border-color: #244c77;
-    background: linear-gradient(145deg, #12253b, #111b2b);
+.status {
+  display: inline-block;
+  margin-top: 10px;
+  background: #203953;
+  color: #7dbaff;
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 11px;
 }
 
-.badge {
-    display: inline-block;
-    margin-top: 9px;
-    font-size: 9px;
-    color: #6db6ff;
-    background: #193452;
-    padding: 4px 8px;
-    border-radius: 20px;
+.card-button {
+  text-decoration: none;
+  color: white;
+  display: block;
 }
 
-.coming {
-    opacity: 0.75;
+.card-button:active {
+  transform: scale(0.98);
 }
 
-.quick-box {
-    margin-top: 20px;
-    background: #111b2b;
-    border: 1px solid #26374e;
-    border-radius: 18px;
-    padding: 17px;
+.dashboard {
+  background: #18263a;
+  border-radius: 18px;
+  padding: 18px;
+  margin-top: 22px;
 }
 
-.quick-box h3 {
-    font-size: 14px;
-    margin-bottom: 8px;
+.dashboard h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
 }
 
-.quick-box p {
-    color: #95a7bd;
-    font-size: 12px;
-    line-height: 1.6;
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.stat {
+  background: #233449;
+  padding: 14px 5px;
+  text-align: center;
+  border-radius: 12px;
+}
+
+.stat h3 {
+  font-size: 23px;
+  margin-bottom: 5px;
+}
+
+.stat p {
+  font-size: 12px;
+  color: #9fb3c9;
+}
+
+.open-button {
+  display: block;
+  width: 100%;
+  text-decoration: none;
+  text-align: center;
+  background: #2563eb;
+  color: white;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 16px;
 }
 
 .footer {
-    text-align: center;
-    color: #607086;
-    font-size: 11px;
-    padding: 25px 0 10px;
+  text-align: center;
+  margin: 25px 0;
+  color: #71849c;
+  font-size: 12px;
 }
 
-@media (max-width: 360px) {
-    body {
-        padding: 12px;
-    }
+@media (max-width: 400px) {
+  .header h1 {
+    font-size: 22px;
+  }
 
-    .welcome h2 {
-        font-size: 21px;
-    }
-
-    .card {
-        padding: 14px 11px;
-    }
+  .card {
+    padding: 13px;
+  }
 }
 </style>
 </head>
@@ -206,105 +191,117 @@ body {
 
 <div class="container">
 
-    <header class="header">
-        <div class="logo">🤖</div>
-        <div>
-            <h1>BALU MASS SMART AI</h1>
-            <p>Personal AI Control Center</p>
-        </div>
-    </header>
+<header class="header">
+  <h1>🤖 BALU MASS SMART AI</h1>
+  <p>Personal AI Control Center</p>
+</header>
 
-    <div class="date" id="todayDate"></div>
+<div class="date" id="todayDate"></div>
 
-    <section class="welcome">
-        <small>✦ YOUR PERSONAL SMART ASSISTANT</small>
-        <h2 id="greeting">Welcome, Balu 👋</h2>
-        <p>
-            Organize your work, manage your day,
-            track tasks and stay productive.
-        </p>
+<section class="welcome">
+  <h2 id="greeting">Welcome, Balu 👋</h2>
+  <p>
+    Your personal assistant to manage work, daily tasks,
+    CMRL activities, reminders and productivity.
+  </p>
+</section>
 
-        <a class="ai-button" href="daily.html">
-            ✨ Open Daily Assistant
-        </a>
-    </section>
+<h2 class="section-title">⚡ Smart Modules</h2>
 
-    <h2 class="section-title">⚡ Smart Modules</h2>
+<div class="modules">
 
-    <div class="grid">
+<a class="card-button" href="daily.html">
+<div class="card">
+  <div class="icon">🤖</div>
+  <h3>Daily Assistant</h3>
+  <p>Manage daily tasks and reminders</p>
+  <span class="status">OPEN</span>
+</div>
+</a>
 
-        <a href="daily.html" class="card active-card">
-            <div class="card-icon">🤖</div>
-            <h3>Daily Assistant</h3>
-            <p>Daily tasks, reminders & planning</p>
-            <span class="badge">ACTIVE</span>
-        </a>
+<a class="card-button" href="roster.html">
+<div class="card">
+  <div class="icon">👷</div>
+  <h3>CMRL Roster</h3>
+  <p>C1 & C2 shift management</p>
+  <span class="status">OPEN</span>
+</div>
+</a>
 
-        <a href="roster.html" class="card active-card">
-            <div class="card-icon">👥</div>
-            <h3>CMRL Roster</h3>
-            <p>C1 & C2 shift management</p>
-            <span class="badge">ACTIVE</span>
-        </a>
+<div class="card">
+  <div class="icon">📊</div>
+  <h3>Attendance & Billing</h3>
+  <p>Monthly attendance and billing management</p>
+  <span class="status">COMING SOON</span>
+</div>
 
-        <div class="card coming">
-            <div class="card-icon">📊</div>
-            <h3>Attendance & Billing</h3>
-            <p>Staff attendance & monthly billing</p>
-            <span class="badge">COMING SOON</span>
-        </div>
+<div class="card">
+  <div class="icon">🔧</div>
+  <h3>Maintenance Tracker</h3>
+  <p>CMMS and maintenance task tracking</p>
+  <span class="status">COMING SOON</span>
+</div>
 
-        <div class="card coming">
-            <div class="card-icon">🔧</div>
-            <h3>Maintenance</h3>
-            <p>CMMS & pending maintenance work</p>
-            <span class="badge">COMING SOON</span>
-        </div>
+<div class="card">
+  <div class="icon">📚</div>
+  <h3>English Learning</h3>
+  <p>Daily English practice</p>
+  <span class="status">COMING SOON</span>
+</div>
 
-        <div class="card coming">
-            <div class="card-icon">📚</div>
-            <h3>English Learning</h3>
-            <p>Daily English practice & improvement</p>
-            <span class="badge">COMING SOON</span>
-        </div>
+<div class="card">
+  <div class="icon">💬</div>
+  <h3>WhatsApp Assistant</h3>
+  <p>Smart office messages</p>
+  <span class="status">COMING SOON</span>
+</div>
 
-        <div class="card coming">
-            <div class="card-icon">💬</div>
-            <h3>WhatsApp Assistant</h3>
-            <p>Smart messages & office communication</p>
-            <span class="badge">COMING SOON</span>
-        </div>
+<div class="card">
+  <div class="icon">🔔</div>
+  <h3>Smart Reminders</h3>
+  <p>Important tasks and notifications</p>
+  <span class="status">COMING SOON</span>
+</div>
 
-        <div class="card coming">
-            <div class="card-icon">🔔</div>
-            <h3>Smart Reminders</h3>
-            <p>Important tasks & notifications</p>
-            <span class="badge">COMING SOON</span>
-        </div>
+<div class="card">
+  <div class="icon">📈</div>
+  <h3>Daily Reports</h3>
+  <p>Work summary and progress</p>
+  <span class="status">COMING SOON</span>
+</div>
 
-        <div class="card coming">
-            <div class="card-icon">📈</div>
-            <h3>Daily Reports</h3>
-            <p>Work summary & daily progress</p>
-            <span class="badge">COMING SOON</span>
-        </div>
+</div>
 
+<div class="dashboard">
+  <h2>📊 Live Task Dashboard</h2>
+
+  <div class="stats">
+    <div class="stat">
+      <h3>1</h3>
+      <p>Total</p>
     </div>
 
-    <div class="quick-box">
-        <h3>🧠 Balu Smart AI</h3>
-        <p>
-            Your personal digital assistant to manage daily work,
-            CMRL activities, reminders, reports and learning —
-            all in one place.
-        </p>
+    <div class="stat">
+      <h3 style="color:#ffbd59;">1</h3>
+      <p>Pending</p>
     </div>
 
-    <footer class="footer">
-        Balu Mass Smart AI · Personal Assistant
-        <br><br>
-        Version 2.0
-    </footer>
+    <div class="stat">
+      <h3 style="color:#55d69e;">0</h3>
+      <p>Completed</p>
+    </div>
+  </div>
+
+  <a class="open-button" href="daily.html">
+    📋 Open My Tasks
+  </a>
+</div>
+
+<div class="footer">
+  Balu Mass Smart AI · Personal Assistant
+  <br><br>
+  Version 3.0
+</div>
 
 </div>
 
@@ -312,108 +309,28 @@ body {
 const today = new Date();
 
 document.getElementById("todayDate").textContent =
-    today.toLocaleDateString("en-IN", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-    });
+  today.toLocaleDateString("en-IN", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
 
 const hour = today.getHours();
-
 let greeting = "Welcome, Balu 👋";
 
 if (hour >= 5 && hour < 12) {
-    greeting = "Good Morning, Balu ☀️";
+  greeting = "Good Morning, Balu ☀️";
 } else if (hour >= 12 && hour < 17) {
-    greeting = "Good Afternoon, Balu 🌤️";
+  greeting = "Good Afternoon, Balu 🌤️";
 } else if (hour >= 17 && hour < 21) {
-    greeting = "Good Evening, Balu 🌆";
+  greeting = "Good Evening, Balu 🌆";
 } else {
-    greeting = "Good Night, Balu 🌙";
+  greeting = "Good Night, Balu 🌙";
 }
 
 document.getElementById("greeting").textContent = greeting;
 </script>
 
-
-<!-- SMART LIVE DASHBOARD -->
-<div id="liveDashboard" style="
-margin:20px 0;
-padding:18px;
-background:#111b2b;
-border:1px solid #26374e;
-border-radius:18px;
-">
-<h3 style="margin-bottom:15px;">📊 Live Task Dashboard</h3>
-
-<div style="
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-text-align:center;
-">
-
-<div style="background:#1b2938;padding:14px 5px;border-radius:12px;">
-<div id="dashTotal" style="font-size:24px;font-weight:bold;">0</div>
-<div style="font-size:11px;color:#9aadc4;">Total</div>
-</div>
-
-<div style="background:#1b2938;padding:14px 5px;border-radius:12px;">
-<div id="dashPending" style="font-size:24px;font-weight:bold;color:#ffbf66;">0</div>
-<div style="font-size:11px;color:#9aadc4;">Pending</div>
-</div>
-
-<div style="background:#1b2938;padding:14px 5px;border-radius:12px;">
-<div id="dashCompleted" style="font-size:24px;font-weight:bold;color:#61e0a1;">0</div>
-<div style="font-size:11px;color:#9aadc4;">Completed</div>
-</div>
-
-</div>
-
-<div style="margin-top:15px;">
-<a href="daily.html" style="
-display:block;
-padding:12px;
-text-align:center;
-background:#246fff;
-color:white;
-text-decoration:none;
-border-radius:12px;
-font-weight:bold;
-">📋 Open My Tasks</a>
-</div>
-</div>
-
-<script>
-(function() {
-    const KEY = "balu_daily_assistant_tasks_v2";
-
-    function updateDashboard() {
-        let tasks = [];
-
-        try {
-            tasks = JSON.parse(localStorage.getItem(KEY) || "[]");
-            if (!Array.isArray(tasks)) tasks = [];
-        } catch(e) {
-            tasks = [];
-        }
-
-        const total = tasks.length;
-        const completed = tasks.filter(t => t.completed).length;
-        const pending = total - completed;
-
-        document.getElementById("dashTotal").textContent = total;
-        document.getElementById("dashPending").textContent = pending;
-        document.getElementById("dashCompleted").textContent = completed;
-    }
-
-    updateDashboard();
-
-    window.addEventListener("storage", updateDashboard);
-    setInterval(updateDashboard, 2000);
-})();
-</script>
-<!-- END SMART LIVE DASHBOARD -->
-    
+</body>
 </html>

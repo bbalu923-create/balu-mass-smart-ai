@@ -336,5 +336,84 @@ if (hour >= 5 && hour < 12) {
 document.getElementById("greeting").textContent = greeting;
 </script>
 
-</body>
+
+<!-- SMART LIVE DASHBOARD -->
+<div id="liveDashboard" style="
+margin:20px 0;
+padding:18px;
+background:#111b2b;
+border:1px solid #26374e;
+border-radius:18px;
+">
+<h3 style="margin-bottom:15px;">📊 Live Task Dashboard</h3>
+
+<div style="
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+text-align:center;
+">
+
+<div style="background:#1b2938;padding:14px 5px;border-radius:12px;">
+<div id="dashTotal" style="font-size:24px;font-weight:bold;">0</div>
+<div style="font-size:11px;color:#9aadc4;">Total</div>
+</div>
+
+<div style="background:#1b2938;padding:14px 5px;border-radius:12px;">
+<div id="dashPending" style="font-size:24px;font-weight:bold;color:#ffbf66;">0</div>
+<div style="font-size:11px;color:#9aadc4;">Pending</div>
+</div>
+
+<div style="background:#1b2938;padding:14px 5px;border-radius:12px;">
+<div id="dashCompleted" style="font-size:24px;font-weight:bold;color:#61e0a1;">0</div>
+<div style="font-size:11px;color:#9aadc4;">Completed</div>
+</div>
+
+</div>
+
+<div style="margin-top:15px;">
+<a href="daily.html" style="
+display:block;
+padding:12px;
+text-align:center;
+background:#246fff;
+color:white;
+text-decoration:none;
+border-radius:12px;
+font-weight:bold;
+">📋 Open My Tasks</a>
+</div>
+</div>
+
+<script>
+(function() {
+    const KEY = "balu_daily_assistant_tasks_v2";
+
+    function updateDashboard() {
+        let tasks = [];
+
+        try {
+            tasks = JSON.parse(localStorage.getItem(KEY) || "[]");
+            if (!Array.isArray(tasks)) tasks = [];
+        } catch(e) {
+            tasks = [];
+        }
+
+        const total = tasks.length;
+        const completed = tasks.filter(t => t.completed).length;
+        const pending = total - completed;
+
+        document.getElementById("dashTotal").textContent = total;
+        document.getElementById("dashPending").textContent = pending;
+        document.getElementById("dashCompleted").textContent = completed;
+    }
+
+    updateDashboard();
+
+    window.addEventListener("storage", updateDashboard);
+    setInterval(updateDashboard, 2000);
+})();
+</script>
+<!-- END SMART LIVE DASHBOARD -->
+    
 </html>

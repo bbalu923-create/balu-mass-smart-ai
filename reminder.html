@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balu Smart Reminder</title>
+
+<style>
+body {
+    margin:0;
+    padding:20px;
+    background:#08111f;
+    color:white;
+    font-family:Arial,sans-serif;
+}
+.container {
+    max-width:600px;
+    margin:auto;
+    background:#12213b;
+    padding:20px;
+    border-radius:18px;
+}
+h1 { color:#60a5fa; }
+input, textarea, button {
+    width:100%;
+    box-sizing:border-box;
+    padding:14px;
+    margin:8px 0;
+    border-radius:10px;
+    border:none;
+    font-size:16px;
+}
+input, textarea {
+    background:#1e3357;
+    color:white;
+}
+button {
+    background:#3b82f6;
+    color:white;
+    font-weight:bold;
+}
+.reminder {
+    background:#1e3357;
+    margin-top:12px;
+    padding:15px;
+    border-radius:12px;
+}
+.delete {
+    background:#dc2626;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🔔 Smart Reminder</h1>
+
+<p>Create and manage your personal reminders.</p>
+
+<input id="remTitle" placeholder="Reminder title">
+
+<textarea id="remNote" placeholder="Description"></textarea>
+
+<input id="remDate" type="date">
+
+<input id="remTime" type="time">
+
+<button onclick="addReminder()">➕ Add Reminder</button>
+
+<hr>
+
+<h2>📋 My Reminders</h2>
+
+<div id="reminderList"></div>
+
+</div>
+
+<script>
+
+const STORAGE_KEY = "balu_smart_reminders_v1";
+
+let reminders = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+
+function saveReminders() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(reminders));
+    renderReminders();
+}
+
+function addReminder() {
+
+    const title = document.getElementById("remTitle").value.trim();
+    const note = document.getElementById("remNote").value.trim();
+    const date = document.getElementById("remDate").value;
+    const time = document.getElementById("remTime").value;
+
+    if (!title) {
+        alert("Please enter reminder title");
+        return;
+    }
+
+    if (!date || !time) {
+        alert("Please select date and time");
+        return;
+    }
+
+    reminders.push({
+        id: Date.now(),
+        title: title,
+        note: note,
+        date: date,
+        time: time,
+        completed: false
+    });
+
+    saveReminders();
+
+    document.getElementById("remTitle").value = "";
+    document.getElementById("remNote").value = "";
+    document.getElementById("remDate").value = "";
+    document.getElementById("remTime").value = "";
+
+    alert("Reminder saved successfully!");
+}
+
+function completeReminder(id) {
+    reminders = reminders.map(r =>
+        r.id === id ? {...r, completed: true} : r
+    );
+    saveReminders();
+}
+
+function deleteReminder(id) {
+    if (confirm("Delete this reminder?")) {
+        reminders = reminders.filter(r => r.id !== id);
+        saveReminders();
+    }
+}
+
+function renderReminders() {
+
+    const list = document.getElementById("reminderList");
+
+    if (reminders.length === 0) {
+        list.innerHTML = "<p>No reminders yet.</p>";
+        return;
+    }
+
+    list.innerHTML = reminders.map(r => `
+        <div class="reminder">
+
+            <h3>${escapeHTML(r.title)}</h3>
+
+            <p>${escapeHTML(r.note)}</p>
+
+            <p>📅 ${r.date}</p>
+
+            <p>⏰ ${r.time}</p>
+
+            <p>${r.completed ? "✅ Completed" : "⏳ Pending"}</p>
+
+            ${!r.completed ?
+            `<button onclick="completeReminder(${r.id})">✔ Complete</button>` : ""}
+
+            <button class="delete" onclick="deleteReminder(${r.id})">
+                🗑 Delete
+            </button>
+
+        </div>
+    `).join("");
+}
+
+function escapeHTML(text) {
+    return String(text || "").replace(/[&<>"']/g, function(c) {
+        return {
+            "&":"&amp;",
+            "<":"&lt;",
+            ">":"&gt;",
+            '"':"&quot;",
+            "'":"&#39;"
+        }[c];
+    });
+}
+
+renderReminders();
+
+</script>
+
+</body>
+</html>

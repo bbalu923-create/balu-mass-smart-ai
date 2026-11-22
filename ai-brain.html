@@ -133,6 +133,11 @@ button:active {
     transform: scale(0.95);
 }
 
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .mic {
     background: #263954;
 }
@@ -187,7 +192,7 @@ button:active {
             autocomplete="off"
         >
 
-        <button onclick="sendMessage()">➤</button>
+        <button id="sendBtn" onclick="sendMessage()">➤</button>
     </div>
 
     <div class="footer">
@@ -198,9 +203,23 @@ button:active {
 
 <script>
 
+// =====================================
+// BALU MASS SMART AI BACKEND
+// =====================================
+
+const BACKEND_URL =
+    "https://shrill-cake-faee.bbalu923.workers.dev/api/chat";
+
 const chat = document.getElementById("chat");
 const input = document.getElementById("userInput");
 const statusText = document.getElementById("status");
+const sendBtn = document.getElementById("sendBtn");
+
+let isThinking = false;
+
+// =====================================
+// CHAT MESSAGE DISPLAY
+// =====================================
 
 function addMessage(text, type) {
 
@@ -215,98 +234,132 @@ function addMessage(text, type) {
     chat.scrollTop = chat.scrollHeight;
 }
 
-function sendMessage() {
+// =====================================
+// SEND MESSAGE TO REAL AI BACKEND
+// =====================================
+
+async function sendMessage() {
 
     const text = input.value.trim();
 
-    if (!text) return;
+    if (!text || isThinking) return;
 
     addMessage(text, "user");
 
     input.value = "";
 
-    statusText.textContent = "● THINKING...";
+    isThinking = true;
 
-    setTimeout(() => {
+    sendBtn.disabled = true;
 
-        const response = getResponse(text);
+    statusText.textContent = "● AI THINKING...";
 
-        addMessage(response, "bot");
+    try {
 
-        statusText.textContent = "● BRAIN READY";
+        const response = await fetch(BACKEND_URL, {
 
-    }, 600);
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                message: text
+            })
+
+        });
+
+        const resultText = await response.text();
+
+        let result;
+
+        try {
+            result = JSON.parse(resultText);
+        } catch {
+            result = resultText;
+        }
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Backend error: " + response.status
+            );
+
+        }
+
+        // AI RESPONSE EXTRACTION
+
+        let aiReply = "";
+
+        if (typeof result === "string") {
+
+            aiReply = result;
+
+        } else if (result) {
+
+            aiReply =
+                result.response ??
+                result.reply ??
+                result.message ??
+                result.text ??
+                result.output ??
+                result.result ??
+                "";
+
+        }
+
+        if (!aiReply) {
+
+            aiReply =
+                "Backend response கிடைத்தது. ஆனால் AI பதிலை படிக்க முடியவில்லை.";
+
+        }
+
+        addMessage(aiReply, "bot");
+
+        statusText.textContent = "● AI CONNECTED";
+
+    } catch (error) {
+
+        console.error("AI Connection Error:", error);
+
+        addMessage(
+            "⚠️ AI Backend-ஐ தொடர்புகொள்ள முடியவில்லை.\n\n" +
+            "Internet connection மற்றும் Backend status சரிபார்க்கவும்.\n\n" +
+            "Error: " + error.message,
+            "bot"
+        );
+
+        statusText.textContent = "● CONNECTION ERROR";
+
+    } finally {
+
+        isThinking = false;
+
+        sendBtn.disabled = false;
+
+    }
+
 }
 
-function getResponse(text) {
-
-    const msg = text.toLowerCase();
-
-    if (
-        msg.includes("hello") ||
-        msg.includes("hi") ||
-        msg.includes("வணக்கம்")
-    ) {
-        return "வணக்கம் Balu! 😊\nநான் Balu Mass Smart AI. என்ன உதவி வேண்டும்?";
-    }
-
-    if (
-        msg.includes("roster") ||
-        msg.includes("shift")
-    ) {
-        return "Roster Assistant 🗓️\n\nRoster update செய்ய தேவையான staff details, shift மற்றும் leave details அனுப்புங்கள். அதை ஒழுங்குபடுத்த உதவுகிறேன்.";
-    }
-
-    if (
-        msg.includes("attendance") ||
-        msg.includes("அட்டனன்ஸ்")
-    ) {
-        return "Attendance Assistant 👥\n\nAttendance details அனுப்புங்கள். Present, Absent, Leave மற்றும் shift details ஒழுங்குபடுத்த உதவுகிறேன்.";
-    }
-
-    if (
-        msg.includes("reminder") ||
-        msg.includes("நினைவூட்ட")
-    ) {
-        return "Reminder Assistant 🔔\n\nஎந்த விஷயத்தை நினைவூட்ட வேண்டும், எந்த தேதி மற்றும் நேரம் என்று சொல்லுங்கள்.";
-    }
-
-    if (
-        msg.includes("office") ||
-        msg.includes("cmms")
-    ) {
-        return "Office Assistant 🏢\n\nOffice updates, CMMS pending tasks, maintenance reports மற்றும் messages-ஐ ஒழுங்குபடுத்த உதவுகிறேன்.";
-    }
-
-    if (
-        msg.includes("help") ||
-        msg.includes("உதவி")
-    ) {
-        return "Balu Mass Smart AI Assistant 🤖\n\n" +
-        "• Attendance\n" +
-        "• C1 / C2 Roster\n" +
-        "• Shift Management\n" +
-        "• Leave Management\n" +
-        "• CMMS Pending Tasks\n" +
-        "• Maintenance Reports\n" +
-        "• Reminders\n" +
-        "• Tamil & English Support";
-    }
-
-    return "உங்கள் message எனக்குக் கிடைத்தது 👍\n\n" +
-           "நீங்கள் கேட்டது:\n" + text +
-           "\n\nஇது தற்போது Demo Brain. " +
-           "உண்மையான AI intelligence-ஐ இணைத்த பிறகு " +
-           "உங்கள் கேள்விகளை AI மூலம் புரிந்து பதில் அளிக்க முடியும்.";
-}
+// =====================================
+// ENTER KEY
+// =====================================
 
 input.addEventListener("keypress", function(event) {
 
     if (event.key === "Enter") {
+
         sendMessage();
+
     }
 
 });
+
+// =====================================
+// TAMIL VOICE INPUT
+// =====================================
 
 function voiceInput() {
 
@@ -316,15 +369,22 @@ function voiceInput() {
 
     if (!SpeechRecognition) {
 
-        alert("Voice recognition இந்த browser-ல் support ஆகவில்லை. Chrome பயன்படுத்தவும்.");
+        alert(
+            "Voice recognition இந்த browser-ல் support ஆகவில்லை. Chrome பயன்படுத்தவும்."
+        );
 
         return;
+
     }
+
+    if (isThinking) return;
 
     const recognition = new SpeechRecognition();
 
     recognition.lang = "ta-IN";
+
     recognition.continuous = false;
+
     recognition.interimResults = false;
 
     statusText.textContent = "● LISTENING...";
@@ -336,23 +396,33 @@ function voiceInput() {
         statusText.textContent = "● BRAIN READY";
 
         sendMessage();
+
     };
 
     recognition.onerror = function() {
 
         statusText.textContent = "● BRAIN READY";
 
-        alert("Voice input failed. மீண்டும் முயற்சி செய்யுங்கள்.");
+        alert(
+            "Voice input failed. மீண்டும் முயற்சி செய்யுங்கள்."
+        );
+
     };
 
     recognition.onend = function() {
 
-        if (statusText.textContent.includes("LISTENING")) {
+        if (
+            statusText.textContent.includes("LISTENING")
+        ) {
+
             statusText.textContent = "● BRAIN READY";
+
         }
+
     };
 
     recognition.start();
+
 }
 
 </script>

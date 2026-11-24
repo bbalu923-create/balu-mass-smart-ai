@@ -46,42 +46,52 @@ function deleteSaved(){let date=document.getElementById("loadDate").value,saved=
 function clearInput(){document.getElementById("whatsappText").value=""}
 function exportCSV(){if(!attendanceData.length){alert("Attendance empty.");return}let date=document.getElementById("attendanceDate").value,rows=[["Date","Corridor","Employee Name","Shift","Code","Role"],...attendanceData.map(r=>[date,r.corridor,r.employee,r.shift,r.code,r.role||identifyRole(r.employee)])],csv=rows.map(r=>r.map(v=>'"'+String(v||"").replace(/"/g,'""')+'"').join(",")).join("\n"),blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"}),link=document.createElement("a");link.href=URL.createObjectURL(blob);link.download="Attendance_"+date+".csv";link.click();setTimeout(()=>URL.revokeObjectURL(link.href),1000)}
 // Master Excel importer: scans for section labels and the EMP ID / NAME / weekday header row.
+function setMasterStatus(message,kind="info"){
+ const el=document.getElementById("masterStatus");
+ el.textContent=message;
+ el.style.background=kind==="error"?"#fee2e2":kind==="success"?"#dcfce7":"#eef2ff";
+ el.style.color=kind==="error"?"#991b1b":kind==="success"?"#166534":"#172033";
+}
 function uploadMaster(){
  const file=document.getElementById("masterFile").files[0];
- if(!file){alert("Excel file select pannunga");return}
- if(!window.XLSX){alert("Excel reader load aagala. Internet connection check pannunga.");return}
+ if(!file){setMasterStatus("Please choose your Master Excel file first.","error");return;}
+ if(!window.XLSX){setMasterStatus("Excel reader library did not load. Check internet connection and refresh the page.","error");return;}
+ setMasterStatus("Reading Excel file: "+file.name+" …");
  const reader=new FileReader();
+ reader.onerror=()=>setMasterStatus("File could not be read by this phone/browser. Please try selecting it again.","error");
  reader.onload=e=>{
   try{
-   const wb=XLSX.read(e.target.result,{type:"array"});
-   const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:""});
-   let role="Unknown",found=[],header=null;
+   const wb=XLSX.read(e.target.result,{type:"array",cellStyles:false,cellNF:false,cellHTML:false});
+   if(!wb.SheetNames||!wb.SheetNames.length)throw new Error("Workbook has no sheets.");
+   const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:"",raw:false});
+   let role="Unknown",header=null,found=[];
+   const norm=v=>String(v||"").toUpperCase().replace(/[^A-Z0-9]/g," ").replace(/\s+/g," ").trim();
    for(let i=0;i<rows.length;i++){
-    const cells=rows[i].map(v=>String(v||"").trim()),joined=cells.join(" ").toUpperCase();
-    if(joined.includes("SUPERVISOR ATTENDANCE"))role="Supervisor";
-    else if(joined.includes("TECHNICIAN ATTENDANCE"))role="Technician";
-    const idxId=cells.findIndex(x=>/^EMP\s*ID$/i.test(x)||/^EMPLOYEE\s*ID$/i.test(x));
-    const idxName=cells.findIndex(x=>/^NAME$/i.test(x)||/^EMPLOYEE\s*NAME$/i.test(x));
-    if(idxId>=0&&idxName>=0){header={row:i,id:idxId,name:idxName,days:DAYS.map(d=>cells.findIndex(x=>x.toLowerCase()===d.toLowerCase()))};continue}
-    if(header&&i>header.row){
-     const name=cells[header.name],id=cells[header.id];
-     if(!name||!id||!/\d/.test(String(id)))continue;
-     const shifts={};DAYS.forEach((d,j)=>{const col=header.days[j];shifts[d]=col>=0?String(cells[col]||"").trim():""});
-     found.push({id:String(id).trim(),name:String(name).trim(),role,shifts,corridor:""});
+    const cells=rows[i].map(v=>String(v==null?"":v).trim());
+    const joined=norm(cells.join(" "));
+    if(joined.includes("SUPERVISOR ATTENDANCE")){role="Supervisor";header=null;continue;}
+    if(joined.includes("TECHNICIAN ATTENDANCE")){role="Technician";header=null;continue;}
+    const idxId=cells.findIndex(x=>["EMP ID","EMPLOYEE ID","EMPID","ID"].includes(norm(x)));
+    const idxName=cells.findIndex(x=>["NAME","EMPLOYEE NAME","STAFF NAME"].includes(norm(x)));
+    if(idxId>=0&&idxName>=0){
+      header={row:i,id:idxId,name:idxName,days:DAYS.map(d=>cells.findIndex(x=>norm(x)===norm(d)))};
+      continue;
     }
+    if(!header||i<=header.row)continue;
+    const name=cells[header.name],id=cells[header.id];
+    if(!name||!id||!String(id).trim())continue;
+    const shifts={};DAYS.forEach((d,j)=>{const col=header.days[j];shifts[d]=col>=0?String(cells[col]||"").trim():"";});
+    found.push({id:String(id).trim(),name:String(name).trim(),role,shifts,corridor:""});
    }
-   if(!found.length){alert("Excel format detect aagala. First sheet, EMP ID / NAME header and section titles check pannunga.");return}
+   if(!found.length)throw new Error("No employee rows found. Expected section titles and EMP ID / NAME headers in the first sheet.");
    const old=JSON.parse(localStorage.getItem(MASTER_KEY)||"[]"),map=JSON.parse(localStorage.getItem(MAP_KEY)||"{}");
-   found.forEach(x=>{const prev=old.find(y=>String(y.id)===x.id)||old.find(y=>normalizeName(y.name)===normalizeName(x.name));x.corridor=(prev&&prev.corridor)||map[normalizeName(x.name)]||""});
+   found.forEach(x=>{const prev=old.find(y=>String(y.id)===x.id)||old.find(y=>normalizeName(y.name)===normalizeName(x.name));x.corridor=(prev&&prev.corridor)||map[normalizeName(x.name)]||"";});
    masterData=found;localStorage.setItem(MASTER_KEY,JSON.stringify(masterData));
-   document.getElementById("masterStatus").textContent="Upload successful: "+found.length+" staff ("+found.filter(x=>x.role==="Supervisor").length+" Supervisors, "+found.filter(x=>x.role==="Technician").length+" Technicians). Corridor mapping preserved when matching staff.";
+   setMasterStatus("Upload SUCCESS: "+found.length+" staff ("+found.filter(x=>x.role==="Supervisor").length+" Supervisors, "+found.filter(x=>x.role==="Technician").length+" Technicians). Corridor mapping was preserved where possible.","success");
    showMaster();
-  }catch(err){alert("Excel upload error: "+err.message)}
+  }catch(err){setMasterStatus("UPLOAD FAILED: "+(err&&err.message?err.message:String(err)),"error");}
  };
  reader.readAsArrayBuffer(file);
 }
 function loadMaster(){masterData=JSON.parse(localStorage.getItem(MASTER_KEY)||"[]")}
-function showMaster(){loadMaster();let area=document.getElementById("masterArea");if(!masterData.length){area.innerHTML="<p>No Master data. Upload Excel first.</p>";return}area.innerHTML=`<h4>Master Staff: ${masterData.length}</h4><div class="table-wrap"><table><thead><tr><th>EMP ID</th><th>Name</th><th>Role</th><th>Corridor</th><th>Weekly shifts</th></tr></thead><tbody>${masterData.map((m,i)=>`<tr><td>${escapeHTML(m.id)}</td><td>${escapeHTML(m.name)}</td><td>${escapeHTML(m.role)}</td><td><select class="mapping-select" onchange="setCorridor(${i},this.value)"><option value="" ${!m.corridor?"selected":""}>Unassigned</option><option value="C1" ${m.corridor==="C1"?"selected":""}>C1</option><option value="C2" ${m.corridor==="C2"?"selected":""}>C2</option></select></td><td>${DAYS.map(d=>d+":"+(m.shifts?.[d]||"-")).join(" | ")}</td></tr>`).join("")}</tbody></table></div><button class="success" onclick="saveMasterMapping()">Save Corridor Mapping</button>`}
-function setCorridor(i,v){masterData[i].corridor=v;let map=JSON.parse(localStorage.getItem(MAP_KEY)||"{}");map[normalizeName(masterData[i].name)]=v;localStorage.setItem(MAP_KEY,JSON.stringify(map));localStorage.setItem(MASTER_KEY,JSON.stringify(masterData))}
-function saveMasterMapping(){localStorage.setItem(MASTER_KEY,JSON.stringify(masterData));let map=JSON.parse(localStorage.getItem(MAP_KEY)||"{}");masterData.forEach(m=>map[normalizeName(m.name)]=m.corridor||"");localStorage.setItem(MAP_KEY,JSON.stringify(map));alert("C1/C2 mapping saved!");showMaster()}
-function exportMaster(){loadMaster();if(!masterData.length){alert("Master not uploaded yet");return}let rows=[["EMP ID","NAME","ROLE","CORRIDOR",...DAYS],...masterData.map(m=>[m.id,m.name,m.role,m.corridor,...DAYS.
+function showMaster(){loadMaster();let area=document.getElementById("masterArea");if(!masterData.length){area.innerHTML="<p>No Master data. Upload Excel first.</p>";return}area.innerHTML=`<h4>Master Staff: ${masterData.length}</h4><div class="table-wrap"><table><thead><tr><th>EMP ID</th><th>Name</th><th>Role</th><th>Corridor</th><th>Weekly shifts</th></tr></thead><tbody>${masterData.map((m,i)=>`<tr><td>${escapeHTML(m.id)}</td><td>${escapeHTML(m.name)}</td><td>${escapeHTML(m.role)}</td><td><select class="mapping-select" onchange="setCorridor(${i},this.value)"><option value="" ${!m.corridor?"selected":""}>Unassigned</option><option value="C1" ${m.corridor==="C1"?"selected":""}>C1</option><option value="C2" ${m.corridor==="C2"?"selected":""}>C2</option></select></td><td>${DAYS.map(d=>d+":"+(m.shifts?.[d]||"-")).join(" | ")}</td></tr>`).join("")}</tbody></table>

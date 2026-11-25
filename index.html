@@ -3,691 +3,201 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Balu Mass Smart AI - Attendance</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balu Mass Smart AI</title>
 
 <style>
-*{box-sizing:border-box}
-body{font-family:Arial;background:#f2f5fb;margin:0;padding:12px;color:#172033}
-.container{max-width:1200px;margin:auto}
-.card{background:white;padding:15px;border-radius:14px;margin-bottom:14px;box-shadow:0 2px 10px #0001}
-input,textarea,select{width:100%;padding:10px;margin:6px 0;border:1px solid #ccd3df;border-radius:8px;font-size:15px}
-textarea{min-height:150px}
-button{padding:10px 13px;border:0;border-radius:8px;margin:4px;cursor:pointer;background:#1459d9;color:white;font-weight:bold}
-.secondary{background:#475569}
-.success{background:#15803d}
-.danger{background:#dc2626}
-.warning{background:#d97706}
-.small{font-size:13px;color:#64748b}
-.table-wrap{overflow:auto;width:100%}
-table{border-collapse:collapse;width:100%;min-width:800px}
-th,td{border:1px solid #ddd;padding:7px;text-align:left}
-th{background:#e8efff}
-td input,td select{min-width:100px;margin:2px}
-.summary{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}
-.tile{background:#eef4ff;padding:12px;border-radius:10px}
-.tile strong{font-size:22px}
-.changed{background:#fff1c2!important;color:#854d0e!important;font-weight:bold}
-.newstaff{background:#fee2e2!important;color:#991b1b!important;font-weight:bold}
-.missingstaff{background:#dbeafe!important;color:#1e40af!important;font-weight:bold}
-.nochange{background:#dcfce7!important;color:#166534!important}
-#preview{display:none}
-@media(max-width:600px){
-body{padding:7px}
-.card{padding:10px}
-button{font-size:13px}
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#101827;
+  color:white;
+}
+
+header{
+  background:#182438;
+  padding:25px 18px;
+  text-align:center;
+  border-bottom:2px solid #263b59;
+}
+
+header h1{
+  margin:0;
+  color:#64b5ff;
+  font-size:26px;
+}
+
+header p{
+  color:#b9c8dc;
+  margin-top:8px;
+}
+
+.container{
+  max-width:850px;
+  margin:auto;
+  padding:18px;
+}
+
+.welcome{
+  background:#1c2b40;
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:20px;
+}
+
+.welcome h2{
+  margin-top:0;
+}
+
+.menu-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+}
+
+.menu-card{
+  background:#1c2b40;
+  border:1px solid #30435d;
+  border-radius:16px;
+  padding:20px 12px;
+  text-align:center;
+  text-decoration:none;
+  color:white;
+  transition:0.2s;
+}
+
+.menu-card:hover{
+  background:#263b59;
+  transform:translateY(-2px);
+}
+
+.menu-card .icon{
+  font-size:38px;
+  margin-bottom:12px;
+}
+
+.menu-card h3{
+  margin:8px 0;
+  font-size:17px;
+}
+
+.menu-card p{
+  color:#b8c5d8;
+  font-size:13px;
+  margin:8px 0 0;
+}
+
+.ride{
+  border:2px solid #18a878;
+}
+
+footer{
+  text-align:center;
+  padding:25px 10px;
+  color:#8899ad;
+  font-size:12px;
+}
+
+@media(max-width:480px){
+  .menu-grid{
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+
+  .menu-card{
+    padding:17px 8px;
+  }
+
+  header h1{
+    font-size:22px;
+  }
 }
 </style>
 </head>
 
 <body>
+
+<header>
+  <h1>🤖 Balu Mass Smart AI</h1>
+  <p>Your Personal Smart Assistant</p>
+</header>
+
 <div class="container">
 
-<div class="card">
-<h2>📋 Balu Mass Smart AI – Attendance</h2>
-<p class="small">Master Roster → WhatsApp Shift Plan → Compare → Correct → Save</p>
+  <div class="welcome">
+    <h2>👋 Welcome</h2>
+    <p>Select a module to continue.</p>
+  </div>
 
-<label>Attendance Date</label>
-<input type="date" id="attendanceDate">
+  <div class="menu-grid">
 
-<label>WhatsApp Shift Plan</label>
-<textarea id="whatsappText" placeholder="Paste C1 / C2 WhatsApp shift plan here"></textarea>
+    <!-- ATTENDANCE -->
+    <a class="menu-card" href="attendance.html">
+      <div class="icon">📋</div>
+      <h3>Attendance</h3>
+      <p>Roster, shift and attendance management</p>
+    </a>
 
-<button onclick="parsePlan()">📋 Parse Attendance</button>
-<button class="secondary" onclick="clearInput()">Clear</button>
-</div>
+    <!-- RIDE ASSISTANT -->
+    <a class="menu-card ride" href="ride-assistant.html">
+      <div class="icon">🚗</div>
+      <h3>Ride Assistant</h3>
+      <p>Ride details, fare filter and trip calculator</p>
+    </a>
 
-<!-- MASTER EXCEL -->
-<div class="card">
-<h3>📂 Staff Master Excel</h3>
+    <!-- DAILY WORK -->
+    <a class="menu-card" href="daily-planner.html">
+      <div class="icon">📝</div>
+      <h3>Daily Planner</h3>
+      <p>Plan and track daily work</p>
+    </a>
 
-<p class="small">
-Upload your staff master Excel file (.xlsx / .xls).
-Supported columns: Name, Employee ID, Corridor, Designation, Shift.
-</p>
+    <!-- MAINTENANCE -->
+    <a class="menu-card" href="maintenance.html">
+      <div class="icon">🔧</div>
+      <h3>Maintenance</h3>
+      <p>Maintenance and corrective work reports</p>
+    </a>
 
-<input type="file" id="masterFile" accept=".xlsx,.xls">
+    <!-- CMMS -->
+    <a class="menu-card" href="cmms.html">
+      <div class="icon">⚙️</div>
+      <h3>CMMS Tasks</h3>
+      <p>Pending tasks and work tracking</p>
+    </a>
 
-<button onclick="uploadMaster()">📤 Upload Master Excel</button>
-<button class="secondary" onclick="showMaster()">👁️ View Master</button>
-<button class="success" onclick="addMasterStaff()">➕ Add Staff</button>
-<button class="secondary" onclick="exportMaster()">📥 Export Master</button>
+    <!-- REPORTS -->
+    <a class="menu-card" href="reports.html">
+      <div class="icon">📊</div>
+      <h3>Reports</h3>
+      <p>Monthly reports and work summary</p>
+    </a>
 
-<div id="masterStatus"></div>
-<div id="masterView" class="table-wrap"></div>
-</div>
+    <!-- ENGLISH LEARNING -->
+    <a class="menu-card" href="english.html">
+      <div class="icon">📚</div>
+      <h3>English Learning</h3>
+      <p>Daily English and office communication</p>
+    </a>
 
-<!-- SHIFT COMPARISON -->
-<div class="card">
-<h3>🔄 Master Shift vs WhatsApp Shift</h3>
+    <!-- SETTINGS -->
+    <a class="menu-card" href="settings.html">
+      <div class="icon">⚙️</div>
+      <h3>Settings</h3>
+      <p>App settings and preferences</p>
+    </a>
 
-<p class="small">
-Upload Master Excel with a Shift column. WhatsApp shift plan will be compared against Master Shift.
-</p>
-
-<button onclick="compareShifts()">🔍 Compare Shifts</button>
-
-<div id="compareSummary"></div>
-<div id="compareView" class="table-wrap"></div>
-</div>
-
-<!-- CORRIDOR MAPPING -->
-<div class="card">
-<h3>🏢 Employee Corridor Mapping</h3>
-
-<label>C1 Employee Names</label>
-<textarea id="c1Master" placeholder="One employee name per line"></textarea>
-
-<label>C2 Employee Names</label>
-<textarea id="c2Master" placeholder="One employee name per line"></textarea>
-
-<button class="success" onclick="saveCorridorMaster()">💾 Save C1 / C2 Mapping</button>
-<button class="secondary" onclick="loadDailyEmployeeMaster()">Load Employee Master</button>
-
-<div id="mappingInfo"></div>
-</div>
-
-<!-- ATTENDANCE -->
-<div class="card" id="preview">
-<h3>📊 Attendance Preview & Correction</h3>
-
-<div id="count"></div>
-
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Corridor</th>
-<th>Employee</th>
-<th>Shift</th>
-<th>Code</th>
-<th>Role</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody id="attendanceRows"></tbody>
-</table>
-</div>
-
-<button class="success" onclick="saveAttendance()">💾 Save Attendance</button>
-<button onclick="exportCSV()">📥 Export Excel CSV</button>
-<button class="secondary" onclick="addEmployee()">➕ Add Attendance Row</button>
-</div>
-
-<!-- SAVED -->
-<div class="card">
-<h3>📅 Saved Attendance</h3>
-
-<input type="date" id="loadDate">
-
-<button onclick="loadAttendance()">Load Saved Data</button>
-<button class="danger" onclick="deleteSaved()">Delete Saved Date</button>
-<button class="secondary" onclick="backupData()">📦 Backup Data</button>
-
-<div id="savedInfo"></div>
-</div>
+  </div>
 
 </div>
 
-<script>
-const STORAGE_KEY="balu_attendance_parser_v3";
-const MASTER_KEY="balu_mass_master_roster_v1";
-const CORRIDOR_KEY="balu_corridor_master_v1";
-
-const SHIFT_CODES={
-"First Shift":"A",
-"Second Shift":"B",
-"General Shift":"G",
-"Night Shift":"C",
-"Mainline Night":"C",
-"Arrival":"ARR",
-"Week Off":"R",
-"Comp Off":"C/O",
-"Leave":"L"
-};
-
-const EMPLOYEE_MASTER={
-"GURUMOHAN":"Supervisor","ANBU":"Supervisor","DEVA":"Supervisor",
-"ARUL":"Supervisor","RADHAKRISHNA":"Supervisor","IYYAPPAN":"Supervisor",
-"VASANTHA RAJ":"Supervisor","BHARATH":"Supervisor","KARTHIC SAM":"Supervisor",
-"ROHITH":"Supervisor","THIRU":"Supervisor","NITHISH":"Supervisor",
-"KARTHIC STORE":"Supervisor","PRAKASH":"Supervisor","SURESH":"Supervisor",
-"JOHN":"Supervisor","RAMESH":"Supervisor","BALU":"Supervisor",
-"SANTHOSH":"Supervisor","SELVAKUMAR":"Supervisor","RANJIKUMAR":"Supervisor",
-"MADHANKUMAR":"Supervisor","JEGAN":"Supervisor","ASVATH":"Supervisor",
-"SUDHAKAR":"Supervisor","DARIUS":"Supervisor","DHENI":"Supervisor",
-"GODWIN":"Supervisor",
-
-"KISHORE":"Technician","A AJITH":"Technician","VIVEK":"Technician",
-"PERARASU":"Technician","MICHAEL":"Technician","IRFAN":"Technician",
-"THAMARAI":"Technician","SUBHASH":"Technician","M AJITH":"Technician",
-"PRABHAHARAN":"Technician","MARIYA":"Technician","SAKTHIVEL":"Technician",
-"DHEENA":"Technician","VENKAT":"Technician","RAJARAM":"Technician",
-"KARTHICK S":"Technician","VETRI":"Technician","MAHENDRAN":"Technician",
-"ARUN":"Technician"
-};
-
-const NAME_ALIASES={
-"THIRUVENGIDASAMY":"THIRU",
-"KISHORE KUMAR JHA":"KISHORE",
-"KISHORE JHA":"KISHORE",
-"AJITH A":"A AJITH",
-"KARTHICK.S":"KARTHICK S",
-"KARTHICK SAM":"KARTHIC SAM",
-"VASANTHARAJ":"VASANTHA RAJ",
-"VETRIVEL":"VETRI",
-"DEENA":"DHEENA",
-"DHEENAA":"DHEENA",
-"SUBASH":"SUBHASH",
-"IYAPPAN":"IYYAPPAN",
-"RANJIHKUMAR":"RANJIKUMAR",
-"MADHAN KUMAR":"MADHANKUMAR",
-"ARUNKUMAR":"ARUN"
-};
-
-let attendanceData=[];
-let masterData=[];
-let parsedData=[];
-
-function normalizeName(v){
-let n=String(v||"").toUpperCase()
-.replace(/[.,]/g," ")
-.replace(/\s+/g," ").trim();
-return NAME_ALIASES[n]||n;
-}
-
-function esc(v){
-return String(v??"")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
-}
-
-function roleOf(name){
-return EMPLOYEE_MASTER[normalizeName(name)]||"Unknown";
-}
-
-function localDate(){
-const d=new Date();
-return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-}
-
-document.getElementById("attendanceDate").value=localDate();
-document.getElementById("loadDate").value=localDate();
-
-function readMaster(){
-try{return JSON.parse(localStorage.getItem(MASTER_KEY)||"[]")}
-catch(e){return []}
-}
-
-function readCorridor(){
-try{return JSON.parse(localStorage.getItem(CORRIDOR_KEY)||'{"C1":[],"C2":[]}')}
-catch(e){return {C1:[],C2:[]}}
-}
-
-function saveMaster(){
-localStorage.setItem(MASTER_KEY,JSON.stringify(masterData));
-}
-
-function loadExcelLib(callback){
-if(window.XLSX){callback();return}
-let script=document.createElement("script");
-script.src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js";
-script.onload=callback;
-script.onerror=()=>alert("Excel library load failed. Internet connection check pannunga.");
-document.head.appendChild(script);
-}
-
-/* MASTER EXCEL UPLOAD */
-
-function uploadMaster(){
-const file=document.getElementById("masterFile").files[0];
-if(!file){alert("Master Excel select pannunga.");return}
-
-loadExcelLib(()=>{
-const reader=new FileReader();
-
-reader.onload=e=>{
-try{
-const wb=XLSX.read(e.target.result,{type:"array"});
-const sheet=wb.Sheets[wb.SheetNames[0]];
-const rows=XLSX.utils.sheet_to_json(sheet,{defval:""});
-
-if(!rows.length){alert("Excel empty.");return}
-
-const result=rows.map(row=>{
-const keys=Object.keys(row);
-
-function get(names){
-let k=keys.find(key=>names.some(n=>key.trim().toLowerCase()===n.toLowerCase()));
-return k?String(row[k]||"").trim():"";
-}
-
-return {
-name:get(["Name","Employee Name","Staff Name","Employee","Staff"]),
-employeeId:get(["Employee ID","Staff ID","ID","Emp ID"]),
-corridor:get(["Corridor","C1/C2","Section"]),
-role:get(["Role","Designation","Position"]),
-shift:get(["Shift","Shift Name","Duty","Duty Shift"])
-};
-}).filter(x=>x.name);
-
-if(!result.length){
-alert("Name column detect aagala. Excel heading check pannunga.");
-return;
-}
-
-if(!confirm(result.length+" employees found. Existing Master replace/update pannava?"))
-return;
-
-masterData=result;
-saveMaster();
-showMaster();
-
-document.getElementById("masterStatus").innerHTML=
-"<p style='color:green'>✅ Master saved: "+result.length+" staff</p>";
-
-}catch(err){
-console.error(err);
-alert("Excel read error.");
-}
-};
-
-reader.readAsArrayBuffer(file);
-});
-}
-
-function showMaster(){
-masterData=readMaster();
-const view=document.getElementById("masterView");
-
-if(!masterData.length){
-view.innerHTML="<p>Master Excel upload pannunga.</p>";
-return;
-}
-
-let html=`
-<h3>Master Staff: ${masterData.length}</h3>
-<table>
-<thead><tr>
-<th>#</th><th>Name</th><th>ID</th><th>Corridor</th><th>Role</th><th>Master Shift</th><th>Action</th>
-</tr></thead><tbody>`;
-
-masterData.forEach((s,i)=>{
-html+=`
-<tr>
-<td>${i+1}</td>
-<td><input value="${esc(s.name)}" onchange="editMaster(${i},'name',this.value)"></td>
-<td><input value="${esc(s.employeeId)}" onchange="editMaster(${i},'employeeId',this.value)"></td>
-<td><select onchange="editMaster(${i},'corridor',this.value)">
-<option ${s.corridor==="C1"?"selected":""}>C1</option>
-<option ${s.corridor==="C2"?"selected":""}>C2</option>
-<option ${s.corridor===""?"selected":""}></option>
-</select></td>
-<td><input value="${esc(s.role)}" onchange="editMaster(${i},'role',this.value)"></td>
-<td><input value="${esc(s.shift)}" onchange="editMaster(${i},'shift',this.value)"></td>
-<td><button class="danger" onclick="deleteMasterStaff(${i})">Delete</button></td>
-</tr>`;
-});
-
-html+="</tbody></table>";
-view.innerHTML=html;
-}
-
-function editMaster(i,field,value){
-masterData=readMaster();
-masterData[i][field]=value.trim();
-saveMaster();
-}
-
-function addMasterStaff(){
-masterData=readMaster();
-masterData.push({
-name:"",
-employeeId:"",
-corridor:"C1",
-role:"Technician",
-shift:""
-});
-saveMaster();
-showMaster();
-}
-
-function deleteMasterStaff(i){
-if(!confirm("Delete this staff from Master?"))return;
-masterData=readMaster();
-masterData.splice(i,1);
-saveMaster();
-showMaster();
-}
-
-function exportMaster(){
-masterData=readMaster();
-if(!masterData.length){alert("Master empty.");return}
-
-loadExcelLib(()=>{
-const ws=XLSX.utils.json_to_sheet(masterData);
-const wb=XLSX.utils.book_new();
-XLSX.utils.book_append_sheet(wb,ws,"Staff Master");
-XLSX.writeFile(wb,"Staff_Master.xlsx");
-});
-}
-
-/* CORRIDOR MASTER */
-
-function saveCorridorMaster(){
-const c1=document.getElementById("c1Master").value.split(/\r?\n/).map(normalizeName).filter(Boolean);
-const c2=document.getElementById("c2Master").value.split(/\r?\n/).map(normalizeName).filter(Boolean);
-
-const data={C1:[...new Set(c1)],C2:[...new Set(c2)]};
-localStorage.setItem(CORRIDOR_KEY,JSON.stringify(data));
-
-document.getElementById("mappingInfo").textContent=
-"C1: "+data.C1.length+" | C2: "+data.C2.length;
-}
-
-function loadCorridorFields(){
-const data=readCorridor();
-document.getElementById("c1Master").value=(data.C1||[]).join("\n");
-document.getElementById("c2Master").value=(data.C2||[]).join("\n");
-}
-
-function getCorridor(name){
-const n=normalizeName(name);
-const data=readCorridor();
-if((data.C1||[]).some(x=>normalizeName(x)===n))return "C1";
-if((data.C2||[]).some(x=>normalizeName(x)===n))return "C2";
-return "Unknown";
-}
-
-function loadDailyEmployeeMaster(){
-attendanceData=Object.entries(EMPLOYEE_MASTER).map(([employee,role])=>({
-corridor:getCorridor(employee),
-employee,
-shift:"",
-code:"",
-role
-}));
-renderPreview();
-}
-
-/* PARSER */
-
-function cleanLine(s){
-return s.replace(/\*/g,"").replace(/_/g,"").trim();
-}
-
-function identifyCorridor(line){
-const t=line.toUpperCase().trim();
-if(/^(C\s*[-]?\s*1|CORRIDOR\s*[-]?\s*1)\b/.test(t)||/\bCORRIDOR\s*[-]?\s*1\b/.test(t))return "C1";
-if(/^(C\s*[-]?\s*2|CORRIDOR\s*[-]?\s*2)\b/.test(t)||/\bCORRIDOR\s*[-]?\s*2\b/.test(t))return "C2";
-return "";
-}
-
-function identifyHeading(line){
-const t=line.toLowerCase().replace(/[*:_-]/g," ").replace(/\s+/g," ").trim();
-
-if(/night shift.*mainline|mainline.*night shift|night shift reporting/.test(t))return "Mainline Night";
-if(/first shift/.test(t))return "First Shift";
-if(/second shift/.test(t))return "Second Shift";
-if(/general shift/.test(t))return "General Shift";
-if(/night shift/.test(t))return "Night Shift";
-if(/week off/.test(t))return "Week Off";
-if(/comp\s*off|combo\s*off|compensatory off/.test(t))return "Comp Off";
-if(/^\s*(arrival|arr)\b/.test(t)||/\b(arrival list|arrival staff)\b/.test(t))return "Arrival";
-if(/^\s*leave\b/.test(t))return "Leave";
-return "";
-}
-
-function isSkipLine(line){
-if(!line)return true;
-if(/^(work activity|planned|date|dear|sir|madam|corridor|shift plan)\b/i.test(line))return true;
-if(/^(first shift|second shift|general shift|night shift|week off|comp off|combo off|leave|arrival|arr)\b/i.test(line))return true;
-if(/from\s+\d{1,2}[:.]\d{2}/i.test(line)||/to\s+\d{1,2}[:.]\d{2}/i.test(line))return true;
-if(/\bhrs?\b/i.test(line)&&/\d/.test(line))return true;
-return false;
-}
-
-function extractEmployee(line){
-line=line.replace(/^\d+[\.)]\s*/,"").replace(/^[-•]\s*/,"").trim();
-if(isSkipLine(line)||line.length>100)return null;
-
-line=line.replace(/\([^)]*\)/g,"").replace(/\[[^\]]*\]/g,"");
-line=line.replace(/\bEPIC\b/ig,"").replace(/\bSMR\b/ig,"")
-.replace(/\bReliever\b/ig,"").replace(/\bIn Place Of\b/ig,"");
-line=line.replace(/^[\s\-:]+|[\s\-:]+$/g,"").replace(/\s+/g," ").trim();
-return line.length>=2?line:null;
-}
-
-function mergeCodes(codes){
-const u=[...new Set(codes.filter(Boolean))];
-if(!u.length)return "";
-if(u.length===1)return u[0];
-
-const key=u.slice().sort().join("|");
-const approved={
-"A|C/O":"A & C/O",
-"C|C/O":"C/O & C",
-"C|L":"L/C",
-"A|C":"A/C"
-};
-return approved[key]||"CHECK";
-}
-
-function mergeRows(rows){
-const map=new Map();
-
-rows.forEach(r=>{
-const key=r.corridor+"|"+normalizeName(r.employee);
-if(!map.has(key))map.set(key,{corridor:r.corridor,employee:r.employee,shifts:[],codes:[],role:r.role});
-const x=map.get(key);
-if(!x.shifts.includes(r.shift))x.shifts.push(r.shift);
-if(r.code&&!x.codes.includes(r.code))x.codes.push(r.code);
-});
-
-return Array.from(map.values()).map(x=>({
-corridor:x.corridor,
-employee:x.employee,
-shift:x.shifts.join(" + "),
-code:mergeCodes(x.codes),
-role:x.role
-}));
-}
-
-function parsePlan(){
-const text=document.getElementById("whatsappText").value;
-if(!text.trim()){alert("WhatsApp shift plan paste pannunga.");return}
-
-let corridor="",shift="";
-const parsed=[];
-
-for(const raw of text.split(/\r?\n/)){
-const line=cleanLine(raw);
-if(!line)continue;
-
-const dc=identifyCorridor(line);
-if(dc){corridor=dc;shift="";continue}
-
-const ds=identifyHeading(line);
-if(ds){shift=ds;continue}
-
-if(!corridor||!shift||isSkipLine(line))continue;
-
-line.split(",").forEach(rawName=>{
-const employee=extractEmployee(rawName);
-if(employee){
-parsed.push({
-corridor,
-employee,
-shift,
-code:SHIFT_CODES[shift]||"",
-role:roleOf(employee)
-});
-}
-});
-}
-
-parsedData=mergeRows(parsed);
-attendanceData=parsedData.map(x=>({...x}));
-
-if(!attendanceData.length){
-alert("Employee detect aagala. WhatsApp plan check pannunga.");
-return;
-}
-
-renderPreview();
-compareShifts();
-}
-
-/* SHIFT COMPARISON */
-
-function compareShifts(){
-masterData=readMaster();
-
-if(!masterData.length){
-document.getElementById("compareSummary").innerHTML=
-"<p>Master Excel upload pannunga first.</p>";
-document.getElementById("compareView").innerHTML="";
-return;
-}
-
-const results=[];
-
-attendanceData.forEach(a=>{
-const master=masterData.find(m=>normalizeName(m.name)===normalizeName(a.employee));
-if(!master){
-results.push({name:a.employee,old:"-",new:a.shift,status:"NEW"});
-}else if(master.shift&&master.shift.trim().toUpperCase()!==a.shift.trim().toUpperCase()){
-results.push({name:a.employee,old:master.shift,new:a.shift,status:"CHANGED"});
-}else{
-results.push({name:a.employee,old:master.shift||"-",new:a.shift,status:master.shift?"NO CHANGE":"MASTER SHIFT MISSING"});
-}
-});
-
-masterData.forEach(m=>{
-const found=attendanceData.some(a=>normalizeName(a.employee)===normalizeName(m.name));
-if(!found)results.push({name:m.name,old:m.shift||"-",new:"-",status:"MISSING"});
-});
-
-const changed=results.filter(x=>x.status==="CHANGED").length;
-const newstaff=results.filter(x=>x.status==="NEW").length;
-const missing=results.filter(x=>x.status==="MISSING").length;
-const unchanged=results.filter(x=>x.status==="NO CHANGE").length;
-
-document.getElementById("compareSummary").innerHTML=`
-<div class="summary">
-<div class="tile">🟡 Shift Changed<br><strong>${changed}</strong></div>
-<div class="tile">🟢 No Change<br><strong>${unchanged}</strong></div>
-<div class="tile">🔴 New Staff<br><strong>${newstaff}</strong></div>
-<div class="tile">🔵 Missing Staff<br><strong>${missing}</strong></div>
-</div>`;
-
-let html=`
-<table>
-<thead><tr>
-<th>Staff</th><th>Master Shift</th><th>WhatsApp Shift</th><th>Status</th>
-</tr></thead><tbody>`;
-
-results.forEach(r=>{
-let cls=r.status==="CHANGED"?"changed":
-r.status==="NEW"?"newstaff":
-r.status==="MISSING"?"missingstaff":
-r.status==="NO CHANGE"?"nochange":"";
-
-html+=`<tr class="${cls}">
-<td>${esc(r.name)}</td>
-<td>${esc(r.old)}</td>
-<td>${esc(r.new)}</td>
-<td>${esc(r.status)}</td>
-</tr>`;
-});
-
-html+="</tbody></table>";
-document.getElementById("compareView").innerHTML=html;
-}
-
-/* ATTENDANCE EDIT */
-
-function renderPreview(){
-const tbody=document.getElementById("attendanceRows");
-tbody.innerHTML="";
-
-attendanceData.forEach((row,i)=>{
-const tr=document.createElement("tr");
-tr.innerHTML=`
-<td><select onchange="updateRow(${i},'corridor',this.value)">
-<option ${row.corridor==="C1"?"selected":""}>C1</option>
-<option ${row.corridor==="C2"?"selected":""}>C2</option>
-<option ${row.corridor==="Unknown"?"selected":""}>Unknown</option>
-</select></td>
-
-<td><input value="${esc(row.employee)}" onchange="updateRow(${i},'employee',this.value)"></td>
-
-<td><input value="${esc(row.shift)}" onchange="updateRow(${i},'shift',this.value)"></td>
-
-<td><input value="${esc(row.code)}" onchange="updateRow(${i},'code',this.value)"></td>
-
-<td><select onchange="updateRow(${i},'role',this.value)">
-<option ${row.role==="Unknown"?"selected":""}>Unknown</option>
-<option ${row.role==="Technician"?"selected":""}>Technician</option>
-<option ${row.role==="Supervisor"?"selected":""}>Supervisor</option>
-<option ${row.role==="Sr. Technician"?"selected":""}>Sr. Technician</option>
-</select></td>
-
-<td><button class="danger" onclick="removeRow(${i})">Delete</button></td>
-`;
-tbody.appendChild(tr);
-});
-
-updateSummary();
-document.getElementById("preview").style.display="block";
-}
-
-function updateRow(i,f,v){
-attendanceData[i][f]=String(v).trim();
-if(f==="employee"&&attendanceData[i].role==="Unknown")
-attendanceData[i].role=roleOf(v);
-updateSummary();
-}
-
-function removeRow(i){
-attendanceData.splice(i,1);
-renderPreview();
-}
-
-function addEmployee(){
-attendanceData.push({corridor:"C1",employee:"",shift:"",code:"",role:"Unknown"});
-renderPreview();
-}
-
-function hasCode(code,token){
-const s=String(code||"").toUpperCase();
-if(token==="C/O")return /C\s*\/\s*O/.test(s);
-return new RegExp("(^|[^A-Z])"+token+"([^A-Z]|$)").test(s);
-}
-
-function updateSummary(){
-const total=attendanceData.length;
-const c1=attendanceData.filter(x=>x.co
+<footer>
+  Balu Mass Smart AI • Free Assistant
+</footer>
+
+</body>
+</html>

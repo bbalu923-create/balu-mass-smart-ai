@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balu Mass Smart AI - Ride Assistant</title>
+<style>
+:root{--bg:#10141e;--card:#1a2130;--card2:#222c3e;--text:#f2f5fa;--muted:#a9b4c5;--accent:#54d6a0;--blue:#65a9ff;--red:#ff737b;--yellow:#ffd166}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;padding:16px}main{max-width:760px;margin:auto}.header{padding:8px 2px 18px}.header h1{margin:0 0 6px;font-size:25px}.header p{margin:0;color:var(--muted)}.card{background:var(--card);border:1px solid #2b3548;border-radius:16px;padding:16px;margin:12px 0}.card h2{font-size:18px;margin:0 0 14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}.field input,.field select{width:100%;padding:12px;border-radius:10px;border:1px solid #3b4860;background:#111827;color:var(--text);font-size:16px;outline:none}.field input:focus{border-color:var(--blue)}button{border:0;border-radius:11px;padding:13px 15px;font-weight:bold;font-size:15px;cursor:pointer;color:#10141e;background:var(--accent)}button.secondary{background:var(--card2);color:var(--text);border:1px solid #39465b}button.danger{background:#45262d;color:#ffabb0;border:1px solid #70353e}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.result{display:none;border-radius:14px;padding:16px;margin-top:14px}.result.accept{display:block;background:#163b31;border:1px solid #28775a}.result.skip{display:block;background:#42262c;border:1px solid #773d48}.result.check{display:block;background:#40371f;border:1px solid #78632b}.result h3{margin:0 0 8px;font-size:24px}.result p{margin:5px 0}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.stat{background:#111827;padding:12px;border-radius:12px;text-align:center}.stat small{color:var(--muted);display:block;margin-bottom:5px}.stat strong{font-size:18px}.historyItem{padding:12px 0;border-bottom:1px solid #2c3546}.historyItem:last-child{border:0}.historyItem .top{display:flex;justify-content:space-between;gap:10px}.badge{font-size:12px;padding:4px 8px;border-radius:20px;background:#27354a}.badge.accept{background:#174d39;color:#a3f0c7}.badge.skip{background:#572c34;color:#ffb2b9}.badge.check{background:#4c4024;color:#ffe09b}.hint{font-size:12px;color:var(--muted);line-height:1.5}.footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}@media(max-width:500px){.grid{grid-template-columns:1fr 1fr}.header h1{font-size:22px}.stats{grid-template-columns:1fr 1fr 1fr}.stat strong{font-size:16px}}
+</style>
+</head>
+<body>
+<main>
+<div class="header"><h1>🚗 Balu Mass Smart AI</h1><p>Ride Assistant • Free Personal Ride Calculator</p></div>
+<section class="card">
+<h2>⚙️ Filter Settings</h2>
+<div class="grid">
+<div class="field"><label>Minimum Fare (₹)</label><input id="minFare" type="number" min="0" value="100"></div>
+<div class="field"><label>Maximum Pickup Distance (KM)</label><input id="maxPickup" type="number" min="0" step="0.1" value="5"></div>
+<div class="field"><label>Minimum ₹ per KM</label><input id="minPerKm" type="number" min="0" step="0.5" value="15"></div>
+<div class="field"><label>Minimum Trip Distance (KM)</label><input id="minTrip" type="number" min="0" step="0.1" value="1"></div>
+</div>
+<div class="actions"><button onclick="saveSettings()">💾 Save Settings</button><button class="secondary" onclick="resetSettings()">Reset</button></div>
+<p class="hint">Settings இந்த phone/browser-ல் save ஆகும். வேறு phone-ல் automatically வராது.</p>
+</section>
+<section class="card">
+<h2>🧮 Check Ride</h2>
+<div class="grid">
+<div class="field"><label>Ride App</label><select id="rideApp"><option>Rapido</option><option>Ola</option><option>Uber</option><option>Other</option></select></div>
+<div class="field"><label>Ride Fare (₹)</label><input id="fare" type="number" min="0" placeholder="Enter fare"></div>
+<div class="field"><label>Pickup Distance (KM)</label><input id="pickup" type="number" min="0" step="0.1" placeholder="Pickup km"></div>
+<div class="field"><label>Trip Distance (KM)</label><input id="trip" type="number" min="0" step="0.1" placeholder="Trip km"></div>
+<div class="field"><label>Pickup / Area (optional)</label><input id="area" type="text" placeholder="Example: Ambattur"></div>
+</div>
+<div class="actions"><button onclick="checkRide()">🔍 Check Ride</button><button class="secondary" onclick="clearRideForm()">Clear</button></div>
+<div id="result" class="result"><h3 id="decision"></h3><p id="reason"></p><div class="stats"><div class="stat"><small>₹ / Trip KM</small><strong id="perKmOut">—</strong></div><div class="stat"><small>Total Distance</small><strong id="totalKm">—</strong></div><div class="stat"><small>Fare</small><strong id="fareShow">—</strong></div></div><div class="actions"><button class="secondary" onclick="saveRide()">📚 Save to History</button></div></div>
+<p class="hint">இந்த calculator உங்கள் input அடிப்படையில் recommendation மட்டும் தரும். Ride app-ஐ control செய்யாது; auto-accept செய்யாது.</p>
+</section>
+<section class="card"><h2>📊 Ride History</h2><div id="history"></div><div class="actions"><button class="secondary" onclick="exportHistory()">⬇️ Export CSV</button><button class="danger" onclick="clearHistory()">🗑️ Clear History</button></div></section>
+<div class="footer">Balu Mass Smart AI • Ride Assistant v1 • Free</div>
+</main>
+<script>
+const DEFAULTS={minFare:100,maxPickup:5,minPerKm:15,minTrip:1};
+let currentRide=null;unction readSettings(){try{return {...DEFAULTS,...JSON.parse(localStorage.getItem('baluRideSettings')||'{}')}}catch(e){return {...DEFAULTS}}}
+function loadSettings(){const s=readSettings();minFare.value=s.minFare;maxPickup.value=s.maxPickup;minPerKm.value=s.minPerKm;minTrip.value=s.minTrip}
+function saveSettings(){const s={minFare:Number(minFare.value)||0,maxPickup:Number(maxPickup.value)||0,minPerKm:Number(minPerKm.value)||0,minTrip:Number(minTrip.value)||0};localStorage.setItem('baluRideSettings',JSON.stringify(s));alert('Settings saved successfully!')}
+function resetSettings(){if(confirm('Reset settings to default?')){localStorage.removeItem('baluRideSettings');loadSettings()}}
+function checkRide(){const f=Number(fare.value),p=Number(pickup.value),t=Number(trip.value);if(fare.value===''||pickup.value===''||trip.value===''||f<0||p<0||t<=0){alert('Fare, Pickup distance and Trip distance enter pannunga. Trip KM zero இருக்கக்கூடாது.');return}
+const s=readSettings(),perKm=f/t,total=p+t;let issues=[];if(f<s.minFare)issues.push(`Fare ₹${f} is below minimum ₹${s.minFare}`);if(p>s.maxPickup)issues.push(`Pickup ${p} KM exceeds limit ${s.maxPickup} KM`);if(perKm<s.minPerKm)issues.push(`Rate ₹${perKm.toFixed(2)}/KM is below minimum ₹${s.minPerKm}/KM`);if(t<s.minTrip)issues.push(`Trip distance ${t} KM is below minimum ${s.minTrip} KM`);
+let type=issues.length?'skip':'accept';let title=issues.length?'⛔ SKIP RIDE':'✅ ACCEPT / GOOD RIDE';let reason=issues.length?issues.join(' • '):'Ride meets all your saved filter settings.';currentRide={date:new Date().toLocaleString(),app:rideApp.value,fare:f,pickup:p,trip:t,total,perKm,area:area.value.trim(),decision:type,reason};result.className='result '+type;decision.textContent=title;document.getElementById('reason').textContent=reason;document.getElementById('perKmOut').textContent='₹'+perKm.toFixed(2);totalKm.textContent=total.toFixed(1)+' KM';fareShow.textContent='₹'+f.toFixed(0);}
+function clearRideForm(){fare.value='';pickup.value='';trip.value='';area.value='';result.className='result';currentRide=null}
+function getHistory(){try{return JSON.parse(localStorage.getItem('baluRideHistory')||'[]')}catch(e){return []}}
+function saveRide(){if(!currentRide){alert('First Check Ride pannunga');return}let h=getHistory();h.unshift(currentRide);localStorage.setItem('baluRideHistory',JSON.stringify(h.slice(0,200)));renderHistory();alert('Ride history saved!');currentRide=null}
+function renderHistory(){const h=getHistory();history.innerHTML=h.length?h.map((r,i)=>`<div class="historyItem"><div class="top"><strong>${escapeHtml(r.app)} • ₹${Number(r.fare).toFixed(0)}</strong><span class="badge ${r.decision}">${r.decision.toUpperCase()}</span></div><div class="hint">${escapeHtml(r.date)}${r.area?' • '+escapeHtml(r.area):''}</div><div>${Number(r.pickup).toFixed(1)} KM pickup + ${Number(r.trip).toFixed(1)} KM trip = ${Number(r.total).toFixed(1)} KM • ₹${Number(r.perKm).toFixed(2)}/trip KM</div><div class="hint">${escapeHtml(r.reason||'')}</div></div>`).join(''):'<p class="hint">No saved rides yet.</p>'}
+function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function clearHistory(){if(confirm('Delete all saved ride history?')){localStorage.removeItem('baluRideHistory');renderHistory()}}
+function exportHistory(){const h=getHistory();if(!h.length){alert('No history to export');return}const rows=[['Date','App','Fare','Pickup KM','Trip KM','Total KM','Fare per Trip KM','Area','Decision','Reason'],...h.map(r=>[r.date,r.app,r.fare,r.pickup,r.trip,r.total,r.perKm,r.area,r.decision,r.reason])];const csv=rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Balu_Ride_History.csv';a.click();URL.revokeObjectURL(a.href)}
+loadSettings();renderHistory();
+</script>
+</body>
+</html>
